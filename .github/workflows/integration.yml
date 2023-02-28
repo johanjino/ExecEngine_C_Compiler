@@ -25,6 +25,7 @@ jobs:
         id: test
         timeout-minutes: 1
         run: |
+          chmod +x test.sh
           ./test.sh
 
       - name: Perm issue fix
