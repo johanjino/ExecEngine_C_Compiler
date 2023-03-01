@@ -1,7 +1,5 @@
-/* %code requires{
+%code requires{
   #include "ast.hpp"
-
-  #include <cassert>
 
   extern const Expression *g_root; // A way of getting the AST out
 
@@ -18,7 +16,7 @@
   const Expression *expr;
   double number;
   std::string *string;
-} */
+}
 
 %token IDENTIFIER CONSTANT STRING_LITERAL SIZEOF
 %token PTR_OP INC_OP DEC_OP LEFT_OP RIGHT_OP LE_OP GE_OP EQ_OP NE_OP
@@ -437,23 +435,12 @@ function_definition
 	;
 
 %%
-#include <stdio.h>
 
-extern char yytext[];
-extern int column;
-
-yyerror(s)
-char *s;
-{
-	fflush(stdout);
-	printf("\n%*s\n%*s\n", column, "^", column, s);
-}
-
-/* const Expression *g_root; // Definition of variable (to match declaration earlier)
+const Expression *g_root; // Definition of variable (to match declaration earlier)
 
 const Expression *parseAST()
 {
   g_root=0;
   yyparse();
   return g_root;
-} */
+}
