@@ -3,9 +3,11 @@
 #include <unistd.h>
 
 #include "cli.h"
+#include "ast.hpp"
 
-void compile(std::ostream &w)
+void compile(std::ostream &w, std::string file)
 {
+    /*
     w << ".text" << std::endl;
     w << ".globl f" << std::endl;
     w << std::endl;
@@ -15,10 +17,24 @@ void compile(std::ostream &w)
     w << "addi  t0, t0,   5" << std::endl;
     w << "add   a0, zero, t0" << std::endl;
     w << "ret" << std::endl;
+    */
+
+   // Generates AST
+	const Expression *program = parseAST(file);
+
+   // extern const Expression *parseAST(std::string file);
+
+	// -V enables visualisation
+	// Formatting stuff
+    program->print(w);
+    w<<std::endl;
+
+	w << "test" << std::endl;
+
 }
 
 // TODO: uncomment the below if you're using Flex/Bison.
-// extern FILE *yyin;
+extern FILE *yyin;
 
 int main(int argc, char **argv)
 {
@@ -33,12 +49,12 @@ int main(int argc, char **argv)
     // TODO: uncomment the below lines if you're using Flex/Bison.
     // This configures Flex to look at sourcePath instead of
     // reading from stdin.
-    // yyin = fopen(sourcePath, "r");
-    // if (yyin == NULL)
-    // {
-    //     perror("Could not open source file");
-    //     return 1;
-    // }
+    const char *sourcePath_c = sourcePath.c_str();
+    FILE* yyin = fopen(sourcePath_c, "r");
+    if (yyin == NULL){
+         perror("Could not open source file");
+         return 1;
+    }
 
     // Open the output file in truncation mode (to overwrite the contents)
     std::ofstream output;
@@ -46,7 +62,7 @@ int main(int argc, char **argv)
 
     // Compile the input
     std::cout << "Compiling: " << sourcePath << std::endl;
-    compile(output);
+    compile(output, sourcePath);
     std::cout << "Compiled to: " << outputPath << std::endl;
 
     output.close();

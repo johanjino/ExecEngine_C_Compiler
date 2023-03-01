@@ -7,6 +7,10 @@ set -uo pipefail
 shopt -s globstar
 
 make bin/c_compiler
+if [[ "$?" -ne 0 ]]; then
+    echo "Build failed.";
+    exit;
+fi
 
 mkdir -p bin
 mkdir -p bin/output

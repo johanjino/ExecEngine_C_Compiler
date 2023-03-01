@@ -1,7 +1,10 @@
 %code requires{
+  // A lot of this parser is based off the ANSI C Yacc grammar
+  // https://www.lysator.liu.se/c/ANSI-C-grammar-y.html
   #include "ast.hpp"
 
-  extern const Expression *g_root; // A way of getting the AST out
+  extern const Expression *g_root; //A way of getting the AST out
+  extern FILE *yyin;
 
   //! This is to fix problems when generating C++
   // We are declaring the functions provided by Flex, so
@@ -18,6 +21,7 @@
   std::string *string;
 }
 
+
 %token IDENTIFIER CONSTANT STRING_LITERAL SIZEOF
 %token PTR_OP INC_OP DEC_OP LEFT_OP RIGHT_OP LE_OP GE_OP EQ_OP NE_OP
 %token AND_OP OR_OP MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN ADD_ASSIGN
@@ -30,8 +34,14 @@
 
 %token CASE DEFAULT IF ELSE SWITCH WHILE DO FOR GOTO CONTINUE BREAK RETURN
 
-%start translation_unit
+
+%type <expr> translation_unit
+
+%start ROOT
+
 %%
+/* Extracts AST */
+ROOT : translation_unit { g_root =  $1;}
 
 primary_expression
 	: IDENTIFIER
@@ -436,11 +446,17 @@ function_definition
 
 %%
 
+
 const Expression *g_root; // Definition of variable (to match declaration earlier)
 
-const Expression *parseAST()
-{
-  g_root=0;
+const Expression *parseAST(std::string filename){
+  yyin = fopen(filename.c_str(), "r");
+  if(yyin == NULL){
+    std::cerr << "Couldn't open input file: " << filename << std::endl;
+    exit(1);
+  }
+  g_root = NULL;
   yyparse();
   return g_root;
 }
+
