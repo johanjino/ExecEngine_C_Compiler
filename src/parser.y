@@ -16,6 +16,7 @@
 // Represents the value associated with any kind of
 // AST node.
 %union{
+	ListPtr branch;
   	const Node *node;
   	double number;
   	std::string *string;
@@ -36,8 +37,9 @@
 
 %type <string> IDENTIFIER STRING_LITERAL
 %type <number> CONSTANT
-%type <node> BODY BLOCK
-%type <node> DATA_TYPES STATEMENT
+
+%type <branch> BODY
+%type <node> DATA_TYPES STATEMENT BLOCK
 %type <node> HEAD
 
 %start ROOT
@@ -51,10 +53,11 @@ HEAD
 	: DATA_TYPES IDENTIFIER '(' ')' BLOCK		{$$ = new Function($2, $5);}
 
 BLOCK
-	: '{' STATEMENT '}'			{$$ = new Body($2);}
+	: '{' BODY '}'			{$$ = new Block($2);}
 
 BODY
-	: STATEMENT		{$$ = new Body($1);}
+	: STATEMENT BODY		{$$ = concat_list($1,$2);}
+	| STATEMENT				{$$ = init_list($1);}
 	//| DEC
 	//| EXPR
 
