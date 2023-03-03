@@ -4,15 +4,15 @@
 #include <string>
 #include <iostream>
 
-#include "ast_expression.hpp"
+#include "ast_node.hpp"
 
 class Unary
-    : public Expression
+    : public Node
 {
 private:
-    ExpressionPtr expr;
+    NodePtr expr;
 protected:
-    Unary(const ExpressionPtr _expr)
+    Unary(const NodePtr _expr)
         : expr(_expr)
     {}
 public:
@@ -23,7 +23,7 @@ public:
 
     virtual const char *getOpcode() const =0;
 
-    ExpressionPtr getExpr() const
+    NodePtr getExpr() const
     { return expr; }
 
     virtual void print(std::ostream &dst) const override
@@ -40,7 +40,7 @@ class NegOperator
     : public Unary
 {
 public:
-    NegOperator(const ExpressionPtr _expr)
+    NegOperator(const NodePtr _expr)
         : Unary(_expr)
     {}
 

@@ -5,16 +5,16 @@
 #include <iostream>
 #include <cmath>
 
-#include "ast_expression.hpp"
+#include "ast_node.hpp"
 
 class Operator
-    : public Expression
+    : public Node
 {
 private:
-    ExpressionPtr left;
-    ExpressionPtr right;
+    NodePtr left;
+    NodePtr right;
 protected:
-    Operator(ExpressionPtr _left, ExpressionPtr _right)
+    Operator(NodePtr _left, NodePtr _right)
         : left(_left)
         , right(_right)
     {}
@@ -27,10 +27,10 @@ public:
 
     virtual const char *getOpcode() const =0;
 
-    ExpressionPtr getLeft() const
+    NodePtr getLeft() const
     { return left; }
 
-    ExpressionPtr getRight() const
+    NodePtr getRight() const
     { return right; }
 
     virtual void print(std::ostream &dst) const override
@@ -52,13 +52,13 @@ protected:
     virtual const char *getOpcode() const override
     { return "+"; }
 public:
-    AddOperator(ExpressionPtr _left, ExpressionPtr _right)
+    AddOperator(NodePtr _left, NodePtr _right)
         : Operator(_left, _right)
     {}
-    
+
     virtual double evaluate(
         const std::map<std::string,double> &bindings
-    ) const override 
+    ) const override
     {
         // TODO-C : Run bin/eval_expr with something like 5+a, where a=10, to make sure you understand how this works
         double vl=getLeft()->evaluate(bindings);
@@ -74,13 +74,13 @@ protected:
     virtual const char *getOpcode() const override
     { return "-"; }
 public:
-    SubOperator(ExpressionPtr _left, ExpressionPtr _right)
+    SubOperator(NodePtr _left, NodePtr _right)
         : Operator(_left, _right)
     {}
-    
+
     virtual double evaluate(
         const std::map<std::string,double> &bindings
-    ) const override 
+    ) const override
     {
         // TODO-D : Implement this, based on AddOperator::evaluate
         double vl=getLeft()->evaluate(bindings);
@@ -97,7 +97,7 @@ protected:
     virtual const char *getOpcode() const override
     { return "*"; }
 public:
-    MulOperator(ExpressionPtr _left, ExpressionPtr _right)
+    MulOperator(NodePtr _left, NodePtr _right)
         : Operator(_left, _right)
     {}
 
@@ -118,7 +118,7 @@ protected:
     virtual const char *getOpcode() const override
     { return "/"; }
 public:
-    DivOperator(ExpressionPtr _left, ExpressionPtr _right)
+    DivOperator(NodePtr _left, NodePtr _right)
         : Operator(_left, _right)
     {}
 
@@ -139,7 +139,7 @@ protected:
     virtual const char *getOpcode() const override
     { return "^"; }
 public:
-    ExpOperator(ExpressionPtr _left, ExpressionPtr _right)
+    ExpOperator(NodePtr _left, NodePtr _right)
         : Operator(_left, _right)
     {}
 

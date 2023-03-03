@@ -17,7 +17,6 @@ IS			(u|U|l|L)*
 "break"			{ return(BREAK); }
 "case"			{ return(CASE); }
 "char"			{ return(CHAR); }
-"const"			{ return(CONST); }
 "continue"		{ return(CONTINUE); }
 "default"		{ return(DEFAULT); }
 "do"			{ return(DO); }
@@ -94,15 +93,15 @@ IS			(u|U|l|L)*
 "?"				{ return('?'); }
 
 
-{L}({L}|{D})*				{ return(IDENTIFIER); }
-0[xX]{H}+{IS}?				{ return(CONSTANT); }
-0{D}+{IS}?					{ return(CONSTANT); }
-{D}+{IS}?					{ return(CONSTANT); }
-L?'(\\.|[^\\'])+'			{ return(CONSTANT); }
+{L}({L}|{D})*				{ yylval.string=new std::string(yytext); return IDENTIFIER; }
+0[xX]{H}+{IS}?				{ yylval.number=(int)strtol(yytext, NULL, 0); return(CONSTANT); } //
+0{D}+{IS}?					{ yylval.number=(int)strtol(yytext, NULL, 0); return(CONSTANT); } //
+{D}+{IS}?					{ yylval.number=(int)strtol(yytext, NULL, 0); return(CONSTANT); } //
+L?'(\\.|[^\\'])+'			{ yylval.number=(int)strtol(yytext, NULL, 0); return(CONSTANT); } //need to fix data types everywhere
 
-{D}+{E}{FS}?				{ return(CONSTANT); }
-{D}*"."{D}+({E})?{FS}?		{ return(CONSTANT); }
-{D}+"."{D}*({E})?{FS}?		{ return(CONSTANT); }
+{D}+{E}{FS}?				{ yylval.number=(int)strtol(yytext, NULL, 0); return(CONSTANT); } //
+{D}*"."{D}+({E})?{FS}?		{ yylval.number=(int)strtol(yytext, NULL, 0); return(CONSTANT); } //
+{D}+"."{D}*({E})?{FS}?		{ yylval.number=(int)strtol(yytext, NULL, 0); return(CONSTANT); } //
 
 L?\"(\\.|[^\\"])*\"	 		{ return(STRING_LITERAL); }
 

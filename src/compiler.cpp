@@ -20,13 +20,14 @@ void compile(std::ostream &w, std::string file)
     */
 
    // Generates AST
-	const Expression *program = parseAST(file);
+	const Node *program = parseAST(file);
 
-   // extern const Expression *parseAST(std::string file);
+   // extern const Node *parseAST(std::string file);
 
 	// -V enables visualisation
 	// Formatting stuff
     program->print(w);
+    //w<<typeid(program).name();
     w<<std::endl;
 
 	w << "test" << std::endl;
