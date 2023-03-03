@@ -39,7 +39,7 @@
 %type <number> CONSTANT
 
 %type <branch> BODY
-%type <node> DATA_TYPES STATEMENT BLOCK
+%type <node> DATA_TYPES STATEMENT BLOCK EXPR TERM UNARY FACTOR LINE DECLARATION
 %type <node> HEAD
 
 %start ROOT
@@ -49,6 +49,9 @@
 ROOT
 	: HEAD { g_root =  $1;};
 
+
+//HEAD OF FUNCTIONS
+
 HEAD
 	: DATA_TYPES IDENTIFIER '(' ')' BLOCK		{$$ = new Function($2, $5);}
 
@@ -56,15 +59,54 @@ BLOCK
 	: '{' BODY '}'			{$$ = new Block($2);}
 
 BODY
-	: STATEMENT BODY		{$$ = concat_list($1,$2);}
-	| STATEMENT				{$$ = init_list($1);}
-	//| DEC
-	//| EXPR
+	: LINE BODY		{$$ = concat_list($1,$2);}
+	| LINE				{$$ = init_list($1);}
+
+LINE
+	: STATEMENT		{$$ = $1;}
+	| DECLARATION	{$$ = $1;}
 
 STATEMENT
-	: RETURN CONSTANT ';'		{$$ = new Return(new Number($2));}
-	| RETURN IDENTIFIER ';'
-	| RETURN STRING_LITERAL ';'
+	: RETURN EXPR ';'			{$$ = new Return($2);}
+
+DECLARATION
+	: IDENTIFIER '=' EXPR ';'				{$$ = new Declaration((new Variable(*$1)),$3);} //temporary need to change
+	| DATA_TYPES IDENTIFIER ';'
+	| DATA_TYPES IDENTIFIER '=' EXPR ';'	{$$ = new Declaration((new Variable(*$2)),$4);} //temporary need to change
+
+
+
+//EXPRESSIONS
+
+EXPR
+	: TERM              { $$ = $1; }
+    | EXPR '+' EXPR 	{ $$ = new AddOperator($1, $3); }
+    | EXPR '-' EXPR 	{ $$ = new SubOperator($1, $3); }
+	| STRING_LITERAL	// need to define
+
+TERM
+	: UNARY             { $$ = $1; }
+    | TERM '*' TERM     { $$ = new MulOperator($1, $3); }
+    | TERM '/' TERM   	{ $$ = new DivOperator($1, $3); }
+
+UNARY
+	: FACTOR	  		{$$ = $1; }
+	| '-' FACTOR  		{ $$ = new NegOperator($2); }
+
+
+FACTOR
+	: CONSTANT     		{$$ = new Number( $1 );}
+    | '(' EXPR ')' 		{ $$ = $2;}
+    | IDENTIFIER 		{$$ = new Variable( *$1 );}
+
+
+
+
+
+
+
+
+//DATA TYPES
 
 DATA_TYPES
 	: INT		{$$ = new Type(_Types::_int);}
