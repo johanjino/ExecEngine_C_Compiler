@@ -135,7 +135,7 @@ IF_ELSE
 
 LOOP
 	: FOR '(' DECLARATION ';' EXPR ';' DECLARATION ')' BLOCK	{$$ = new forloop($3,$5,$7,$9);}
-	| WHILE '(' EXPR ')' BLOCK
+	| WHILE '(' EXPR ')' BLOCK									{$$ = new whileloop($3,$5);}
 	| DO BLOCK WHILE '(' EXPR ')' ';'
 
 

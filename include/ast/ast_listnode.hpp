@@ -17,8 +17,7 @@ inline ListPtr init_list(NodePtr expr){
   return exprList;
 }
 
-inline ListPtr concat_list(NodePtr expr, ListPtr exprList)
-{
+inline ListPtr concat_list(NodePtr expr, ListPtr exprList){
   exprList->push_back(expr);
   return exprList;
 }
