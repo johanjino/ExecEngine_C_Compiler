@@ -3,7 +3,6 @@
 
 #include "ast/ast_node.hpp"
 #include "ast/ast_primitives.hpp"
-///#include "ast/ast_functions.hpp"
 #include "ast/ast_listnode.hpp"
 #include "ast/ast_declaration.hpp"
 
@@ -16,6 +15,7 @@
 #include "ast/Operators/ast_arithmetic.hpp"
 #include "ast/Operators/ast_relational.hpp"
 #include "ast/Operators/ast_unary.hpp"
+#include "ast/Operators/ast_logical.hpp"
 
 
 

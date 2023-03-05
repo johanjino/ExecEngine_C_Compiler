@@ -96,8 +96,11 @@ EXPR
 	| EXPR EQ_OP EXPR	{ $$ = new EqOperator($1, $3); }
 	| EXPR GE_OP EXPR	{ $$ = new GthanEqOperator($1, $3); }
 	| EXPR LE_OP EXPR	{ $$ = new LthanEqOperator($1, $3); }
-	| EXPR OR_OP EXPR
-	| EXPR AND_OP EXPR
+	| EXPR OR_OP EXPR	{ $$ = new OrOperator($1, $3); }
+	| EXPR AND_OP EXPR  { $$ = new AndOperator($1, $3); }
+	| '!' EXPR			{ $$ = new NotOperator($2); }
+
+
 	// More operators to do
 
 TERM

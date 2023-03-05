@@ -3,6 +3,8 @@
 # Author : James Nock (@Jpnock)
 # Year   : 2023
 
+make clean
+
 set -uo pipefail
 shopt -s globstar
 
