@@ -1,45 +1,7 @@
-#ifndef ast_operators_hpp
-#define ast_operators_hpp
+#ifndef ast_arithmetic_hpp
+#define ast_arithmetic_hpp
 
-#include <string>
-#include <iostream>
-#include <cmath>
-
-#include "../ast_node.hpp"
-
-class Operator : public Node{
-    private:
-        NodePtr left;
-        NodePtr right;
-    protected:
-        Operator(NodePtr _left, NodePtr _right)
-            : left(_left)
-            , right(_right)
-        {}
-    public:
-        virtual ~Operator(){
-            delete left;
-            delete right;
-        }
-
-        virtual const char *getOpcode() const =0;
-
-        NodePtr getLeft() const
-        { return left; }
-
-        NodePtr getRight() const
-        { return right; }
-
-        virtual void print(std::ostream &dst) const override{
-            dst<<"( ";
-            left->print(dst);
-            dst<<" ";
-            dst<<getOpcode();
-            dst<<" ";
-            right->print(dst);
-            dst<<" )";
-        }
-};
+#include "ast_operator.hpp"
 
 class AddOperator: public Operator{
     protected:

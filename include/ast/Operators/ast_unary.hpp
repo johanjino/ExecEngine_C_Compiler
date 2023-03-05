@@ -23,12 +23,12 @@ class Unary : public Node{
         NodePtr getExpr() const
         { return expr; }
 
-        virtual void print(std::ostream &dst) const override
+        virtual void print(std::ostream &dst, int span) const override
         {
             dst << "( ";
             dst << getOpcode();
             dst << " ";
-            expr->print(dst);
+            expr->print(dst, span);
             dst << " )";
         }
 };

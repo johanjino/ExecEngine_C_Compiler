@@ -20,9 +20,9 @@ class Function : public Node {
         {}
 
 
-        virtual void print(std::ostream &dst) const override{
-            dst<<name<<"()"<<std::endl;
-            next->print(dst);
+        virtual void print(std::ostream &dst, int span) const override{
+            dst<<std::setw(span*4)<<name<<"()"<<std::endl;
+            next->print(dst, span);
         }
 
         virtual double evaluate(const std::map<std::string,double> &bindings) const override{

@@ -17,7 +17,7 @@ class Variable : public Node {
         const std::string getId() const
         { return id; }
 
-        virtual void print(std::ostream &dst) const override
+        virtual void print(std::ostream &dst, int span) const override
         {
             dst<<id;
         }
@@ -44,7 +44,7 @@ class Number : public Node {
             return value;
         }
 
-        virtual void print(std::ostream &dst) const override{
+        virtual void print(std::ostream &dst, int span) const override{
             dst<<value;
         }
 

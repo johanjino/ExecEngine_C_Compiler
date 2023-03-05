@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include <map>
+#include <iomanip>
 
 #include <memory>
 
@@ -17,7 +18,7 @@ class Node {
         }
 
         //! Tell and expression to print itself to the given stream
-        virtual void print(std::ostream &dst) const =0;
+        virtual void print(std::ostream &dst, int span) const =0;
 
         //! Evaluate the tree using the given mapping of variables to numbers
         virtual double evaluate(const std::map<std::string,double> &bindings) const{

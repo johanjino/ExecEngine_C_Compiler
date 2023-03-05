@@ -8,15 +8,20 @@
 
 class Declaration : public Node{
     private:
+        NodePtr type;
         NodePtr id;
         NodePtr value;
     public:
-        Declaration (NodePtr _id, NodePtr _value)
-            :   id(_id),
+        Declaration (NodePtr _type, NodePtr _id, NodePtr _value)
+            :   type(_type),
+                id(_id),
                 value(_value)
             {}
 
         virtual const char *getOpcode(){return "=";}
+
+        NodePtr gettype() const
+        { return type; }
 
         NodePtr getid() const
         { return id; }
@@ -24,11 +29,19 @@ class Declaration : public Node{
         NodePtr getvalue() const
         { return value; }
 
-        virtual void print(std::ostream &dst) const override{
-            id->print(dst);
-            dst<<"=";
-            value->print(dst);
+        virtual void print(std::ostream &dst, int span) const override{
+            dst<<std::setw(span*4);
+            if (type!=NULL){
+                type->print(dst,span);
+            }
+            id->print(dst, span);
+            if (value!=NULL){
+                dst<<"=";
+                value->print(dst, span);
+            }
+            dst<<std::endl;
         }
+
 
 };
 

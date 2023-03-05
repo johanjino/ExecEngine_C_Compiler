@@ -1,6 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include <unistd.h>
+#include <iomanip>
 
 #include "cli.h"
 #include "ast.hpp"
@@ -26,7 +27,8 @@ void compile(std::ostream &w, std::string file)
 
 	// -V enables visualisation
 	// Formatting stuff
-    program->print(w);
+    int span = 0;
+    program->print(w,span);
     //w<<typeid(program).name();
     w<<std::endl;
 

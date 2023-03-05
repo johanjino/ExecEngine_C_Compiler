@@ -39,7 +39,7 @@
 %type <number> CONSTANT
 
 %type <branch> BODY
-%type <node> DATA_TYPES STATEMENT BLOCK EXPR TERM UNARY FACTOR LINE DECLARATION
+%type <node> DATA_TYPES STATEMENT BLOCK EXPR TERM UNARY FACTOR LINE DECLARATION IF_ELSE LOOP
 %type <node> HEAD
 
 %start ROOT
@@ -48,6 +48,8 @@
 /* Extracts AST */
 ROOT
 	: HEAD { g_root =  $1;};
+
+
 
 
 //HEAD OF FUNCTIONS
@@ -63,16 +65,21 @@ BODY
 	| LINE				{$$ = init_list($1);}
 
 LINE
-	: STATEMENT		{$$ = $1;}
-	| DECLARATION	{$$ = $1;}
+	: STATEMENT	';'		{$$ = $1;}
+	| DECLARATION ';'	{$$ = $1;}
+	| IF_ELSE			{$$ = $1;}
+	| LOOP				{$$ = $1;}
 
 STATEMENT
-	: RETURN EXPR ';'			{$$ = new Return($2);}
+	: RETURN EXPR			{$$ = new Return($2);}
+	| RETURN				{$$ = new Return(NULL);}
 
 DECLARATION
-	: IDENTIFIER '=' EXPR ';'				{$$ = new Declaration((new Variable(*$1)),$3);} //temporary need to change
-	| DATA_TYPES IDENTIFIER ';'
-	| DATA_TYPES IDENTIFIER '=' EXPR ';'	{$$ = new Declaration((new Variable(*$2)),$4);} //temporary need to change
+	: IDENTIFIER '=' EXPR				{$$ = new Declaration(NULL,(new Variable(*$1)),$3);} //temporary need to change
+	| DATA_TYPES IDENTIFIER				{$$ = new Declaration($1,(new Variable(*$2)),NULL);}
+	| DATA_TYPES IDENTIFIER '=' EXPR	{$$ = new Declaration($1,(new Variable(*$2)),$4);} //temporary need to change
+	// More assignments to do
+
 
 
 
@@ -83,6 +90,15 @@ EXPR
     | EXPR '+' EXPR 	{ $$ = new AddOperator($1, $3); }
     | EXPR '-' EXPR 	{ $$ = new SubOperator($1, $3); }
 	| STRING_LITERAL	// need to define
+	| EXPR '>' EXPR		{ $$ = new GthanOperator($1, $3); }
+	| EXPR '<' EXPR		{ $$ = new LthanOperator($1, $3); }
+	| EXPR NE_OP EXPR	{ $$ = new NEqOperator($1, $3); }
+	| EXPR EQ_OP EXPR	{ $$ = new EqOperator($1, $3); }
+	| EXPR GE_OP EXPR	{ $$ = new GthanEqOperator($1, $3); }
+	| EXPR LE_OP EXPR	{ $$ = new LthanEqOperator($1, $3); }
+	| EXPR OR_OP EXPR
+	| EXPR AND_OP EXPR
+	// More operators to do
 
 TERM
 	: UNARY             { $$ = $1; }
@@ -100,6 +116,24 @@ FACTOR
     | IDENTIFIER 		{$$ = new Variable( *$1 );}
 
 
+
+
+//IF ELSE BLOCKS
+
+IF_ELSE
+	: IF '(' EXPR ')' BLOCK				{$$ = new ifelse($3,$5,NULL);}
+	| IF '(' EXPR ')' BLOCK ELSE BLOCK	{$$ = new ifelse($3,$5,$7);}
+	//switch statements
+
+
+
+
+//LOOPS
+
+LOOP
+	: FOR '(' DECLARATION ';' EXPR ';' DECLARATION ')' BLOCK	{$$ = new forloop($3,$5,$7,$9);}
+	| WHILE '(' EXPR ')' BLOCK
+	| DO BLOCK WHILE '(' EXPR ')' ';'
 
 
 

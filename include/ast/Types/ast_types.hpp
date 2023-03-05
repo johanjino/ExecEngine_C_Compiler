@@ -55,8 +55,8 @@ class Type : public Node {
             }
         }
 
-        virtual void print(std::ostream &dst) const override{
-            dst<<getType();
+        virtual void print(std::ostream &dst, int span) const override{
+            dst<<std::setw(span*4)<<getType()<<" ";
         }
 
         virtual double evaluate(const std::map<std::string,double> &bindings) const override{

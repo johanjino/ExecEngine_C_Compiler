@@ -25,10 +25,10 @@ public:
     NodePtr getArg() const
     { return arg; }
 
-    virtual void print(std::ostream &dst) const override
+    virtual void print(std::ostream &dst, int span) const override
     {
         dst<<getFunction()<<"( ";
-        arg->print(dst);
+        arg->print(dst, span);
         dst<<" )";
     }
 

@@ -18,9 +18,9 @@ class Return : public Node {
         {}
 
 
-        virtual void print(std::ostream &dst) const override{
-            dst<<"return ";
-            next->print(dst);
+        virtual void print(std::ostream &dst, int span) const override{
+            dst<<std::setw(span*4)<<"return ";
+            next->print(dst, span);
         }
 
         virtual double evaluate(const std::map<std::string,double> &bindings) const override{
