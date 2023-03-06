@@ -30,6 +30,18 @@ class Return : public Node {
             // If the binding does not exist, this will throw an error
             return next->evaluate(bindings);
         }
+
+
+        virtual void riscv_gen(std::ostream &dst, Helper &helper, std::string destReg)const override{
+            if (next!=NULL){
+                if (next->getClass() == "Number"){
+                    dst<<"addi t0, zero, 0"<<std::endl;
+                    dst<<"addi t0, zero, "<<std::to_string(static_cast<int>(next->getValue()))<<std::endl;
+                }
+                dst<<"mv a0, t0"<<std::endl;
+            }
+
+        }
 };
 
 #endif

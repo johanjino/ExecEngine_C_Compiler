@@ -40,7 +40,11 @@ class Number : public Node {
             : value(_value)
         {}
 
-        double getValue() const{
+        std::string getClass() const override{
+            return "Number";
+        }
+
+        double getValue() const override{
             return value;
         }
 
@@ -51,6 +55,10 @@ class Number : public Node {
         virtual double evaluate(const std::map<std::string,double> &bindings) const override{
             return value;
         }
+
+
+
+
 };
 
 

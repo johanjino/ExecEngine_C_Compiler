@@ -44,6 +44,20 @@ class FunctionDef : public Node {
             // If the binding does not exist, this will throw an error
             return next->evaluate(bindings);
         }
+
+        virtual void riscv_gen(std::ostream &dst, Helper &helper, std::string destReg)const override{
+            dst<<name<<":"<<std::endl;
+            if (params!=NULL){
+                for (int i = 0; i<params->size(); i++) {
+                    dst<<"  "<<"Parameters not implemeted in codegen yet :(";
+                }
+            }
+            if (next!=NULL){
+                next->riscv_gen(dst, helper, destReg);
+            }
+
+        }
+
 };
 
 

@@ -27,12 +27,22 @@ void compile(std::ostream &w, std::string file)
 
 	// -V enables visualisation
 	// Formatting stuff
+    /*
     int span = 0;
     program->print(w,span);
-    //w<<typeid(program).name();
-    w<<std::endl;
+    w << std::endl;
+    w << "test" << std::endl;
+    */
 
-	w << "test" << std::endl;
+    w << ".text" << std::endl;
+    w << ".globl f" << std::endl;
+    w << std::endl;
+
+    Helper helper = Helper();
+    program->riscv_gen(w, helper, "");
+    w << "ret" << std::endl;
+
+
 
 }
 

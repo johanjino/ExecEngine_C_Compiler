@@ -31,6 +31,12 @@ class Block : public Node {
             // If the binding does not exist, this will throw an error
             //return next->evaluate(bindings);
         }
+
+        virtual void riscv_gen(std::ostream &dst, Helper &helper, std::string destReg)const override{
+            for (int i = (branches)->size(); i > 0; i--) {
+                (*branches)[i-1]->riscv_gen(dst, helper, destReg);
+            }
+        }
 };
 
 #endif
