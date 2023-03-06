@@ -63,7 +63,7 @@ primary_expression
 	;
 
 postfix_expression
-	: primary_expression
+	: primary_expression { $$ = $1 }
 	| postfix_expression '[' expression ']'
 	| postfix_expression '(' ')'
 	| postfix_expression '(' argument_expression_list ')'

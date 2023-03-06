@@ -123,7 +123,16 @@ EXPR
 	| EXPR OR_OP EXPR	{ $$ = new OrOperator($1, $3); }
 	| EXPR AND_OP EXPR  { $$ = new AndOperator($1, $3); }
 	| '!' EXPR			{ $$ = new NotOperator($2); }
-
+	| EXPR RIGHT_ASSIGN EXPR { $$ = new RightAssignOperator($1, $3); }
+	| EXPR LEFT_ASSIGN EXPR { $$ = new LeftAssignOperator($1, $3); }
+	| EXPR ADD_ASSIGN EXPR { $$ = new AddAssignOperator($1, $3); }
+	| EXPR SUB_ASSIGN EXPR { $$ = new SubAssignOperator($1, $3); }
+	| EXPR MUL_ASSIGN EXPR { $$ = new MulAssignOperator($1, $3); }
+	| EXPR DIV_ASSIGN EXPR { $$ = new DivAssignOperator($1, $3); }
+	| EXPR MOD_ASSIGN EXPR { $$ = new ModAssignOperator($1, $3); }
+	| EXPR AND_ASSIGN EXPR { $$ = new AndAssignOperator($1, $3); }
+	| EXPR XOR_ASSIGN EXPR { $$ = new XorAssignOperator($1, $3); }
+	| EXPR OR_ASSIGN EXPR { $$ = new OrAssignOperator($1, $3); }
 
 	// More operators to do
 

@@ -54,7 +54,7 @@ IS			(u|U|l|L)*
 "/="			{ return(DIV_ASSIGN); }
 "%="			{ return(MOD_ASSIGN); }
 "&="			{ return(AND_ASSIGN); }
-"^="			{ return(XOR_ASSIGN); }
+"^make clean="			{ return(XOR_ASSIGN); }
 "|="			{ return(OR_ASSIGN); }
 ">>"			{ return(RIGHT_OP); }
 "<<"			{ return(LEFT_OP); }

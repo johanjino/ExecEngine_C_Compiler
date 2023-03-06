@@ -25,7 +25,6 @@ class GthanOperator: public Operator{
         }
 };
 
-
 class LthanOperator: public Operator{
     protected:
         virtual const char *getOpcode() const override
