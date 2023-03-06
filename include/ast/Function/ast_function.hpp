@@ -5,29 +5,74 @@
 #include <iostream>
 
 #include "../ast_node.hpp"
+#include "../ast_listnode.hpp"
 
 
-class Function : public Node {
+class FunctionDef : public Node {
 
     private:
+        NodePtr type;
         std::string name;
+        ListPtr params;
         NodePtr next;
 
     public:
-        Function(std::string* _name, NodePtr _next)
-            :   name(*_name),
+        FunctionDef(NodePtr _type, std::string* _name, ListPtr _params, NodePtr _next)
+            :   type(_type),
+                name(*_name),
+                params(_params),
                 next(_next)
         {}
 
 
         virtual void print(std::ostream &dst, int span) const override{
-            dst<<std::setw(span*4)<<name<<"()"<<std::endl;
-            next->print(dst, span);
+            dst<<std::setw(span*4);
+            type->print(dst,span);
+            dst<<name<<"( ";
+            if (params!=NULL){
+                for (int i = 0; i<params->size(); i++) {
+                    (*params)[i]->print(dst, span);
+                }
+            }
+            dst<<" )"<<std::endl;
+            if (next!=NULL){
+                next->print(dst, span);
+            }
         }
 
         virtual double evaluate(const std::map<std::string,double> &bindings) const override{
             // If the binding does not exist, this will throw an error
             return next->evaluate(bindings);
+        }
+};
+
+
+class FunctionCall : public Node {
+
+    private:
+        std::string name;
+        ListPtr args;
+
+    public:
+        FunctionCall(std::string* _name, ListPtr _args)
+            :   name(*_name),
+                args(_args)
+        {}
+
+
+        virtual void print(std::ostream &dst, int span) const override{
+            dst<<" "<<name<<"( ";
+            if (args!=NULL){
+                for (int i = 0; i<args->size(); i++) {
+                    (*args)[i]->print(dst, span);
+                }
+            }
+            dst<<" )"<<std::endl;
+        }
+
+        virtual double evaluate(const std::map<std::string,double> &bindings) const override{
+            // If the binding does not exist, this will throw an error
+            //return next->evaluate(bindings);
         }
 };
 

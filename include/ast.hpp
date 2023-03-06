@@ -5,6 +5,7 @@
 #include "ast/ast_primitives.hpp"
 #include "ast/ast_listnode.hpp"
 #include "ast/ast_declaration.hpp"
+#include "ast/ast_output.hpp"
 
 #include "ast/Function/ast_function.hpp"
 #include "ast/Keyword/ast_return.hpp"

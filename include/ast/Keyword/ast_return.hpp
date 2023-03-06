@@ -20,7 +20,10 @@ class Return : public Node {
 
         virtual void print(std::ostream &dst, int span) const override{
             dst<<std::setw(span*4)<<"return ";
-            next->print(dst, span);
+            if (next!=NULL){
+                next->print(dst, span);
+            }
+            dst<<std::endl;
         }
 
         virtual double evaluate(const std::map<std::string,double> &bindings) const override{

@@ -38,8 +38,9 @@
 %type <string> IDENTIFIER STRING_LITERAL
 %type <number> CONSTANT
 
-%type <branch> BODY
-%type <node> DATA_TYPES STATEMENT BLOCK EXPR TERM UNARY FACTOR LINE DECLARATION IF_ELSE LOOP
+%type <branch> BODY PARAMETER ARGUMENTS HEADS
+%type <node> DATA_TYPES STATEMENT BLOCK EXPR TERM UNARY FACTOR
+%type <node> LINE DECLARATION IF_ELSE LOOP OUTPUT
 %type <node> HEAD
 
 %start ROOT
@@ -47,22 +48,45 @@
 %%
 /* Extracts AST */
 ROOT
-	: HEAD { g_root =  $1;};
+	: OUTPUT { g_root =  $1;};
 
 
+
+
+//OUTPUT NODE
+OUTPUT
+	: HEADS {$$ = new Output($1);}
+
+
+
+
+//LIST OF FUNCTION HEADS
+
+HEADS
+	: HEADS HEAD		{$$ = concat_list($2,$1);}
+	| HEAD				{$$ = init_list($1);}
 
 
 //HEAD OF FUNCTIONS
 
 HEAD
-	: DATA_TYPES IDENTIFIER '(' ')' BLOCK		{$$ = new Function($2, $5);}
+	: DATA_TYPES IDENTIFIER '(' ')' ';'		{$$ = new FunctionDef($1,$2,NULL,NULL);}
+	| DATA_TYPES IDENTIFIER '(' PARAMETER ')' ';'		{$$ = new FunctionDef($1,$2,$4,NULL);}
+	| DATA_TYPES IDENTIFIER '(' ')' BLOCK		{$$ = new FunctionDef($1,$2,NULL,$5);}
+	| DATA_TYPES IDENTIFIER '(' PARAMETER ')' BLOCK		{$$ = new FunctionDef($1,$2,$4,$6);}
+
+
+PARAMETER
+	: PARAMETER ',' DECLARATION		{$$ = concat_list($3,$1);}
+	| DECLARATION					{$$ = init_list($1);}
+
 
 BLOCK
 	: '{' BODY '}'			{$$ = new Block($2);}
 
 BODY
 	: LINE BODY		{$$ = concat_list($1,$2);}
-	| LINE				{$$ = init_list($1);}
+	| LINE			{$$ = init_list($1);}
 
 LINE
 	: STATEMENT	';'		{$$ = $1;}
@@ -76,7 +100,7 @@ STATEMENT
 
 DECLARATION
 	: IDENTIFIER '=' EXPR				{$$ = new Declaration(NULL,(new Variable(*$1)),$3);} //temporary need to change
-	| DATA_TYPES IDENTIFIER				{$$ = new Declaration($1,(new Variable(*$2)),NULL);}
+	| DATA_TYPES IDENTIFIER				{$$ = new Declaration($1,(new Variable(*$2)),NULL);} //need to handle empty initialisations
 	| DATA_TYPES IDENTIFIER '=' EXPR	{$$ = new Declaration($1,(new Variable(*$2)),$4);} //temporary need to change
 	// More assignments to do
 
@@ -114,9 +138,16 @@ UNARY
 
 
 FACTOR
-	: CONSTANT     		{$$ = new Number( $1 );}
-    | '(' EXPR ')' 		{ $$ = $2;}
-    | IDENTIFIER 		{$$ = new Variable( *$1 );}
+	: CONSTANT     					{$$ = new Number( $1 );}
+    | '(' EXPR ')' 					{$$ = $2;}
+    | IDENTIFIER 					{$$ = new Variable( *$1 );}
+	| IDENTIFIER '(' ')'			{$$ = new FunctionCall($1,NULL);}
+	| IDENTIFIER '(' ARGUMENTS ')'	{$$ = new FunctionCall($1,$3);}
+
+ARGUMENTS
+	: ARGUMENTS ',' EXPR			{$$ = concat_list($3,$1);}
+	| EXPR							{$$ = init_list($1);}
+
 
 
 
