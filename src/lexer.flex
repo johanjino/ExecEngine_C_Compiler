@@ -54,7 +54,7 @@ IS			(u|U|l|L)*
 "/="			{ return(DIV_ASSIGN); }
 "%="			{ return(MOD_ASSIGN); }
 "&="			{ return(AND_ASSIGN); }
-"^make clean="			{ return(XOR_ASSIGN); }
+"^="			{ return(XOR_ASSIGN); }
 "|="			{ return(OR_ASSIGN); }
 ">>"			{ return(RIGHT_OP); }
 "<<"			{ return(LEFT_OP); }
@@ -103,7 +103,7 @@ L?'(\\.|[^\\'])+'			{ yylval.number=(int)strtol(yytext, NULL, 0); return(CONSTAN
 {D}*"."{D}+({E})?{FS}?		{ yylval.number=(int)strtol(yytext, NULL, 0); return(CONSTANT); } //
 {D}+"."{D}*({E})?{FS}?		{ yylval.number=(int)strtol(yytext, NULL, 0); return(CONSTANT); } //
 
-L?\"(\\.|[^\\"])*\"	 		{ return(STRING_LITERAL); }
+L?\"(\\.|[^\\"])*\"	 		{ yylval.string=new std::string(yytext); return STRING_LITERAL; }
 
 [ \t\r\n]+		 			{;}
 .				 			{;}

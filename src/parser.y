@@ -2,6 +2,7 @@
   // A lot of this parser is based off the ANSI C Yacc grammar
   // https://www.lysator.liu.se/c/ANSI-C-grammar-y.html
   #include "ast.hpp"
+  #include <string>
 
   extern const Node *g_root; //A way of getting the AST out
   extern FILE *yyin;
@@ -112,9 +113,9 @@ DECLARATION
 
 EXPR
 	: TERM              		{ $$ = $1; }
+	//| STRING_LITERAL			// ask UTAs
     | EXPR '+' EXPR 			{ $$ = new AddOperator($1, $3); }
     | EXPR '-' EXPR 			{ $$ = new SubOperator($1, $3); }
-	| STRING_LITERAL	// need to define
 	| EXPR '>' EXPR				{ $$ = new GthanOperator($1, $3); }
 	| EXPR '<' EXPR				{ $$ = new LthanOperator($1, $3); }
 	| EXPR NE_OP EXPR			{ $$ = new NEqOperator($1, $3); }
@@ -138,16 +139,21 @@ EXPR
 	| EXPR '|' EXPR 			{ $$ = new OrBitwiseOperator($1, $3); }
 	| EXPR '^' EXPR 			{ $$ = new XorBitwiseOperator($1, $3); }
 	//| '~' EXPR 				// need to do
-
-	// More operators to do
+	| EXPR RIGHT_OP EXPR 		{ $$ = new RightShiftOperator($1, $3); }
+	| EXPR LEFT_OP EXPR 		{ $$ = new LeftShiftOperator($1, $3); }
+	| EXPR INC_OP	 			{ $$ = new IncOperator_Post($1); }
+	| INC_OP EXPR 	 			{ $$ = new IncOperator_Pre($2); }
+	| EXPR DEC_OP				{ $$ = new DecOperator_Post($1); }
+	| DEC_OP EXPR 				{ $$ = new DecOperator_Pre($2); }
 
 TERM
 	: UNARY             { $$ = $1; }
     | TERM '*' TERM     { $$ = new MulOperator($1, $3); }
     | TERM '/' TERM   	{ $$ = new DivOperator($1, $3); }
 
+
 UNARY
-	: FACTOR	  		{$$ = $1; }
+	: FACTOR	  		{ $$ = $1; }
 	| '-' FACTOR  		{ $$ = new NegOperator($2); }
 
 
@@ -171,6 +177,7 @@ ARGUMENTS
 IF_ELSE
 	: IF '(' EXPR ')' BLOCK				{$$ = new ifelse($3,$5,NULL);}
 	| IF '(' EXPR ')' BLOCK ELSE BLOCK	{$$ = new ifelse($3,$5,$7);}
+	| EXPR '?' BLOCK ':' BLOCK			{$$ = new ifelse($1, $3, $5);}
 	//switch statements
 
 

@@ -36,10 +36,6 @@ class ifelse : public Node {
             }
         }
 
-        virtual double evaluate(const std::map<std::string,double> &bindings) const override{
-            // If the binding does not exist, this will throw an error
-            //return next->evaluate(bindings);
-        }
 };
 
 #endif

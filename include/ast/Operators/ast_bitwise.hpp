@@ -32,6 +32,7 @@ class XorBitwiseOperator: public Operator{
         XorBitwiseOperator(NodePtr _left, NodePtr _right)
             : Operator(_left, _right)
         {}
+        
 };
 
 

@@ -20,7 +20,7 @@
 #include "ast/Operators/ast_logical.hpp"
 #include "ast/Operators/ast_assign.hpp"
 #include "ast/Operators/ast_bitwise.hpp"
-
+#include "ast/Operators/ast_shift.hpp"
 
 extern const Node *parseAST(std::string file);
 
