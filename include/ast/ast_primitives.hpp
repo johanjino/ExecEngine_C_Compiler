@@ -69,7 +69,7 @@ class Number : public Node {
             Helper &helper,
             std::string destReg,
             std::map<std::string, std::string> &bindings)const override{
-            dst<<"addi "<<destReg<<", zero, "<<std::to_string(value)<<std::endl;
+            dst<<"li "<<destReg<<", "<<std::to_string(value)<<std::endl;
         }
 
         virtual double evaluate(const std::map<std::string,double> &bindings) const override{

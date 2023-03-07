@@ -1,5 +1,6 @@
 #any bin folder
 */bin/*
+*/.vscode/*
 
 # Prerequisites
 *.d
