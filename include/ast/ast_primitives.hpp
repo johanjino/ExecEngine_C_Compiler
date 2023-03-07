@@ -14,12 +14,19 @@ class Variable : public Node {
             : id(_id)
         {}
 
-        const std::string getId() const
+        virtual std::string getId() const override
         { return id; }
 
         virtual void print(std::ostream &dst, int span) const override
         {
             dst<<id;
+        }
+
+        virtual void riscv_asm(std::ostream &dst,
+            Helper &helper,
+            std::string destReg,
+            std::map<std::string, std::string> &bindings)const override{
+            dst<<"addi "<<destReg<<", zero, 0"<<std::endl;
         }
 
         virtual double evaluate(
@@ -34,9 +41,9 @@ class Variable : public Node {
 
 class Number : public Node {
     private:
-        double value;
+        int value;
     public:
-        Number(double _value)
+        Number(int _value)
             : value(_value)
         {}
 
@@ -50,6 +57,13 @@ class Number : public Node {
 
         virtual void print(std::ostream &dst, int span) const override{
             dst<<value;
+        }
+
+        virtual void riscv_asm(std::ostream &dst,
+            Helper &helper,
+            std::string destReg,
+            std::map<std::string, std::string> &bindings)const override{
+            dst<<"addi "<<destReg<<", zero, "<<std::to_string(value)<<std::endl;
         }
 
         virtual double evaluate(const std::map<std::string,double> &bindings) const override{

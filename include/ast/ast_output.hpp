@@ -21,9 +21,12 @@ class Output : public Node {
             }
         }
 
-        virtual void riscv_gen(std::ostream &dst, Helper &helper, std::string destReg) const override{
+        virtual void riscv_asm(std::ostream &dst,
+            Helper &helper,
+            std::string destReg,
+            std::map<std::string, std::string> &bindings) const override{
             for (int i = 0; i<(functions)->size(); i++) {
-                (*functions)[i]->riscv_gen(dst,helper,destReg);
+                (*functions)[i]->riscv_asm(dst,helper,"a0", bindings);
             }
         }
 

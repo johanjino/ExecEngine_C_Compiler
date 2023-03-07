@@ -39,7 +39,8 @@ void compile(std::ostream &w, std::string file)
     w << std::endl;
 
     Helper helper = Helper();
-    program->riscv_gen(w, helper, "");
+    std::map<std::string, std::string> bindings = helper.bindings;
+    program->riscv_asm(w, helper, "", bindings);
     w << "ret" << std::endl;
 
 

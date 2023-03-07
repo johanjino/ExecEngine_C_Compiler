@@ -42,6 +42,30 @@ class Declaration : public Node{
             dst<<std::endl;
         }
 
+        virtual void riscv_asm(std::ostream &dst,
+            Helper &helper,
+            std::string destReg,
+            std::map<std::string, std::string> &bindings)const override{
+                if (type!=NULL){
+                    std::string reg = helper.allocateReg();
+                    bindings[id->getId()] = reg;
+                }
+                else{
+                    if (bindings.count(id->getId())){
+                        std::string reg = helper.allocateReg();
+                        value->riscv_asm(dst, helper, reg, bindings);
+                        dst<<"mv "<<destReg<<", "<<reg<<std::endl;
+                        dst<<"addi "<<reg<<", zero, 0"<<std::endl;
+                        helper.deallocateReg(std::stoi(reg.erase(0,1)));
+
+                    }
+                    else{
+                        std::cerr<< "Trying to access variable that does not exist"<<std::endl;
+                        exit(1);
+                    }
+                }
+            }
+
 
 };
 

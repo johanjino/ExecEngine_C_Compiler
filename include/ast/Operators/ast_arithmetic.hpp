@@ -21,6 +21,29 @@ class AddOperator: public Operator{
             double vr=getRight()->evaluate(bindings);
             return vl+vr;
         }
+
+        virtual void riscv_asm(std::ostream &dst,
+            Helper &helper,
+            std::string destReg,
+            std::map<std::string, std::string> &bindings)const override{
+
+                //Calculate Left
+                std::string reg_left = helper.allocateReg();
+                left->riscv_asm(dst, helper, reg_left, bindings);
+
+                //Calculate Right
+                std::string reg_right = helper.allocateReg();
+                right->riscv_asm(dst, helper, reg_right, bindings);
+
+                //Add
+                dst<<"add "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
+
+                dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
+                dst<<"addi "<<reg_right<<", zero, 0"<<std::endl;
+                helper.deallocateReg(std::stoi(reg_left.erase(0,1)));
+                helper.deallocateReg(std::stoi(reg_right.erase(0,1)));
+
+        }
 };
 
 class SubOperator : public Operator{
@@ -40,6 +63,29 @@ class SubOperator : public Operator{
             double vl=getLeft()->evaluate(bindings);
             double vr=getRight()->evaluate(bindings);
             return vl-vr;
+        }
+
+        virtual void riscv_asm(std::ostream &dst,
+            Helper &helper,
+            std::string destReg,
+            std::map<std::string, std::string> &bindings)const override{
+
+                //Calculate Left
+                std::string reg_left = helper.allocateReg();
+                left->riscv_asm(dst, helper, reg_left, bindings);
+
+                //Calculate Right
+                std::string reg_right = helper.allocateReg();
+                right->riscv_asm(dst, helper, reg_right, bindings);
+
+                //Add
+                dst<<"sub "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
+
+                dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
+                dst<<"addi "<<reg_right<<", zero, 0"<<std::endl;
+                helper.deallocateReg(std::stoi(reg_left.erase(0,1)));
+                helper.deallocateReg(std::stoi(reg_right.erase(0,1)));
+
         }
 };
 
@@ -61,6 +107,29 @@ class MulOperator : public Operator{
             double vr=getRight()->evaluate(bindings);
             return vl*vr;
         }
+
+        virtual void riscv_asm(std::ostream &dst,
+            Helper &helper,
+            std::string destReg,
+            std::map<std::string, std::string> &bindings)const override{
+
+                //Calculate Left
+                std::string reg_left = helper.allocateReg();
+                left->riscv_asm(dst, helper, reg_left, bindings);
+
+                //Calculate Right
+                std::string reg_right = helper.allocateReg();
+                right->riscv_asm(dst, helper, reg_right, bindings);
+
+                //Add
+                dst<<"mul "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
+
+                dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
+                dst<<"addi "<<reg_right<<", zero, 0"<<std::endl;
+                helper.deallocateReg(std::stoi(reg_left.erase(0,1)));
+                helper.deallocateReg(std::stoi(reg_right.erase(0,1)));
+
+        }
 };
 
 class DivOperator : public Operator {
@@ -79,6 +148,29 @@ class DivOperator : public Operator {
             double vl=getLeft()->evaluate(bindings);
             double vr=getRight()->evaluate(bindings);
             return vl/vr;
+        }
+
+        virtual void riscv_asm(std::ostream &dst,
+            Helper &helper,
+            std::string destReg,
+            std::map<std::string, std::string> &bindings)const override{
+
+                //Calculate Left
+                std::string reg_left = helper.allocateReg();
+                left->riscv_asm(dst, helper, reg_left, bindings);
+
+                //Calculate Right
+                std::string reg_right = helper.allocateReg();
+                right->riscv_asm(dst, helper, reg_right, bindings);
+
+                //Add
+                dst<<"div "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
+
+                dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
+                dst<<"addi "<<reg_right<<", zero, 0"<<std::endl;
+                helper.deallocateReg(std::stoi(reg_left.erase(0,1)));
+                helper.deallocateReg(std::stoi(reg_right.erase(0,1)));
+
         }
 };
 

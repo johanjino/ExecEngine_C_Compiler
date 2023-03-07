@@ -102,6 +102,7 @@ DECLARATION
 	: IDENTIFIER '=' EXPR				{$$ = new Declaration(NULL,(new Variable(*$1)),$3);} //temporary need to change
 	| DATA_TYPES IDENTIFIER				{$$ = new Declaration($1,(new Variable(*$2)),NULL);} //need to handle empty initialisations
 	| DATA_TYPES IDENTIFIER '=' EXPR	{$$ = new Declaration($1,(new Variable(*$2)),$4);} //temporary need to change
+	| EXPR 		//for assignment operators
 	// More assignments to do
 
 
@@ -110,29 +111,33 @@ DECLARATION
 //EXPRESSIONS
 
 EXPR
-	: TERM              { $$ = $1; }
-    | EXPR '+' EXPR 	{ $$ = new AddOperator($1, $3); }
-    | EXPR '-' EXPR 	{ $$ = new SubOperator($1, $3); }
+	: TERM              		{ $$ = $1; }
+    | EXPR '+' EXPR 			{ $$ = new AddOperator($1, $3); }
+    | EXPR '-' EXPR 			{ $$ = new SubOperator($1, $3); }
 	| STRING_LITERAL	// need to define
-	| EXPR '>' EXPR		{ $$ = new GthanOperator($1, $3); }
-	| EXPR '<' EXPR		{ $$ = new LthanOperator($1, $3); }
-	| EXPR NE_OP EXPR	{ $$ = new NEqOperator($1, $3); }
-	| EXPR EQ_OP EXPR	{ $$ = new EqOperator($1, $3); }
-	| EXPR GE_OP EXPR	{ $$ = new GthanEqOperator($1, $3); }
-	| EXPR LE_OP EXPR	{ $$ = new LthanEqOperator($1, $3); }
-	| EXPR OR_OP EXPR	{ $$ = new OrOperator($1, $3); }
-	| EXPR AND_OP EXPR  { $$ = new AndOperator($1, $3); }
-	| '!' EXPR			{ $$ = new NotOperator($2); }
-	| EXPR RIGHT_ASSIGN EXPR { $$ = new RightAssignOperator($1, $3); }
-	| EXPR LEFT_ASSIGN EXPR { $$ = new LeftAssignOperator($1, $3); }
-	| EXPR ADD_ASSIGN EXPR { $$ = new AddAssignOperator($1, $3); }
-	| EXPR SUB_ASSIGN EXPR { $$ = new SubAssignOperator($1, $3); }
-	| EXPR MUL_ASSIGN EXPR { $$ = new MulAssignOperator($1, $3); }
-	| EXPR DIV_ASSIGN EXPR { $$ = new DivAssignOperator($1, $3); }
-	| EXPR MOD_ASSIGN EXPR { $$ = new ModAssignOperator($1, $3); }
-	| EXPR AND_ASSIGN EXPR { $$ = new AndAssignOperator($1, $3); }
-	| EXPR XOR_ASSIGN EXPR { $$ = new XorAssignOperator($1, $3); }
-	| EXPR OR_ASSIGN EXPR { $$ = new OrAssignOperator($1, $3); }
+	| EXPR '>' EXPR				{ $$ = new GthanOperator($1, $3); }
+	| EXPR '<' EXPR				{ $$ = new LthanOperator($1, $3); }
+	| EXPR NE_OP EXPR			{ $$ = new NEqOperator($1, $3); }
+	| EXPR EQ_OP EXPR			{ $$ = new EqOperator($1, $3); }
+	| EXPR GE_OP EXPR			{ $$ = new GthanEqOperator($1, $3); }
+	| EXPR LE_OP EXPR			{ $$ = new LthanEqOperator($1, $3); }
+	| EXPR OR_OP EXPR			{ $$ = new OrOperator($1, $3); }
+	| EXPR AND_OP EXPR  		{ $$ = new AndOperator($1, $3); }
+	| '!' EXPR					{ $$ = new NotOperator($2); }
+	| EXPR RIGHT_ASSIGN EXPR 	{ $$ = new RightAssignOperator($1, $3); }
+	| EXPR LEFT_ASSIGN EXPR 	{ $$ = new LeftAssignOperator($1, $3); }
+	| EXPR ADD_ASSIGN EXPR 		{ $$ = new AddAssignOperator($1, $3); }
+	| EXPR SUB_ASSIGN EXPR 		{ $$ = new SubAssignOperator($1, $3); }
+	| EXPR MUL_ASSIGN EXPR 		{ $$ = new MulAssignOperator($1, $3); }
+	| EXPR DIV_ASSIGN EXPR 		{ $$ = new DivAssignOperator($1, $3); }
+	| EXPR MOD_ASSIGN EXPR 		{ $$ = new ModAssignOperator($1, $3); }
+	| EXPR AND_ASSIGN EXPR 		{ $$ = new AndAssignOperator($1, $3); }
+	| EXPR XOR_ASSIGN EXPR 		{ $$ = new XorAssignOperator($1, $3); }
+	| EXPR OR_ASSIGN EXPR 		{ $$ = new OrAssignOperator($1, $3); }
+	| EXPR '&' EXPR 			{ $$ = new AndBitwiseOperator($1, $3); }
+	| EXPR '|' EXPR 			{ $$ = new OrBitwiseOperator($1, $3); }
+	| EXPR '^' EXPR 			{ $$ = new XorBitwiseOperator($1, $3); }
+	//| '~' EXPR 				// need to do
 
 	// More operators to do
 

@@ -19,6 +19,7 @@
 #include "ast/Operators/ast_unary.hpp"
 #include "ast/Operators/ast_logical.hpp"
 #include "ast/Operators/ast_assign.hpp"
+#include "ast/Operators/ast_bitwise.hpp"
 
 
 extern const Node *parseAST(std::string file);

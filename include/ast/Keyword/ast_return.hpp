@@ -32,13 +32,15 @@ class Return : public Node {
         }
 
 
-        virtual void riscv_gen(std::ostream &dst, Helper &helper, std::string destReg)const override{
+        virtual void riscv_asm(std::ostream &dst,
+            Helper &helper,
+            std::string destReg,
+            std::map<std::string, std::string> &bindings)const override{
             if (next!=NULL){
-                if (next->getClass() == "Number"){
-                    dst<<"addi t0, zero, 0"<<std::endl;
-                    dst<<"addi t0, zero, "<<std::to_string(static_cast<int>(next->getValue()))<<std::endl;
-                }
-                dst<<"mv a0, t0"<<std::endl;
+                std::string reg = helper.allocateReg();
+                next->riscv_asm(dst, helper, reg, bindings);
+                dst<<"mv "<<destReg<<", "<<reg<<std::endl;
+                helper.deallocateReg(std::stoi(reg.erase(0,1)));
             }
 
         }

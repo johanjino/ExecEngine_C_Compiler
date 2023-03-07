@@ -22,10 +22,18 @@ class Node {
 
 
         virtual std::string getClass() const{
-            return "getClass not defined here or Wrong usage";
+            std::cerr<< "getClass not defined here or Wrong usage"<<std::endl;
+            exit(1);
+        }
+
+        virtual std::string getId() const{
+            std::cerr<< "getId not defined here or Wrong usage"<<std::endl;
+            exit(1);
         }
 
         virtual double getValue() const{
+            std::cerr<< "getValue not defined here or Wrong usage"<<std::endl;
+            exit(1);
         }
 
         //! Tell and expression to print itself to the given stream
@@ -37,7 +45,10 @@ class Node {
             }
 
         //! Generate RISC-V Assembly
-        virtual void riscv_gen(std::ostream &dst, Helper &helper, std::string destReg) const{
+        virtual void riscv_asm(std::ostream &dst,
+            Helper &helper,
+            std::string destReg,
+            std::map<std::string, std::string> &bindings) const{
         }
 };
 

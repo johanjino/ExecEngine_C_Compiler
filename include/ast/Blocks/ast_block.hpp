@@ -32,9 +32,12 @@ class Block : public Node {
             //return next->evaluate(bindings);
         }
 
-        virtual void riscv_gen(std::ostream &dst, Helper &helper, std::string destReg)const override{
+        virtual void riscv_asm(std::ostream &dst,
+            Helper &helper,
+            std::string destReg,
+            std::map<std::string, std::string> &bindings)const override{
             for (int i = (branches)->size(); i > 0; i--) {
-                (*branches)[i-1]->riscv_gen(dst, helper, destReg);
+                (*branches)[i-1]->riscv_asm(dst, helper, destReg, bindings);
             }
         }
 };

@@ -45,15 +45,19 @@ class FunctionDef : public Node {
             return next->evaluate(bindings);
         }
 
-        virtual void riscv_gen(std::ostream &dst, Helper &helper, std::string destReg)const override{
+        virtual void riscv_asm(std::ostream &dst,
+            Helper &helper,
+            std::string destReg,
+            std::map<std::string, std::string> &bindings)const override{
             dst<<name<<":"<<std::endl;
             if (params!=NULL){
                 for (int i = 0; i<params->size(); i++) {
-                    dst<<"  "<<"Parameters not implemeted in codegen yet :(";
+                    std::string param_reg = "a" + std::to_string(i+1);
+                    (*params)[i]->riscv_asm(dst,helper,param_reg,bindings);
                 }
             }
             if (next!=NULL){
-                next->riscv_gen(dst, helper, destReg);
+                next->riscv_asm(dst, helper, destReg, bindings);
             }
 
         }

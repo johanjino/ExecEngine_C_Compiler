@@ -9,10 +9,11 @@
 
 
 class Operator : public Node{
-    private:
+
+    protected:
         NodePtr left;
         NodePtr right;
-    protected:
+
         Operator(NodePtr _left, NodePtr _right)
             : left(_left)
             , right(_right)
