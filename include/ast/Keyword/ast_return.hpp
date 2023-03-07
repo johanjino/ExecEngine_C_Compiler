@@ -40,6 +40,7 @@ class Return : public Node {
                 std::string reg = helper.allocateReg();
                 next->riscv_asm(dst, helper, reg, bindings);
                 dst<<"mv "<<destReg<<", "<<reg<<std::endl;
+                dst<<"addi "<<reg<<", zero, 0"<<std::endl;
                 helper.deallocateReg(std::stoi(reg.erase(0,1)));
             }
 

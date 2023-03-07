@@ -23,8 +23,8 @@ class Declaration : public Node{
         NodePtr gettype() const
         { return type; }
 
-        NodePtr getid() const
-        { return id; }
+        std::string getid() const
+        { return id->getId(); }
 
         NodePtr getvalue() const
         { return value; }
@@ -49,14 +49,16 @@ class Declaration : public Node{
                 if (type!=NULL){
                     std::string reg = helper.allocateReg();
                     bindings[id->getId()] = reg;
+                    if (value!=NULL){
+                        value->riscv_asm(dst, helper, reg, bindings);
+                        dst<<"mv "<<destReg<<", "<<reg<<std::endl;
+                    }
                 }
                 else{
                     if (bindings.count(id->getId())){
-                        std::string reg = helper.allocateReg();
+                        std::string reg = bindings[id->getId()];
                         value->riscv_asm(dst, helper, reg, bindings);
                         dst<<"mv "<<destReg<<", "<<reg<<std::endl;
-                        dst<<"addi "<<reg<<", zero, 0"<<std::endl;
-                        helper.deallocateReg(std::stoi(reg.erase(0,1)));
 
                     }
                     else{

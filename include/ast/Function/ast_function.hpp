@@ -53,7 +53,7 @@ class FunctionDef : public Node {
             if (params!=NULL){
                 for (int i = 0; i<params->size(); i++) {
                     std::string param_reg = "a" + std::to_string(i+1);
-                    (*params)[i]->riscv_asm(dst,helper,param_reg,bindings);
+                    bindings[(*params)[i]->getId()] = param_reg;
                 }
             }
             if (next!=NULL){
