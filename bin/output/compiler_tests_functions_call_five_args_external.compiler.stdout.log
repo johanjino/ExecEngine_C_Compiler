@@ -1,0 +1,2 @@
+Compiling: compiler_tests/functions/call_five_args_external.c
+Compiled to: ./bin/output/compiler_tests_functions_call_five_args_external.s

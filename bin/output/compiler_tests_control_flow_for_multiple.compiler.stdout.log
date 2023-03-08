@@ -1,0 +1,2 @@
+Compiling: compiler_tests/control_flow/for_multiple.c
+Compiled to: ./bin/output/compiler_tests_control_flow_for_multiple.s

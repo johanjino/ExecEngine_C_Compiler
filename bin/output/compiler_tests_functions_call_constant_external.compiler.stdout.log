@@ -1,0 +1,2 @@
+Compiling: compiler_tests/functions/call_constant_external.c
+Compiled to: ./bin/output/compiler_tests_functions_call_constant_external.s

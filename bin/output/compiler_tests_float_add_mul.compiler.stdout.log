@@ -1,0 +1,2 @@
+Compiling: compiler_tests/float/add_mul.c
+Compiled to: ./bin/output/compiler_tests_float_add_mul.s

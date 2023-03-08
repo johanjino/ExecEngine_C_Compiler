@@ -1,0 +1,2 @@
+Compiling: compiler_tests/local_var/constant_initialiser.c
+Compiled to: ./bin/output/compiler_tests_local_var_constant_initialiser.s

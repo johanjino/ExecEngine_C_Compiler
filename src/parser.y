@@ -39,9 +39,9 @@
 %type <string> IDENTIFIER STRING_LITERAL
 %type <number> CONSTANT
 
-%type <branch> BODY PARAMETER ARGUMENTS HEADS
-%type <node> DATA_TYPES STATEMENT BLOCK EXPR TERM UNARY FACTOR
-%type <node> LINE DECLARATION IF_ELSE LOOP OUTPUT
+%type <branch> BODY PARAMETER ARGUMENTS HEADS SWITCH_BODY
+%type <node> DATA_TYPES STATEMENT BLOCK EXPR TERM UNARY FACTOR SWITCH_BLOCK
+%type <node> LINE DECLARATION IF_ELSE_SWITCH LOOP OUTPUT CASES
 %type <node> HEAD
 
 %start ROOT
@@ -93,12 +93,15 @@ BODY
 LINE
 	: STATEMENT	';'		{$$ = $1;}
 	| DECLARATION ';'	{$$ = $1;}
-	| IF_ELSE			{$$ = $1;}
+	| IF_ELSE_SWITCH	{$$ = $1;}
 	| LOOP				{$$ = $1;}
 
+
 STATEMENT
-	: RETURN EXPR			{$$ = new Return($2);}
-	| RETURN				{$$ = new Return(NULL);}
+	: RETURN EXPR			{ $$ = new Return($2);}
+	| RETURN				{ $$ = new Return(NULL);}
+	| CONTINUE 	 			{ $$ = new Continue();}
+	| BREAK 	 			{ $$ = new Break();}
 
 DECLARATION
 	: IDENTIFIER '=' EXPR				{$$ = new Declaration(NULL,(new Variable(*$1)),$3);} //temporary need to change
@@ -173,14 +176,25 @@ ARGUMENTS
 
 
 
-//IF ELSE BLOCKS
+//IF ELSE SWITCH BLOCKS
 
-IF_ELSE
+IF_ELSE_SWITCH
 	: IF '(' EXPR ')' BLOCK				{$$ = new ifelse($3,$5,NULL);}
 	| IF '(' EXPR ')' BLOCK ELSE BLOCK	{$$ = new ifelse($3,$5,$7);}
 	| EXPR '?' BLOCK ':' BLOCK			{$$ = new ifelse($1, $3, $5);}
-	//switch statements
+	| SWITCH '(' EXPR ')' SWITCH_BLOCK 		{$$ = new switch_statement($3, $5); }
 
+CASES
+	: CASE EXPR ':' BODY 			{ $$ = new case_statement($2, $4); }
+	| DEFAULT ':' BODY 				{ $$ = new default_statement($3); }
+
+SWITCH_BLOCK
+    : '{' SWITCH_BODY '}'           {$$ = new Block($2);}
+
+
+SWITCH_BODY
+	: CASES	SWITCH_BODY			    {$$ = concat_list($1,$2);}
+	| CASES							{$$ = init_list($1);}
 
 
 

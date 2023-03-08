@@ -1,0 +1,2 @@
+Compiling: compiler_tests/misc/switch1.c
+Compiled to: ./bin/output/compiler_tests_misc_switch1.s

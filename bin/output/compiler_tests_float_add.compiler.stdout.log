@@ -1,0 +1,2 @@
+Compiling: compiler_tests/float/add.c
+Compiled to: ./bin/output/compiler_tests_float_add.s

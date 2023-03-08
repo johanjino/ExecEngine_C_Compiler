@@ -1,5 +1,5 @@
-#ifndef ast_shift.hpp
-#define ast_shift.hpp
+#ifndef ast_shift_hpp
+#define ast_shift_hpp
 
 #include "ast_operator.hpp"
 

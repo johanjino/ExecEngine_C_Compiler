@@ -1,0 +1,2 @@
+Compiling: compiler_tests/control_flow/for_zero_v1.c
+Compiled to: ./bin/output/compiler_tests_control_flow_for_zero_v1.s

@@ -1,5 +1,5 @@
-#ifndef ast_bitwise.hpp
-#define ast_bitwise.hpp
+#ifndef ast_bitwise_hpp
+#define ast_bitwise_hpp
 
 #include "../ast_node.hpp"
 #include "ast_operator.hpp"
@@ -32,7 +32,7 @@ class XorBitwiseOperator: public Operator{
         XorBitwiseOperator(NodePtr _left, NodePtr _right)
             : Operator(_left, _right)
         {}
-        
+
 };
 
 

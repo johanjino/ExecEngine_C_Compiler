@@ -1,0 +1,2 @@
+Compiling: compiler_tests/local_var/dual_var.c
+Compiled to: ./bin/output/compiler_tests_local_var_dual_var.s

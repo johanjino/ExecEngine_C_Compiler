@@ -1,0 +1,2 @@
+Compiling: compiler_tests/integer/equal.c
+Compiled to: ./bin/output/compiler_tests_integer_equal.s

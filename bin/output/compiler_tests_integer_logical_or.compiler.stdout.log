@@ -1,0 +1,2 @@
+Compiling: compiler_tests/integer/logical_or.c
+Compiled to: ./bin/output/compiler_tests_integer_logical_or.s

@@ -1,0 +1,2 @@
+Compiling: compiler_tests/float/mul_double.c
+Compiled to: ./bin/output/compiler_tests_float_mul_double.s

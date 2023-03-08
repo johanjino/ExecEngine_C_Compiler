@@ -1,0 +1,2 @@
+Compiling: compiler_tests/control_flow/if_else_true.c
+Compiled to: ./bin/output/compiler_tests_control_flow_if_else_true.s

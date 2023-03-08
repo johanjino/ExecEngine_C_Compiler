@@ -49,4 +49,24 @@ class Return : public Node {
         }
 };
 
+class Continue : public Node {
+    public:
+        Continue()
+        {}
+        virtual void print(std::ostream &dst, int span) const override{
+            dst<<std::setw(span*4)<<"continue ";
+            dst<<std::endl;
+        }
+};
+
+class Break : public Node {
+    public:
+        Break()
+        {}
+        virtual void print(std::ostream &dst, int span) const override{
+            dst<<std::setw(span*4)<<"break ";
+            dst<<std::endl;
+        }
+};
+
 #endif

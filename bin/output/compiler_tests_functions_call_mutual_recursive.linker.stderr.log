@@ -1,0 +1,6 @@
+/opt/riscv/bin/../lib/gcc/riscv64-unknown-elf/12.2.0/../../../../riscv64-unknown-elf/bin/ld: /tmp/ccW7ECKH.o: in function `.L2':
+call_mutual_recursive_driver.c:(.text+0x34): undefined reference to `r1'
+/opt/riscv/bin/../lib/gcc/riscv64-unknown-elf/12.2.0/../../../../riscv64-unknown-elf/bin/ld: call_mutual_recursive_driver.c:(.text+0x4c): undefined reference to `r1'
+/opt/riscv/bin/../lib/gcc/riscv64-unknown-elf/12.2.0/../../../../riscv64-unknown-elf/bin/ld: /tmp/ccW7ECKH.o: in function `main':
+call_mutual_recursive_driver.c:(.text+0x88): undefined reference to `r1'
+collect2: error: ld returned 1 exit status

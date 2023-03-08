@@ -1,0 +1,2 @@
+Compiling: compiler_tests/default/test_ADD0.c
+Compiled to: ./bin/output/compiler_tests_default_test_ADD0.s

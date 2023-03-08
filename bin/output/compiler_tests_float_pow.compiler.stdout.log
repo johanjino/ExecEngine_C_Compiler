@@ -1,0 +1,2 @@
+Compiling: compiler_tests/float/pow.c
+Compiled to: ./bin/output/compiler_tests_float_pow.s

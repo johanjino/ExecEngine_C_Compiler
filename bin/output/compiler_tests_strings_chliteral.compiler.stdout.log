@@ -1,0 +1,2 @@
+Compiling: compiler_tests/strings/chliteral.c
+Compiled to: ./bin/output/compiler_tests_strings_chliteral.s

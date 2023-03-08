@@ -1,0 +1,2 @@
+Compiling: compiler_tests/integer/bitwise_xor.c
+Compiled to: ./bin/output/compiler_tests_integer_bitwise_xor.s

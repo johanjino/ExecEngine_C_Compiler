@@ -1,0 +1,2 @@
+Compiling: compiler_tests/integer/add.c
+Compiled to: ./bin/output/compiler_tests_integer_add.s
