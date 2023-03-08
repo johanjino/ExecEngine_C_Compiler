@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Author : Johan Jino (@johanjino)
+# Year   : 2023
+
 # Initialize counters
 non_empty_count=0
 total_count=0
