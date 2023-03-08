@@ -1,2 +1,0 @@
-Compiling: compiler_tests/local_var/expression_initialiser.c
-Compiled to: ./bin/output/compiler_tests_local_var_expression_initialiser.s

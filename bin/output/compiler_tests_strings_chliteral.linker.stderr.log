@@ -1,3 +1,0 @@
-/opt/riscv/bin/../lib/gcc/riscv64-unknown-elf/12.2.0/../../../../riscv64-unknown-elf/bin/ld: /tmp/cc4KYarv.o: in function `main':
-chliteral_driver.c:(.text+0x10): undefined reference to `g'
-collect2: error: ld returned 1 exit status

@@ -1,3 +1,0 @@
-/opt/riscv/bin/../lib/gcc/riscv64-unknown-elf/12.2.0/../../../../riscv64-unknown-elf/bin/ld: /tmp/cccaZbvW.o: in function `main':
-test_LOCAL_driver.c:(.text+0x10): undefined reference to `ffff'
-collect2: error: ld returned 1 exit status

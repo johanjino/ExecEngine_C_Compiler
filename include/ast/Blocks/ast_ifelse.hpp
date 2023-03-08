@@ -30,10 +30,7 @@ class ifelse : public Node {
             dst<<" )"<<std::endl;
             if_block->print(dst,span+1);
             dst<<std::endl;
-            if (else_block != NULL){
-                dst<<std::setw(span*4)<<"else"<<std::endl;
-                else_block->print(dst,span+1);
-            }
+
         }
 
         virtual double evaluate(const std::map<std::string,double> &bindings) const override{

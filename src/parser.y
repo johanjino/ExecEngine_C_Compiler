@@ -67,7 +67,6 @@ HEADS
 	: HEADS HEAD		{$$ = concat_list($2,$1);}
 	| HEAD				{$$ = init_list($1);}
 
-
 //HEAD OF FUNCTIONS
 
 HEAD
@@ -104,11 +103,12 @@ STATEMENT
 	| BREAK 	 			{ $$ = new Break();}
 
 DECLARATION
-	: IDENTIFIER '=' EXPR				{$$ = new Declaration(NULL,(new Variable(*$1)),$3);} //temporary need to change
-	| DATA_TYPES IDENTIFIER				{$$ = new Declaration($1,(new Variable(*$2)),NULL);} //need to handle empty initialisations
-	| DATA_TYPES IDENTIFIER '=' EXPR	{$$ = new Declaration($1,(new Variable(*$2)),$4);} //temporary need to change
+	: IDENTIFIER '=' EXPR					{$$ = new Declaration(NULL,(new Variable(*$1)),$3);} //temporary need to change
+	| DATA_TYPES IDENTIFIER					{$$ = new Declaration($1,(new Variable(*$2)),NULL);} //need to handle empty initialisations
+	| DATA_TYPES IDENTIFIER '=' EXPR		{$$ = new Declaration($1,(new Variable(*$2)),$4);} //temporary need to change
+	| DATA_TYPES IDENTIFIER '[' EXPR ']'	{$$ = new Array_Declaration($1, (new Variable(*$2)), $4);}
 	| EXPR 		//for assignment operators
-	// More assignments to do
+
 
 
 
@@ -149,6 +149,9 @@ EXPR
 	| INC_OP EXPR 	 			{ $$ = new IncOperator_Pre($2); }
 	| EXPR DEC_OP				{ $$ = new DecOperator_Post($1); }
 	| DEC_OP EXPR 				{ $$ = new DecOperator_Pre($2); }
+	/* | IDENTIFIER '[' EXPR ']' ';'			{ $$ = new Array_Index((new Variable(*$1)), $3, NULL); }
+	| IDENTIFIER '[' EXPR ']' '=' EXPR ';'	{ $$ = new Array_Index((new Variable(*$1)), $3, $6); } */
+
 
 TERM
 	: UNARY             { $$ = $1; }

@@ -1,3 +1,0 @@
-/opt/riscv/bin/../lib/gcc/riscv64-unknown-elf/12.2.0/../../../../riscv64-unknown-elf/bin/ld: /tmp/ccCzbmbs.o: in function `main':
-multiply_driver.c:(.text+0x18): undefined reference to `multiply'
-collect2: error: ld returned 1 exit status

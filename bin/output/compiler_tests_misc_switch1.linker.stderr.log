@@ -1,4 +1,0 @@
-/opt/riscv/bin/../lib/gcc/riscv64-unknown-elf/12.2.0/../../../../riscv64-unknown-elf/bin/ld: /tmp/ccGfaDvD.o: in function `main':
-switch1_driver.c:(.text+0x18): undefined reference to `g'
-/opt/riscv/bin/../lib/gcc/riscv64-unknown-elf/12.2.0/../../../../riscv64-unknown-elf/bin/ld: switch1_driver.c:(.text+0x28): undefined reference to `g'
-collect2: error: ld returned 1 exit status

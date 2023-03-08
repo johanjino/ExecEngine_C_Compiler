@@ -1,2 +1,0 @@
-Compiling: compiler_tests/local_var/single_var.c
-Compiled to: ./bin/output/compiler_tests_local_var_single_var.s

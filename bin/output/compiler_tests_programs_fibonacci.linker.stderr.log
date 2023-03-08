@@ -1,3 +1,0 @@
-/opt/riscv/bin/../lib/gcc/riscv64-unknown-elf/12.2.0/../../../../riscv64-unknown-elf/bin/ld: /tmp/cc8vHp7L.o: in function `main':
-fibonacci_driver.c:(.text+0x14): undefined reference to `fib'
-collect2: error: ld returned 1 exit status
