@@ -20,6 +20,9 @@ class Node {
         virtual ~Node(){
         }
 
+        virtual std::string gettype() const{
+           return "NULL";
+        }
 
         virtual std::string getClass() const{
             std::cerr<< "getClass not defined here or Wrong usage"<<std::endl;

@@ -36,6 +36,47 @@ class ifelse : public Node {
             }
         }
 
+        virtual double evaluate(const std::map<std::string,double> &bindings) const override{
+            // If the binding does not exist, this will throw an error
+            //return next->evaluate(bindings);
+        }
+
+
+        virtual void riscv_asm(std::ostream &dst,
+            Helper &helper,
+            std::string destReg,
+            std::map<std::string, std::string> &bindings) const override{
+
+            //create labels
+            std::string end_of_ifelse = helper.createLabel("end_of_ifelse");
+            std::string else_part = helper.createLabel("else_block");
+
+            //evalute conditon
+            std::string condition_reg = helper.allocateReg();
+            con->riscv_asm(dst, helper, condition_reg, bindings);
+            dst<<"beq "<<condition_reg<<", zero"<<", "<<else_part<<std::endl; //could be made better. Make use of relational risc instructions
+
+            //if block
+            if (if_block!=NULL){
+                if_block->riscv_asm(dst,helper,destReg,bindings);
+            }
+            dst<<"beq zero, zero, "<<end_of_ifelse<<std::endl;
+
+            //else block
+            dst<<else_part<<":"<<std::endl;
+            if (else_block!=NULL){
+                else_block->riscv_asm(dst,helper,destReg,bindings);
+            }
+            dst<<"beq zero, zero, "<<end_of_ifelse<<std::endl;
+
+            //end of ifelse
+            dst<<end_of_ifelse<<":"<<std::endl;
+
+            //clear registers
+            dst<<"addi "<<condition_reg<<", zero, 0"<<std::endl;
+            helper.deallocateReg(std::stoi(condition_reg.erase(0,1)));
+
+        }
 };
 
 #endif

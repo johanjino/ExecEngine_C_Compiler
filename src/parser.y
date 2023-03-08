@@ -71,9 +71,9 @@ HEADS
 //HEAD OF FUNCTIONS
 
 HEAD
-	: DATA_TYPES IDENTIFIER '(' ')' ';'		{$$ = new FunctionDef($1,$2,NULL,NULL);}
+	: DATA_TYPES IDENTIFIER '(' ')' ';'					{$$ = new FunctionDef($1,$2,NULL,NULL);}
 	| DATA_TYPES IDENTIFIER '(' PARAMETER ')' ';'		{$$ = new FunctionDef($1,$2,$4,NULL);}
-	| DATA_TYPES IDENTIFIER '(' ')' BLOCK		{$$ = new FunctionDef($1,$2,NULL,$5);}
+	| DATA_TYPES IDENTIFIER '(' ')' BLOCK				{$$ = new FunctionDef($1,$2,NULL,$5);}
 	| DATA_TYPES IDENTIFIER '(' PARAMETER ')' BLOCK		{$$ = new FunctionDef($1,$2,$4,$6);}
 
 
@@ -84,6 +84,7 @@ PARAMETER
 
 BLOCK
 	: '{' BODY '}'			{$$ = new Block($2);}
+	| '{' '}'				{$$ = NULL;}
 
 BODY
 	: LINE BODY		{$$ = concat_list($1,$2);}

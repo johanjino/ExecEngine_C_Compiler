@@ -38,9 +38,42 @@ class forloop : public Node {
             dst<<std::endl;
         }
 
-        virtual double evaluate(const std::map<std::string,double> &bindings) const override{
-            // If the binding does not exist, this will throw an error
-            //return next->evaluate(bindings);
+        virtual void riscv_asm(std::ostream &dst,
+            Helper &helper,
+            std::string destReg,
+            std::map<std::string, std::string> &bindings) const override{
+
+            //create labels
+            std::string start_loop = helper.createLabel("start_for");
+            std::string end_loop = helper.createLabel("end_for");
+
+            //initialise condition
+            init_cont->riscv_asm(dst,helper,destReg,bindings);
+
+            //evalute conditon
+            std::string condition_reg = helper.allocateReg();
+            dst<<start_loop<<":"<<std::endl;
+            con->riscv_asm(dst, helper, condition_reg, bindings);
+            dst<<"beq "<<condition_reg<<", zero"<<", "<<end_loop<<std::endl; //could be made better. Make use of relational risc instructions
+
+            //loop block
+            if (for_block!=NULL){
+                for_block->riscv_asm(dst,helper,destReg,bindings);
+            }
+            update_cont->riscv_asm(dst,helper,destReg,bindings);
+            dst<<"beq zero, zero, "<<start_loop<<std::endl;
+
+            //end loop
+            dst<<end_loop<<":"<<std::endl;
+
+            //clear registers
+            if (init_cont->gettype() != "NULL"){               // if control was intialised within loop construct -> need to earse it
+                dst<<"addi "<<bindings[init_cont->getId()]<<", zero, 0"<<std::endl;
+                bindings.erase(init_cont->getId());
+            }
+            dst<<"addi "<<condition_reg<<", zero, 0"<<std::endl;
+            helper.deallocateReg(std::stoi(condition_reg.erase(0,1)));
+
         }
 };
 

@@ -43,6 +43,8 @@ class Return : public Node {
                 dst<<"addi "<<reg<<", zero, 0"<<std::endl;
                 helper.deallocateReg(std::stoi(reg.erase(0,1)));
             }
+            dst<<"mv a0, "<<destReg<<std::endl;
+            dst<<"ret"<<std::endl;
 
         }
 };

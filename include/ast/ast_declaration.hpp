@@ -20,10 +20,10 @@ class Declaration : public Node{
 
         virtual const char *getOpcode(){return "=";}
 
-        NodePtr gettype() const
-        { return type; }
+        std::string gettype() const override
+        { return (type!=NULL) ? type->gettype() : "NULL"; }
 
-        std::string getid() const
+        std::string getId() const override
         { return id->getId(); }
 
         NodePtr getvalue() const
@@ -51,15 +51,18 @@ class Declaration : public Node{
                     bindings[id->getId()] = reg;
                     if (value!=NULL){
                         value->riscv_asm(dst, helper, reg, bindings);
-                        dst<<"mv "<<destReg<<", "<<reg<<std::endl;
+                        if (destReg != "a0"){
+                            dst<<"mv "<<destReg<<", "<<reg<<std::endl;
+                        }
                     }
                 }
                 else{
                     if (bindings.count(id->getId())){
                         std::string reg = bindings[id->getId()];
                         value->riscv_asm(dst, helper, reg, bindings);
-                        dst<<"mv "<<destReg<<", "<<reg<<std::endl;
-
+                        if (destReg != "a0"){
+                            dst<<"mv "<<destReg<<", "<<reg<<std::endl;
+                        }
                     }
                     else{
                         std::cerr<< "Trying to access variable that does not exist"<<std::endl;

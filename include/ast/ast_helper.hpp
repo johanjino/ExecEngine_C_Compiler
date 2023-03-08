@@ -44,6 +44,7 @@ class Helper {
         //Creates Labels for function jumps
         std::string createLabel(std::string name){
             static int label_count = 0;
+            label_count+=1;
             return "_"+name+"_"+std::to_string(label_count);
         }
 
