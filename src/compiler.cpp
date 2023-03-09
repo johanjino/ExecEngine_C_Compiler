@@ -41,8 +41,6 @@ void compile(std::ostream &w, std::string file)
     std::map<std::string, std::string> bindings = helper.bindings;
     program->riscv_asm(w, helper, "", bindings);
 
-
-
 }
 
 // TODO: uncomment the below if you're using Flex/Bison.

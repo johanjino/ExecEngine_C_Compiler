@@ -74,6 +74,7 @@ HEAD
 	| DATA_TYPES IDENTIFIER '(' PARAMETER ')' ';'		{$$ = new FunctionDef($1,$2,$4,NULL);}
 	| DATA_TYPES IDENTIFIER '(' ')' BLOCK				{$$ = new FunctionDef($1,$2,NULL,$5);}
 	| DATA_TYPES IDENTIFIER '(' PARAMETER ')' BLOCK		{$$ = new FunctionDef($1,$2,$4,$6);}
+	| DECLARATION ';'									{$$ = $1;}
 
 
 PARAMETER
@@ -149,8 +150,8 @@ EXPR
 	| INC_OP EXPR 	 			{ $$ = new IncOperator_Pre($2); }
 	| EXPR DEC_OP				{ $$ = new DecOperator_Post($1); }
 	| DEC_OP EXPR 				{ $$ = new DecOperator_Pre($2); }
-	/* | IDENTIFIER '[' EXPR ']' ';'			{ $$ = new Array_Index((new Variable(*$1)), $3, NULL); }
-	| IDENTIFIER '[' EXPR ']' '=' EXPR ';'	{ $$ = new Array_Index((new Variable(*$1)), $3, $6); } */
+	| IDENTIFIER '[' EXPR ']'    		{ $$ = new Array_Index((new Variable(*$1)), $3, NULL); }
+	| IDENTIFIER '[' EXPR ']' '=' EXPR 	{ $$ = new Array_Index((new Variable(*$1)), $3, $6); }
 
 
 TERM
