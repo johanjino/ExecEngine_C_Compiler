@@ -51,18 +51,12 @@ class Declaration : public Node{
                     bindings[id->getId()] = reg;
                     if (value!=NULL){
                         value->riscv_asm(dst, helper, reg, bindings);
-                        if (destReg != "a0"){
-                            dst<<"mv "<<destReg<<", "<<reg<<std::endl;
-                        }
                     }
                 }
                 else{
                     if (bindings.count(id->getId())){
                         std::string reg = bindings[id->getId()];
                         value->riscv_asm(dst, helper, reg, bindings);
-                        if (destReg != "a0"){
-                            dst<<"mv "<<destReg<<", "<<reg<<std::endl;
-                        }
                     }
                     else{
                         std::cerr<< "Trying to access variable that does not exist"<<std::endl;

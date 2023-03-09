@@ -37,15 +37,9 @@ class Return : public Node {
             std::string destReg,
             std::map<std::string, std::string> &bindings)const override{
             if (next!=NULL){
-                std::string reg = helper.allocateReg();
-                next->riscv_asm(dst, helper, reg, bindings);
-                dst<<"mv "<<destReg<<", "<<reg<<std::endl;
-                dst<<"addi "<<reg<<", zero, 0"<<std::endl;
-                helper.deallocateReg(std::stoi(reg.erase(0,1)));
+                next->riscv_asm(dst, helper, destReg, bindings);
             }
-            dst<<"mv a0, "<<destReg<<std::endl;
-            dst<<"ret"<<std::endl;
-
+            dst<<"jr ra"<<std::endl;
         }
 };
 

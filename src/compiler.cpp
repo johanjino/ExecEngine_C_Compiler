@@ -36,7 +36,6 @@ void compile(std::ostream &w, std::string file)
 
 //CODE CHECK
     w << ".text" << std::endl;
-    w << ".globl f" << std::endl;
     w << std::endl;
     Helper helper = Helper();
     std::map<std::string, std::string> bindings = helper.bindings;

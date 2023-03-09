@@ -49,17 +49,27 @@ class FunctionDef : public Node {
             Helper &helper,
             std::string destReg,
             std::map<std::string, std::string> &bindings)const override{
-            dst<<name<<":"<<std::endl;
-            if (params!=NULL){
-                for (int i = 0; i<params->size(); i++) {
-                    std::string param_reg = "a" + std::to_string(i+1);
-                    bindings[(*params)[i]->getId()] = param_reg;
-                }
-            }
             if (next!=NULL){
-                next->riscv_asm(dst, helper, destReg, bindings);
-            }
+                dst<<".globl "<<name<<std::endl;
+                dst<<std::endl;
+                dst<<name<<":"<<std::endl;
+                if (params!=NULL){
+                    for (int i = 0; i<params->size(); i++) {
+                        std::string param_reg = "a" + std::to_string(i);
+                        bindings[(*params)[i]->getId()] = param_reg;
+                    }
+                }
 
+                next->riscv_asm(dst, helper, destReg, bindings);
+
+                if (params!=NULL){
+                    for (int i = 0; i<params->size(); i++) {
+                            std::string param_reg = "a" + std::to_string(i);
+                            bindings.erase((*params)[i]->getId());
+                        }
+                }
+                dst<<"jr ra"<<std::endl;
+            }
         }
 
 };
@@ -91,6 +101,23 @@ class FunctionCall : public Node {
         virtual double evaluate(const std::map<std::string,double> &bindings) const override{
             // If the binding does not exist, this will throw an error
             //return next->evaluate(bindings);
+        }
+
+        virtual void riscv_asm(std::ostream &dst,
+            Helper &helper,
+            std::string destReg,
+            std::map<std::string, std::string> &bindings)const override{
+            if (args!=NULL){
+                for (int i = 0; i<args->size(); i++) {
+                        std::string arg_reg = "a" + std::to_string(i);
+                        (*args)[i]->riscv_asm(dst, helper, arg_reg, bindings);
+                    }
+            }
+
+            dst<<"mv s0, ra"<<std::endl;
+            dst<<"jal "<<name<<std::endl;
+            dst<<"mv ra, s0"<<std::endl;
+
         }
 };
 

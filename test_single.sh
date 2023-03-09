@@ -5,7 +5,7 @@
 
 
 # USEAGE:
-# ./test_single compiler_tests/{file_name_without_".c"}
+# ./test_single {folder_name}/{file_name_without_".c"}
 
 
 
