@@ -93,6 +93,7 @@ BODY
 LINE
 	: STATEMENT	';'		{$$ = $1;}
 	| DECLARATION ';'	{$$ = $1;}
+	| BLOCK				{$$ = $1;}
 	| IF_ELSE_SWITCH	{$$ = $1;}
 	| LOOP				{$$ = $1;}
 
