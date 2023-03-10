@@ -119,7 +119,8 @@ class Number : public Node {
             }
             else if(datatype == "long double"){
                 long double value = convert<long double>(value);
-                dst<<"fli "<<"f"<<destReg<<", "<<(value)<<std::endl;      //Just seems too hard. Dont think i am capable of doing this
+                //dst<<"fcvt.s.w "<<"f"<<destReg<<", "<<destReg<<std::endl;
+                //Just seems too hard. Dont think i am capable of doing this
             }
             else {
                 std::cerr<<datatype<<": is an invalid Data Type for a number!"<<std::endl;
