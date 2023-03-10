@@ -33,7 +33,7 @@ class Node {
             return "getId not defined here or Wrong usage";
         }
 
-        virtual double getValue() const{
+        virtual long double getValue() const{
             std::cerr<< "getValue not defined here or Wrong usage"<<std::endl;
             exit(1);
         }
@@ -50,7 +50,8 @@ class Node {
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings) const{
+            std::map<std::string, std::string> &bindings,
+            std::string datatype = "None") const{
                 dst<<"NOT IMPLEMENTED YET or ERROR ? HOW DID IT COME HERE?"<<std::endl;
         }
 };

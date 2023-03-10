@@ -45,7 +45,8 @@ class Declaration : public Node{
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings)const override{
+            std::map<std::string, std::string> &bindings,
+            std::string datatype = "None")const override{
                 if (type!=NULL){
                     std::string reg = helper.allocateReg();
                     if (value!=NULL){

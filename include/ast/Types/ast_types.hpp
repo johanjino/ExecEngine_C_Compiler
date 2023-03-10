@@ -9,13 +9,17 @@
 
 enum _Types{
     _int,
+    _unsigned_int,
     _long,
+    _unsigned_long,
 	_char,
+    _unsigned_char,
+    _signed_char,
 	_short,
-	_signed,
-	_unsigned,
+    _unsigned_short,
 	_float,
 	_double,
+    _long_double,
 	_void
 };
 
@@ -30,24 +34,32 @@ class Type : public Node {
             : type(_type)
         {}
 
-        virtual std::string getType() const{
+        virtual std::string getType() const override{
             switch (type){
                 case (_int):
                     return "int";
+                case (_unsigned_int):
+                    return "unsigned int";
                 case (_long):
                     return "long";
+                case (_unsigned_long):
+                    return "unsigned long";
                 case (_char):
                     return "char";
+                case (_unsigned_char):
+                    return "unsigned char";
+                case (_signed_char):
+                    return "signed char";
                 case (_short):
                     return "short";
-                case (_signed):
-                    return "signed";
-                case (_unsigned):
-                    return "unsigned";
+                case (_unsigned_short):
+                    return "unsigned short";
                 case (_float):
                     return "float";
                 case (_double):
                     return "double";
+                case (_long_double):
+                    return "long double";
                 case (_void):
                     return "void";
                 default:

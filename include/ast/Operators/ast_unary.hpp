@@ -22,6 +22,10 @@ class Unary : public Node{
         NodePtr getExpr() const
         { return expr; }
 
+        virtual std::string getType() const override{
+            return expr->getType();
+        }
+
         virtual void print(std::ostream &dst, int span) const override
         {
             dst << "( ";
@@ -44,7 +48,8 @@ class NegOperator : public Unary{
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings)const override{
+            std::map<std::string, std::string> &bindings,
+            std::string datatype = "None")const override{
 
                 //Calculate expr
                 expr->riscv_asm(dst, helper, destReg, bindings);

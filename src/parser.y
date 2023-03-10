@@ -229,15 +229,41 @@ LOOP
 //DATA TYPES
 
 DATA_TYPES
-	: INT		{$$ = new Type(_Types::_int);}
-	| LONG		{$$ = new Type(_Types::_long);}
-	| CHAR		{$$ = new Type(_Types::_char);}
-	| SHORT		{$$ = new Type(_Types::_short);}
-	| SIGNED	{$$ = new Type(_Types::_signed);}
-	| UNSIGNED	{$$ = new Type(_Types::_unsigned);}
-	| FLOAT		{$$ = new Type(_Types::_float);}
-	| DOUBLE	{$$ = new Type(_Types::_double);}
-	| VOID 		{$$ = new Type(_Types::_void);}
+	: INT				{$$ = new Type(_Types::_int);}
+	| SIGNED INT		{$$ = new Type(_Types::_int);}
+	| UNSIGNED INT		{$$ = new Type(_Types::_unsigned_int);}
+	| INT SIGNED		{$$ = new Type(_Types::_int);}
+	| INT UNSIGNED		{$$ = new Type(_Types::_unsigned_int);}
+
+
+	| LONG				{$$ = new Type(_Types::_long);}
+	| SIGNED LONG		{$$ = new Type(_Types::_long);}
+	| UNSIGNED LONG		{$$ = new Type(_Types::_unsigned_long);}
+	| LONG SIGNED		{$$ = new Type(_Types::_long);}
+	| LONG UNSIGNED		{$$ = new Type(_Types::_unsigned_long);}
+
+	| CHAR				{$$ = new Type(_Types::_char);}
+	| SIGNED CHAR		{$$ = new Type(_Types::_signed_char);}
+	| UNSIGNED CHAR		{$$ = new Type(_Types::_unsigned_char);}
+	| CHAR SIGNED		{$$ = new Type(_Types::_signed_char);}
+	| CHAR UNSIGNED		{$$ = new Type(_Types::_unsigned_char);}
+
+	| SHORT				{$$ = new Type(_Types::_short);}
+	| SIGNED SHORT		{$$ = new Type(_Types::_short);}
+	| UNSIGNED SHORT	{$$ = new Type(_Types::_unsigned_short);}
+	| SHORT SIGNED		{$$ = new Type(_Types::_short);}
+	| SHORT UNSIGNED	{$$ = new Type(_Types::_unsigned_short);}
+
+	| SIGNED			{$$ = new Type(_Types::_int);}
+	| UNSIGNED			{$$ = new Type(_Types::_unsigned_int);}
+
+	| FLOAT				{$$ = new Type(_Types::_float);}
+	| DOUBLE			{$$ = new Type(_Types::_double);}
+
+	| LONG DOUBLE 		{$$ = new Type(_Types::_long_double);}
+	| DOUBLE LONG 		{$$ = new Type(_Types::_long_double);}
+
+	| VOID 				{$$ = new Type(_Types::_void);}
 
 
 %%

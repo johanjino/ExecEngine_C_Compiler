@@ -13,25 +13,21 @@ class SizeOf : public Node {
         virtual int getSize() const{
             std::string returned_type = expr->getType();
 
-            if (returned_type == "int"){
+            if (returned_type == "int" || returned_type == "unsigned int"){
                 return 4;
             }
-            else if(returned_type == "long"){
+            else if(returned_type == "long" || returned_type == "unsigned long"){
                 return 8;
             }
-            else if(returned_type == "char"){
+            else if(returned_type == "char" || returned_type == "unsigned char" || returned_type == "signed char"){
                 return 1;
             }
 
-            else if(returned_type == "short"){
+            else if(returned_type == "short" || returned_type == "unsigned short"){
                 return 2;
             }
 
-            else if(returned_type == "signed"){
-                return 4;
-            }
-
-            else if(returned_type == "unsigned"){
+            else if(returned_type == "signed" || returned_type == "unsigned"){
                 return 4;
             }
 
@@ -40,7 +36,11 @@ class SizeOf : public Node {
             }
 
             else if(returned_type == "double"){
-                return 4;
+                return 8;
+            }
+
+            else if(returned_type == "long double"){
+                return 10;
             }
 
             else if(returned_type == "void"){

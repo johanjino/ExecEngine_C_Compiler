@@ -48,7 +48,8 @@ class FunctionDef : public Node {
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings)const override{
+            std::map<std::string, std::string> &bindings,
+            std::string datatype = "None")const override{
             if (next!=NULL){
 
                 dst<<".globl "<<name<<std::endl;
@@ -117,7 +118,8 @@ class FunctionCall : public Node {
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings)const override{
+            std::map<std::string, std::string> &bindings,
+            std::string datatype = "None")const override{
             if (args!=NULL){
                 for (int i = 0; i<args->size(); i++) {
                         std::string arg_reg = "a" + std::to_string(i);

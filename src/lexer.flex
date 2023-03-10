@@ -98,12 +98,12 @@ IS			(u|U|l|L)*
 
 {L}({L}|{D})*				{ yylval.string=new std::string(yytext); return IDENTIFIER; }
 
-0[xX]{H}+{IS}?				{ yylval.number=(int)strtol(yytext, NULL, 0); return(CONSTANT); } //
-0{D}+{IS}?					{ yylval.number=(int)strtol(yytext, NULL, 0); return(CONSTANT); } //
-{D}+{IS}?					{ yylval.number=(int)strtol(yytext, NULL, 0); return(CONSTANT); } //need to fix data types everywhere
-{D}+{E}{FS}?				{ yylval.number=(int)strtol(yytext, NULL, 0); return(CONSTANT); } //
-{D}*"."{D}+({E})?{FS}?		{ yylval.number=(int)strtol(yytext, NULL, 0); return(CONSTANT); } //
-{D}+"."{D}*({E})?{FS}?		{ yylval.number=(int)strtol(yytext, NULL, 0); return(CONSTANT); } //
+0[xX]{H}+{IS}?				{ yylval.number=std::stold(yytext); return(CONSTANT); } //
+0{D}+{IS}?					{ yylval.number=std::stold(yytext); return(CONSTANT); } //
+{D}+{IS}?					{ yylval.number=std::stold(yytext); return(CONSTANT); } //need to fix data types everywhere
+{D}+{E}{FS}?				{ yylval.number=std::stold(yytext); return(CONSTANT); } //
+{D}*"."{D}+({E})?{FS}?		{ yylval.number=std::stold(yytext); return(CONSTANT); } //
+{D}+"."{D}*({E})?{FS}?		{ yylval.number=std::stold(yytext); return(CONSTANT); } //
 
 L?'(\\.|[^\\'])+'			{ yylval.string=new std::string(yytext); return CHAR_LITERAL; }
 L?\"(\\.|[^\\"])*\"	 		{ yylval.string=new std::string(yytext); return STRING_LITERAL; }

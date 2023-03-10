@@ -25,7 +25,8 @@ class Variable : public Node {
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings)const override{
+            std::map<std::string, std::string> &bindings,
+            std::string datatype = "None")const override{
 
             if (bindings.count(id)){
                 dst<<"lw "<<destReg<<", "<<bindings[id]<<"(sp)"<<std::endl;
@@ -50,9 +51,9 @@ class Variable : public Node {
 
 class Number : public Node {
     private:
-        int value;
+        long double value;
     public:
-        Number(int _value)
+        Number(long double _value)
             : value(_value)
         {}
 
@@ -60,7 +61,7 @@ class Number : public Node {
             return "Number";
         }
 
-        double getValue() const override{
+        long double getValue() const override{
             return value;
         }
 
@@ -71,8 +72,9 @@ class Number : public Node {
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings)const override{
-            dst<<"li "<<destReg<<", "<<std::to_string(value)<<std::endl;
+            std::map<std::string, std::string> &bindings,
+            std::string datatype = "None")const override{
+            dst<<"li "<<destReg<<", "<<std::to_string((int)(value))<<std::endl;
         }
 
         virtual double evaluate(const std::map<std::string,double> &bindings) const override{

@@ -25,7 +25,8 @@ class AddOperator: public Operator{
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings)const override{
+            std::map<std::string, std::string> &bindings,
+            std::string datatype = "None")const override{
 
                 //Calculate Left
                 std::string reg_left = helper.allocateReg();
@@ -55,6 +56,7 @@ class SubOperator : public Operator{
             : Operator(_left, _right)
         {}
 
+
         virtual double evaluate(
             const std::map<std::string,double> &bindings
         ) const override
@@ -68,7 +70,8 @@ class SubOperator : public Operator{
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings)const override{
+            std::map<std::string, std::string> &bindings,
+            std::string datatype = "None")const override{
 
                 //Calculate Left
                 std::string reg_left = helper.allocateReg();
@@ -111,7 +114,8 @@ class MulOperator : public Operator{
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings)const override{
+            std::map<std::string, std::string> &bindings,
+            std::string datatype = "None")const override{
 
                 //Calculate Left
                 std::string reg_left = helper.allocateReg();
@@ -153,7 +157,8 @@ class DivOperator : public Operator {
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings)const override{
+            std::map<std::string, std::string> &bindings,
+            std::string datatype = "None")const override{
 
                 //Calculate Left
                 std::string reg_left = helper.allocateReg();

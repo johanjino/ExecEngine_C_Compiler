@@ -27,7 +27,8 @@ class GthanOperator: public Operator{
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings)const override{
+            std::map<std::string, std::string> &bindings,
+            std::string datatype = "None")const override{
 
                 //Calculate Left
                 std::string reg_left = helper.allocateReg();
@@ -70,7 +71,8 @@ class LthanOperator: public Operator{
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings)const override{
+            std::map<std::string, std::string> &bindings,
+            std::string datatype = "None")const override{
 
                 //Calculate Left
                 std::string reg_left = helper.allocateReg();
@@ -113,7 +115,8 @@ class GthanEqOperator: public Operator{
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings)const override{
+            std::map<std::string, std::string> &bindings,
+            std::string datatype = "None")const override{
 
                 //Calculate Left
                 std::string reg_left = helper.allocateReg();
@@ -159,7 +162,8 @@ class LthanEqOperator: public Operator{
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings)const override{
+            std::map<std::string, std::string> &bindings,
+            std::string datatype = "None")const override{
 
                 //Calculate Left
                 std::string reg_left = helper.allocateReg();
@@ -206,7 +210,8 @@ class EqOperator: public Operator{
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings)const override{
+            std::map<std::string, std::string> &bindings,
+            std::string datatype = "None")const override{
 
                 //Calculate Left
                 std::string reg_left = helper.allocateReg();
@@ -251,7 +256,8 @@ class NEqOperator: public Operator{
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings)const override{
+            std::map<std::string, std::string> &bindings,
+            std::string datatype = "None")const override{
 
                 //Calculate Left
                 std::string reg_left = helper.allocateReg();
