@@ -26,8 +26,8 @@ class Struct_Union_Declaration : public Node {
 
         virtual const char *getOpcode(){return "=";}
 
-        std::string gettype() const override
-        { return (id!=NULL) ? id->gettype() : "NULL"; }
+        std::string getType() const override
+        { return (id!=NULL) ? id->getType() : "NULL"; }
 
         std::string getId() const override
         { return id->getId(); }
@@ -68,8 +68,8 @@ class Struct_Union_Access : public Node {
 
         virtual const char *getOpcode(){return "=";}
 
-        std::string gettype() const override
-        { return (type!=NULL) ? type->gettype() : "NULL"; }
+        std::string getType() const override
+        { return (type!=NULL) ? type->getType() : "NULL"; }
 
         std::string getId() const override
         { return id->getId(); }

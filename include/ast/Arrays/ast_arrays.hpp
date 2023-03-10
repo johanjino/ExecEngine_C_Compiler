@@ -24,13 +24,13 @@ class Array_Declaration : public Node {
                 id(_id),
                 size(_size)
         {}
-        
+
 
 
         virtual const char *getOpcode(){return "=";}
 
-        std::string gettype() const override
-        { return (type!=NULL) ? type->gettype() : "NULL"; }
+        std::string getType() const override
+        { return (type!=NULL) ? type->getType() : "NULL"; }
 
         std::string getId() const override
         { return id->getId(); }

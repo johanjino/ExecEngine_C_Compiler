@@ -67,7 +67,7 @@ class forloop : public Node {
             dst<<end_loop<<":"<<std::endl;
 
             //clear registers
-            if (init_cont->gettype() != "NULL"){               // if control was intialised within loop construct -> need to earse it
+            if (init_cont->getType() != "NULL"){               // if control was intialised within loop construct -> need to earse it
                 dst<<"addi "<<bindings[init_cont->getId()]<<", zero, 0"<<std::endl;
                 bindings.erase(init_cont->getId());
             }

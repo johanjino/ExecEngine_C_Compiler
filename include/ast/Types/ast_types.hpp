@@ -30,7 +30,7 @@ class Type : public Node {
             : type(_type)
         {}
 
-        const std::string getType() const{
+        virtual std::string getType() const{
             switch (type){
                 case (_int):
                     return "int";

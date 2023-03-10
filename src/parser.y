@@ -167,6 +167,7 @@ FACTOR
     | IDENTIFIER 					{$$ = new Variable( *$1 );}
 	| IDENTIFIER '(' ')'			{$$ = new FunctionCall($1,NULL);}
 	| IDENTIFIER '(' ARGUMENTS ')'	{$$ = new FunctionCall($1,$3);}
+	| SIZEOF '(' EXPR ')'			{$$ = new SizeOf($3);}
 
 ARGUMENTS
 	: ARGUMENTS ',' EXPR			{$$ = concat_list($3,$1);}

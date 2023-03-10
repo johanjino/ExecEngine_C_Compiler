@@ -20,7 +20,7 @@ class Node {
         virtual ~Node(){
         }
 
-        virtual std::string gettype() const{
+        virtual std::string getType() const{
            return "NULL";
         }
 
