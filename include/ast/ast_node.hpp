@@ -30,8 +30,7 @@ class Node {
         }
 
         virtual std::string getId() const{
-            std::cerr<< "getId not defined here or Wrong usage"<<std::endl;
-            exit(1);
+            return "getId not defined here or Wrong usage";
         }
 
         virtual double getValue() const{

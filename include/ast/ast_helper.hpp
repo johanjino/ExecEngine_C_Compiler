@@ -119,22 +119,6 @@ class Helper {
 
 
 
-        //New Memory Scope and New Bindings
-        std::map<std::string, std::string> newScope(std::ostream &dst){
-            std::map<std::string, std::string> bindings_new;
-            Scopes.push_back(bindings);
-            mem_scope.push_back(last_mem_allocated);
-            current_scope += 1;
-            bindings = bindings_new;
-            last_mem_allocated = default_mem_allocation;
-            function_end = createLabel("function_end");
-
-
-            //sp allocate
-            dst<<"addi sp, sp, "<<"-"<<default_mem_allocation<<std::endl;   //we assume that the tree has stored the value of ra
-
-            return bindings;
-        }
 
 
         // To save all temporary register in current scope
@@ -156,9 +140,28 @@ class Helper {
         }
 
 
+        //New Memory Scope and New Bindings
+        std::map<std::string, std::string> newScope(std::ostream &dst, bool override_return = true){
+            std::map<std::string, std::string> bindings_new;
+            Scopes.push_back(bindings);
+            mem_scope.push_back(last_mem_allocated);
+            current_scope += 1;
+            bindings = bindings_new;
+            last_mem_allocated = default_mem_allocation;
+            if (override_return){
+                function_end = createLabel("function_end");
+            }
+
+
+            //sp allocate
+            dst<<"addi sp, sp, "<<"-"<<default_mem_allocation<<std::endl;   //we assume that the tree has stored the value of ra
+
+            return bindings;
+        }
+
 
         //Exit current scope and Delete Bindings
-        std::map<std::string, std::string> exitScope(std::ostream &dst){
+        std::map<std::string, std::string> exitScope(std::ostream &dst, bool override_return = true){
             if (current_scope > 0){
                 current_scope = current_scope - 1;
                 bindings = Scopes[current_scope];
@@ -167,8 +170,10 @@ class Helper {
                 mem_scope.pop_back();
 
                 //sp reset
-                dst<<function_end<<":"<<std::endl;
-                function_end = "Wrong Function End";    //for debugging
+                if (override_return){
+                    dst<<function_end<<":"<<std::endl;
+                    function_end = "Wrong Function End";    //for debugging
+                }
                 dst<<"addi sp, sp, "<<default_mem_allocation<<std::endl;
 
 
