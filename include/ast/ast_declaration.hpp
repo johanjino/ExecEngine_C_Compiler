@@ -48,15 +48,23 @@ class Declaration : public Node{
             std::map<std::string, std::string> &bindings)const override{
                 if (type!=NULL){
                     std::string reg = helper.allocateReg();
-                    bindings[id->getId()] = reg;
                     if (value!=NULL){
                         value->riscv_asm(dst, helper, reg, bindings);
                     }
+                    id->riscv_asm(dst, helper, reg, bindings);
+                    helper.deallocateReg(std::stoi(reg.erase(0,1)));
                 }
                 else{
                     if (bindings.count(id->getId())){
-                        std::string reg = bindings[id->getId()];
+
+                        std::string mem = bindings[id->getId()];
+                        std::string reg = helper.allocateReg();
+                        dst<<"lw "<<reg<<", "<<mem<<"(sp)"<<std::endl;
                         value->riscv_asm(dst, helper, reg, bindings);
+                        dst<<"sw "<<reg<<", "<<mem<<"(sp)"<<std::endl;
+                        dst<<"mv "<<destReg<<", "<<reg<<std::endl;
+                        dst<<"addi "<<reg<<", zero, 0"<<std::endl;
+                        helper.deallocateReg(std::stoi(reg.erase(0,1)));
                     }
                     else{
                         std::cerr<< "Trying to access variable that does not exist"<<std::endl;

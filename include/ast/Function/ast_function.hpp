@@ -50,13 +50,20 @@ class FunctionDef : public Node {
             std::string destReg,
             std::map<std::string, std::string> &bindings)const override{
             if (next!=NULL){
+
                 dst<<".globl "<<name<<std::endl;
                 dst<<std::endl;
                 dst<<name<<":"<<std::endl;
+
+                helper.newScope(dst);    //entering new scope
+
                 if (params!=NULL){
                     for (int i = 0; i<params->size(); i++) {
                         std::string param_reg = "a" + std::to_string(i);
-                        bindings[(*params)[i]->getId()] = param_reg;
+                        std::string param_mem = helper.allocateMemory();
+                        dst<<"sw "<<param_reg<<", "<<param_mem<<"(sp)"<<std::endl;
+                        bindings[(*params)[i]->getId()] = param_mem;
+
                     }
                 }
 
@@ -68,6 +75,10 @@ class FunctionDef : public Node {
                             bindings.erase((*params)[i]->getId());
                         }
                 }
+
+
+                helper.exitScope(dst);   //exiting current scope
+
                 dst<<"jr ra"<<std::endl;
             }
         }
@@ -114,10 +125,15 @@ class FunctionCall : public Node {
                     }
             }
 
-            dst<<"mv s0, ra"<<std::endl;
-            dst<<"jal "<<name<<std::endl;
-            dst<<"mv ra, s0"<<std::endl;
+            std::string ra_mem = helper.allocateMemory();
 
+            dst<<"sw ra, "<<ra_mem<<"(sp)"<<std::endl; //store return address
+            helper.save_regs(dst);
+            dst<<"jal "<<name<<std::endl;
+            helper.load_regs(dst);
+            dst<<"lw ra, "<<ra_mem<<"(sp)"<<std::endl; //retrive return address
+
+            dst<<"mv "<<destReg<<", a0"<<std::endl; //return value moved to location required
         }
 };
 

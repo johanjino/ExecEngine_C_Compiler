@@ -52,6 +52,7 @@ class Node {
             Helper &helper,
             std::string destReg,
             std::map<std::string, std::string> &bindings) const{
+                dst<<"NOT IMPLEMENTED YET or ERROR ? HOW DID IT COME HERE?"<<std::endl;
         }
 };
 

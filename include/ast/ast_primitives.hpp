@@ -26,13 +26,16 @@ class Variable : public Node {
             Helper &helper,
             std::string destReg,
             std::map<std::string, std::string> &bindings)const override{
+
             if (bindings.count(id)){
-                dst<<"add "<<destReg<<", zero, "<<bindings[id]<<std::endl;
+                dst<<"lw "<<destReg<<", "<<bindings[id]<<"(sp)"<<std::endl;
             }
             else{
-                dst<<"addi "<<destReg<<", zero, 0"<<std::endl;
-
+                std::string mem = helper.allocateMemory();
+                dst<<"sw "<<destReg<<", "<<mem<<"(sp)"<<std::endl;
+                bindings[id] = mem;
             }
+
         }
 
         virtual double evaluate(

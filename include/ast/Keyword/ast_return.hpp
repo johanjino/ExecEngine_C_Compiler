@@ -39,7 +39,8 @@ class Return : public Node {
             if (next!=NULL){
                 next->riscv_asm(dst, helper, destReg, bindings);
             }
-            dst<<"jr ra"<<std::endl;
+            dst<<"beq zero, zero, "<<helper.getfunctionEnd()<<std::endl;
+
         }
 };
 

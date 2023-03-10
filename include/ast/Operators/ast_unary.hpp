@@ -7,9 +7,8 @@
 #include "../ast_node.hpp"
 
 class Unary : public Node{
-    private:
-        NodePtr expr;
     protected:
+        NodePtr expr;
         Unary(const NodePtr _expr)
             : expr(_expr)
         {}
@@ -41,6 +40,19 @@ class NegOperator : public Unary{
 
         virtual const char *getOpcode() const override
         { return "-"; }
+
+        virtual void riscv_asm(std::ostream &dst,
+            Helper &helper,
+            std::string destReg,
+            std::map<std::string, std::string> &bindings)const override{
+
+                //Calculate expr
+                expr->riscv_asm(dst, helper, destReg, bindings);
+
+                //Negate
+                dst<<"neg "<<destReg<<", "<<destReg<<std::endl;
+
+        }
 
 };
 

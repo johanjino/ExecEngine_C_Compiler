@@ -5,12 +5,14 @@
 #include <string>
 #include <iostream>
 #include <map>
+#include <vector>
 
 #include <memory>
 
 #include "../ast.hpp"
 
 
+//NEED TO FIX FUNCTION CALLS. ALL REGISTERS NEED TO BACKUP TO MEMORY.
 
 
 class Helper {
@@ -28,16 +30,29 @@ class Helper {
             0,0,0,0                 //x28 - x31     t3 - t6     Temporary registers
         };
 
+        int current_scope = 0;
+
+        int default_mem_allocation  = 128;
+        int last_mem_allocated = 128;
+
+        std::string function_end;
+
+
     public:
         virtual ~Helper(){
         }
 
-        //Properties
-        std::map<std::string, std::string> bindings;
-
-
         //Constructs
         Helper(){}
+
+
+
+        //Scopes
+        std::vector<std::map<std::string, std::string>> Scopes;
+        std::vector<int> mem_scope;
+
+        //Properties
+        std::map<std::string, std::string> bindings;
 
 
 
@@ -48,6 +63,10 @@ class Helper {
             return "_"+name+"_"+std::to_string(label_count);
         }
 
+
+        std::string getfunctionEnd(){
+            return function_end;
+        }
 
 
 
@@ -73,7 +92,7 @@ class Helper {
         //need to implement memory clean when out of scope
 
 
-        //find memory to use
+        //find register to use
         std::string allocateReg(){
             for(int i=0; i<32; i++){
                 if (Regs[i] == 0){
@@ -84,6 +103,87 @@ class Helper {
             std::cerr << "Register Block!" << std::endl;    //need to implement better memory management
             exit(1);
         }
+
+
+        //find memory offset to use
+        std::string allocateMemory(){
+            if (last_mem_allocated == 0){
+                std::cerr << "StackOverFlow!" << std::endl;    //need to implement better memory management
+                exit(1);
+            }
+            last_mem_allocated = last_mem_allocated - 4;
+            return std::to_string(last_mem_allocated);
+        }
+
+
+
+
+
+        //New Memory Scope and New Bindings
+        std::map<std::string, std::string> newScope(std::ostream &dst){
+            std::map<std::string, std::string> bindings_new;
+            Scopes.push_back(bindings);
+            mem_scope.push_back(last_mem_allocated);
+            current_scope += 1;
+            bindings = bindings_new;
+            last_mem_allocated = default_mem_allocation;
+            function_end = createLabel("function_end");
+
+
+            //sp allocate
+            dst<<"addi sp, sp, "<<"-"<<default_mem_allocation<<std::endl;   //we assume that the tree has stored the value of ra
+
+            return bindings;
+        }
+
+
+        // To save all temporary register in current scope
+        //(use this function carefully. Very stupid way to solve a problem. Huge memory wasteage)
+        void save_regs(std::ostream &dst){
+            for(int i=0; i<7; i++){
+                dst<<"sw t"<<i<<", "<<allocateMemory()<<"(sp)"<<std::endl;
+            }
+        }
+
+
+        // To load all registers from current scope
+        //(use this function carefully. Very stupid way to solve a problem. Huge memory wasteage)
+        void load_regs(std::ostream &dst){
+            for(int i=6; i>-1; i--){
+                    dst<<"lw t"<<i<<", "<<last_mem_allocated<<"(sp)"<<std::endl;
+                    last_mem_allocated = last_mem_allocated + 4;
+                }
+        }
+
+
+
+        //Exit current scope and Delete Bindings
+        std::map<std::string, std::string> exitScope(std::ostream &dst){
+            if (current_scope > 0){
+                current_scope = current_scope - 1;
+                bindings = Scopes[current_scope];
+                last_mem_allocated = mem_scope[current_scope];
+                Scopes.pop_back();
+                mem_scope.pop_back();
+
+                //sp reset
+                dst<<function_end<<":"<<std::endl;
+                function_end = "Wrong Function End";    //for debugging
+                dst<<"addi sp, sp, "<<default_mem_allocation<<std::endl;
+
+
+                return bindings;
+            }
+            else if (current_scope == 0){
+                //this is probably called when main ends
+                return bindings;
+            }
+            else{
+                std::cerr << "Exiting beyond base scope!" << std::endl;    //need to implement better memory management
+                exit(1);
+            }
+        }
+
 
 
 };
