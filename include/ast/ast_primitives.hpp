@@ -3,6 +3,7 @@
 
 #include <string>
 #include <iostream>
+#include <stdint.h>
 
 #include "ast_node.hpp"
 
@@ -13,6 +14,13 @@ template<typename T>
 T convert(long double value) {
     return static_cast<T>(value);       //allows explicit converison
 };
+
+// For IEEE754 conversion
+union {
+    float f;
+    uint32_t i;
+} u;
+
 
 
 class Variable : public Node {
@@ -37,12 +45,16 @@ class Variable : public Node {
             std::map<std::string, std::string> &bindings,
             std::string datatype = "None")const override{
 
+            std::string floating_repr = "";
+            if (datatype == "float" || datatype == "double" || datatype == "long double"){
+                floating_repr = "f";
+            }
             if (bindings.count(id)){
-                dst<<"lw "<<destReg<<", "<<bindings[id]<<"(sp)"<<std::endl;
+                dst<<floating_repr<<"lw "<<floating_repr<<destReg<<", "<<bindings[id]<<"(sp)"<<std::endl;
             }
             else{
                 std::string mem = helper.allocateMemory();
-                dst<<"sw "<<destReg<<", "<<mem<<"(sp)"<<std::endl;
+                dst<<floating_repr<<"sw "<<floating_repr<<destReg<<", "<<mem<<"(sp)"<<std::endl;
                 bindings[id] = mem;
             }
 
@@ -113,13 +125,19 @@ class Number : public Node {
             }
             else if(datatype == "float"){
                 float value = convert<float>(value);
+                u.f = value;
+                value = u.i;
+
             }
             else if(datatype == "double"){
                 double value = convert<double>(value);
+                u.f = value;
+                value = u.i;
             }
             else if(datatype == "long double"){
                 long double value = convert<long double>(value);
-                //dst<<"fcvt.s.w "<<"f"<<destReg<<", "<<destReg<<std::endl;
+                u.f = value;
+                value = u.i;
                 //Just seems too hard. Dont think i am capable of doing this
             }
             else {

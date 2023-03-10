@@ -50,9 +50,9 @@ class Declaration : public Node{
                 if (type!=NULL){
                     std::string reg = helper.allocateReg();
                     if (value!=NULL){
-                        value->riscv_asm(dst, helper, reg, bindings);
+                        value->riscv_asm(dst, helper, reg, bindings, type->getType());
                     }
-                    id->riscv_asm(dst, helper, reg, bindings);
+                    id->riscv_asm(dst, helper, reg, bindings, type->getType());
                     helper.deallocateReg(std::stoi(reg.erase(0,1)));
                 }
                 else{
