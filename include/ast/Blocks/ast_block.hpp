@@ -19,6 +19,9 @@ class Block : public Node {
             :   branches(_branches)
         {}
 
+        virtual std::string getId() const override{
+            return "Block";
+        }
 
         virtual void print(std::ostream &dst, int span) const override{
             //dst<<std::setw(span*4)<<"Block"<<std::endl;
@@ -37,6 +40,12 @@ class Block : public Node {
             std::string destReg,
             std::map<std::string, std::string> &bindings)const override{
             for (int i = (branches)->size(); i > 0; i--) {
+                if ((*branches)[i-1]->getId() == "Block"){
+                    helper.newScope(dst, false);    //entering new scope
+                    (*branches)[i-1]->riscv_asm(dst, helper, destReg, bindings);
+                    helper.exitScope(dst, false);   //exiting current scope
+                    continue;
+                }
                 (*branches)[i-1]->riscv_asm(dst, helper, destReg, bindings);
             }
         }
