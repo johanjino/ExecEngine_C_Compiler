@@ -44,7 +44,6 @@ class Variable : public Node {
                 std::string mem = helper.allocateMemory();
                 dst<<"sw "<<destReg<<", "<<mem<<"(sp)"<<std::endl;
                 bindings[id] = mem;
-                helper.datatype_bindings[id] = datatype;
             }
 
         }
@@ -87,56 +86,47 @@ class Number : public Node {
 
             if (datatype == "int" || datatype == "None"){
                 int value = convert<int>(value);
-                dst<<"li "<<destReg<<", "<<(value)<<std::endl;
             }
             else if(datatype == "unsigned int"){
                 unsigned value = convert<unsigned int>(value);
-                dst<<"li "<<destReg<<", "<<(value)<<std::endl;
             }
             else if(datatype == "long"){
                 long value = convert<long>(value);
-                dst<<"li "<<destReg<<", "<<(value)<<std::endl;
             }
             else if(datatype == "unsigned long"){
                 unsigned long value = convert<unsigned long>(value);
-                dst<<"li "<<destReg<<", "<<(value)<<std::endl;
             }
             else if(datatype == "char"){
                 char value = convert<char>(value);
-                dst<<"li "<<destReg<<", "<<(value)<<std::endl;
             }
             else if(datatype == "unsigned char"){
                 unsigned char value = convert<unsigned char>(value);
-                dst<<"li "<<destReg<<", "<<(value)<<std::endl;
             }
             else if(datatype == "signed char"){
                 signed char value = convert<signed char>(value);
-                dst<<"li "<<destReg<<", "<<(value)<<std::endl;
             }
             else if(datatype == "short"){
                 short value = convert<short>(value);
-                dst<<"li "<<destReg<<", "<<(value)<<std::endl;
             }
             else if(datatype == "unsigned short"){
                 unsigned short value = convert<unsigned short>(value);
-                dst<<"li "<<destReg<<", "<<(value)<<std::endl;
             }
             else if(datatype == "float"){
                 float value = convert<float>(value);
-                dst<<"fli "<<destReg<<", "<<(value)<<std::endl;
             }
             else if(datatype == "double"){
                 double value = convert<double>(value);
-                dst<<"fli "<<destReg<<", "<<(value)<<std::endl;
             }
             else if(datatype == "long double"){
                 long double value = convert<long double>(value);
-                dst<<"fli "<<destReg<<", "<<(value)<<std::endl;      //Just seems too hard. Dont think i am capable of doing this
+                dst<<"fli "<<"f"<<destReg<<", "<<(value)<<std::endl;      //Just seems too hard. Dont think i am capable of doing this
             }
             else {
                 std::cerr<<datatype<<": is an invalid Data Type for a number!"<<std::endl;
                 exit(1);
             }
+
+            dst<<"li "<<destReg<<", "<<(value)<<std::endl;
         }
 
         virtual double evaluate(const std::map<std::string,double> &bindings) const override{
