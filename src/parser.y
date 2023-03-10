@@ -24,7 +24,7 @@
 }
 
 
-%token IDENTIFIER CONSTANT STRING_LITERAL SIZEOF
+%token IDENTIFIER CONSTANT STRING_LITERAL SIZEOF CHAR_LITERAL
 %token PTR_OP INC_OP DEC_OP LEFT_OP RIGHT_OP LE_OP GE_OP EQ_OP NE_OP
 %token AND_OP OR_OP MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN ADD_ASSIGN
 %token SUB_ASSIGN LEFT_ASSIGN RIGHT_ASSIGN AND_ASSIGN
@@ -36,13 +36,16 @@
 
 %token CASE DEFAULT IF ELSE SWITCH WHILE DO FOR GOTO CONTINUE BREAK RETURN
 
-%type <string> IDENTIFIER STRING_LITERAL
+%type <string> IDENTIFIER STRING_LITERAL CHAR_LITERAL
 %type <number> CONSTANT
 
-%type <branch> BODY PARAMETER ARGUMENTS HEADS SWITCH_BODY
-%type <node> DATA_TYPES STATEMENT BLOCK EXPR TERM UNARY FACTOR SWITCH_BLOCK
-%type <node> LINE DECLARATION IF_ELSE_SWITCH LOOP OUTPUT CASES
-%type <node> HEAD
+%type <branch> BODY PARAMETER ARGUMENTS HEADS SWITCH_BODY ENUM_BODY STRUCT_UNION_BODY
+%type <node> DATA_TYPES STATEMENT BLOCK EXPR TERM UNARY FACTOR SWITCH_BLOCK STRUCT_UNION_INSIDE
+%type <node> LINE DECLARATION IF_ELSE_SWITCH LOOP OUTPUT CASES ENUMS
+%type <node> HEAD STRUCT_UNION
+
+/* %nonassoc '+' '-'
+%nonassoc '*' '/' */
 
 %start ROOT
 
@@ -51,31 +54,22 @@
 ROOT
 	: OUTPUT { g_root =  $1;};
 
-
-
-
 //OUTPUT NODE
 OUTPUT
 	: HEADS {$$ = new Output($1);}
 
-
-
-
 //LIST OF FUNCTION HEADS
-
 HEADS
 	: HEADS HEAD		{$$ = concat_list($2,$1);}
 	| HEAD				{$$ = init_list($1);}
 
 //HEAD OF FUNCTIONS
-
 HEAD
 	: DATA_TYPES IDENTIFIER '(' ')' ';'					{$$ = new FunctionDef($1,$2,NULL,NULL);}
 	| DATA_TYPES IDENTIFIER '(' PARAMETER ')' ';'		{$$ = new FunctionDef($1,$2,$4,NULL);}
 	| DATA_TYPES IDENTIFIER '(' ')' BLOCK				{$$ = new FunctionDef($1,$2,NULL,$5);}
 	| DATA_TYPES IDENTIFIER '(' PARAMETER ')' BLOCK		{$$ = new FunctionDef($1,$2,$4,$6);}
 	| DECLARATION ';'									{$$ = $1;}
-
 
 PARAMETER
 	: PARAMETER ',' DECLARATION		{$$ = concat_list($3,$1);}
@@ -105,21 +99,20 @@ STATEMENT
 	| BREAK 	 			{ $$ = new Break();}
 
 DECLARATION
-	: IDENTIFIER '=' EXPR					{$$ = new Declaration(NULL,(new Variable(*$1)),$3);} //temporary need to change
-	| DATA_TYPES IDENTIFIER					{$$ = new Declaration($1,(new Variable(*$2)),NULL);} //need to handle empty initialisations
-	| DATA_TYPES IDENTIFIER '=' EXPR		{$$ = new Declaration($1,(new Variable(*$2)),$4);} //temporary need to change
-	| DATA_TYPES IDENTIFIER '[' EXPR ']'	{$$ = new Array_Declaration($1, (new Variable(*$2)), $4);}
+	: IDENTIFIER '=' EXPR								{$$ = new Declaration(NULL,(new Variable(*$1)),$3);} //temporary need to change
+	| DATA_TYPES IDENTIFIER								{$$ = new Declaration($1,(new Variable(*$2)),NULL);} //need to handle empty initialisations
+	| DATA_TYPES IDENTIFIER '=' EXPR					{$$ = new Declaration($1,(new Variable(*$2)),$4);} //temporary need to change
+	| DATA_TYPES IDENTIFIER '[' EXPR ']'				{$$ = new Array_Declaration($1, (new Variable(*$2)), $4);}
+	| ENUM IDENTIFIER '{' ENUM_BODY '}' 				{$$ = new Enum_Declaration((new Variable(*$2)), $4);}
+	| STRUCT_UNION IDENTIFIER '{' STRUCT_UNION_BODY '}'	{$$ = new Struct_Union_Declaration((new Variable(*$2)), $4);}
+	| STRUCT_UNION IDENTIFIER IDENTIFIER				{$$ = new Declaration((new Variable(*$2)),(new Variable(*$3)),NULL);}
 	| EXPR 		//for assignment operators
 
-
-
-
-
 //EXPRESSIONS
-
 EXPR
 	: TERM              		{ $$ = $1; }
-	//| STRING_LITERAL			// ask UTAs
+	| CHAR_LITERAL				{ $$ = new Chars(*$1);}
+	| STRING_LITERAL			{ $$ = new Strings(*$1);}
     | EXPR '+' EXPR 			{ $$ = new AddOperator($1, $3); }
     | EXPR '-' EXPR 			{ $$ = new SubOperator($1, $3); }
 	| EXPR '>' EXPR				{ $$ = new GthanOperator($1, $3); }
@@ -151,8 +144,10 @@ EXPR
 	| INC_OP EXPR 	 			{ $$ = new IncOperator_Pre($2); }
 	| EXPR DEC_OP				{ $$ = new DecOperator_Post($1); }
 	| DEC_OP EXPR 				{ $$ = new DecOperator_Pre($2); }
-	| IDENTIFIER '[' EXPR ']'    		{ $$ = new Array_Index((new Variable(*$1)), $3, NULL); }
-	| IDENTIFIER '[' EXPR ']' '=' EXPR 	{ $$ = new Array_Index((new Variable(*$1)), $3, $6); }
+	| IDENTIFIER '[' EXPR ']'    		 { $$ = new Array_Index((new Variable(*$1)), $3, NULL); }
+	| IDENTIFIER '[' EXPR ']' '=' EXPR 	 { $$ = new Array_Index((new Variable(*$1)), $3, $6); }
+	| IDENTIFIER '.' IDENTIFIER 		 { $$ = new Struct_Union_Access((new Variable(*$1)), (new Variable(*$3)), NULL); }
+	| IDENTIFIER '.' IDENTIFIER '=' EXPR { $$ = new Struct_Union_Access((new Variable(*$1)), (new Variable(*$3)), $5); }
 
 
 TERM
@@ -179,14 +174,11 @@ ARGUMENTS
 
 
 
-
-
 //IF ELSE SWITCH BLOCKS
-
 IF_ELSE_SWITCH
-	: IF '(' EXPR ')' BLOCK				{$$ = new ifelse($3,$5,NULL);}
-	| IF '(' EXPR ')' BLOCK ELSE BLOCK	{$$ = new ifelse($3,$5,$7);}
-	| EXPR '?' BLOCK ':' BLOCK			{$$ = new ifelse($1, $3, $5);}
+	: IF '(' EXPR ')' BLOCK					{$$ = new ifelse($3,$5,NULL);}
+	| IF '(' EXPR ')' BLOCK ELSE BLOCK		{$$ = new ifelse($3,$5,$7);}
+	| EXPR '?' BLOCK ':' BLOCK				{$$ = new ifelse($1, $3, $5);}
 	| SWITCH '(' EXPR ')' SWITCH_BLOCK 		{$$ = new switch_statement($3, $5); }
 
 CASES
@@ -196,11 +188,29 @@ CASES
 SWITCH_BLOCK
     : '{' SWITCH_BODY '}'           {$$ = new Block($2);}
 
-
 SWITCH_BODY
 	: CASES	SWITCH_BODY			    {$$ = concat_list($1,$2);}
 	| CASES							{$$ = init_list($1);}
 
+ENUMS
+	: IDENTIFIER					{$$ = new Declaration(NULL,(new Variable(*$1)),NULL);}
+	| IDENTIFIER '=' EXPR			{$$ = new Declaration(NULL,(new Variable(*$1)),$3);}
+
+ENUM_BODY
+	: ENUMS							{$$ = init_list($1);}
+	| ENUMS ',' ENUM_BODY			{$$ = concat_list($1,$3);}
+
+
+STRUCT_UNION
+	: UNION
+	| STRUCT
+
+STRUCT_UNION_BODY
+	: STRUCT_UNION_INSIDE ';'					{$$ = init_list($1);}
+	| STRUCT_UNION_INSIDE ';' STRUCT_UNION_BODY	{$$ = concat_list($1,$3);}
+
+STRUCT_UNION_INSIDE
+	: DATA_TYPES IDENTIFIER						{$$ = new Declaration($1,(new Variable(*$2)),NULL);}
 
 
 //LOOPS

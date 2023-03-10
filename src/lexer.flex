@@ -46,6 +46,7 @@ IS			(u|U|l|L)*
 "while"			{ return(WHILE); }
 
 "..."			{ return(ELLIPSIS); }
+
 ">>="			{ return(RIGHT_ASSIGN); }
 "<<="			{ return(LEFT_ASSIGN); }
 "+="			{ return(ADD_ASSIGN); }
@@ -56,6 +57,7 @@ IS			(u|U|l|L)*
 "&="			{ return(AND_ASSIGN); }
 "^="			{ return(XOR_ASSIGN); }
 "|="			{ return(OR_ASSIGN); }
+
 ">>"			{ return(RIGHT_OP); }
 "<<"			{ return(LEFT_OP); }
 "++"			{ return(INC_OP); }
@@ -67,6 +69,7 @@ IS			(u|U|l|L)*
 ">="			{ return(GE_OP); }
 "=="			{ return(EQ_OP); }
 "!="			{ return(NE_OP); }
+
 ";"			    { return(';'); }
 ("{"|"<%")		{ return('{'); }
 ("}"|"%>")		{ return('}'); }
@@ -94,15 +97,15 @@ IS			(u|U|l|L)*
 
 
 {L}({L}|{D})*				{ yylval.string=new std::string(yytext); return IDENTIFIER; }
+
 0[xX]{H}+{IS}?				{ yylval.number=(int)strtol(yytext, NULL, 0); return(CONSTANT); } //
 0{D}+{IS}?					{ yylval.number=(int)strtol(yytext, NULL, 0); return(CONSTANT); } //
-{D}+{IS}?					{ yylval.number=(int)strtol(yytext, NULL, 0); return(CONSTANT); } //
-L?'(\\.|[^\\'])+'			{ yylval.number=(int)strtol(yytext, NULL, 0); return(CONSTANT); } //need to fix data types everywhere
-
+{D}+{IS}?					{ yylval.number=(int)strtol(yytext, NULL, 0); return(CONSTANT); } //need to fix data types everywhere
 {D}+{E}{FS}?				{ yylval.number=(int)strtol(yytext, NULL, 0); return(CONSTANT); } //
 {D}*"."{D}+({E})?{FS}?		{ yylval.number=(int)strtol(yytext, NULL, 0); return(CONSTANT); } //
 {D}+"."{D}*({E})?{FS}?		{ yylval.number=(int)strtol(yytext, NULL, 0); return(CONSTANT); } //
 
+L?'(\\.|[^\\'])+'			{ yylval.string=new std::string(yytext); return CHAR_LITERAL; }
 L?\"(\\.|[^\\"])*\"	 		{ yylval.string=new std::string(yytext); return STRING_LITERAL; }
 
 [ \t\r\n]+		 			{;}

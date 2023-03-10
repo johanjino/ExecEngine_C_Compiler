@@ -12,6 +12,10 @@
 #include "ast/Types/ast_types.hpp"
 #include "ast/Arrays/ast_arrays.hpp"
 
+#include "ast/Types/ast_enum.hpp"
+#include "ast/Types/ast_strings_chars.hpp"
+#include "ast/Types/ast_struct_union.hpp"
+
 #include "ast/Blocks/ast_block.hpp"
 #include "ast/Blocks/ast_ifelse.hpp"
 #include "ast/Blocks/ast_forloop.hpp"
