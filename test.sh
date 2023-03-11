@@ -44,25 +44,25 @@ for DRIVER in compiler_tests/**/*_driver.c; do
     rm -f "${OUT}.s"
     rm -f "${OUT}.o"
     rm -f "${OUT}"
-    ./bin/c_compiler -S "${TO_ASSEMBLE}" -o "${OUT}.s" 2> "${LOG_PATH}.compiler.stderr.log" > "${LOG_PATH}.compiler.stdout.log"
+    timeout --foreground 5s ./bin/c_compiler -S "${TO_ASSEMBLE}" -o "${OUT}.s" 2> "${LOG_PATH}.compiler.stderr.log" > "${LOG_PATH}.compiler.stdout.log"
     if [ $? -ne 0 ]; then
         fail_testcase "Fail: see ${LOG_PATH}.compiler.stderr.log and ${LOG_PATH}.compiler.stdout.log"
         continue
     fi
 
-    riscv64-unknown-elf-gcc -march=rv32imfd -mabi=ilp32d -o "${OUT}.o" -c "${OUT}.s" 2> "${LOG_PATH}.assembler.stderr.log" > "${LOG_PATH}.assembler.stdout.log"
+    timeout --foreground 5s riscv64-unknown-elf-gcc -march=rv32imfd -mabi=ilp32d -o "${OUT}.o" -c "${OUT}.s" 2> "${LOG_PATH}.assembler.stderr.log" > "${LOG_PATH}.assembler.stdout.log"
     if [ $? -ne 0 ]; then
         fail_testcase "Fail: see ${LOG_PATH}.assembler.stderr.log and ${LOG_PATH}.assembler.stdout.log"
         continue
     fi
 
-    riscv64-unknown-elf-gcc -march=rv32imfd -mabi=ilp32d -static -o "${OUT}" "${OUT}.o" "${DRIVER}" 2> "${LOG_PATH}.linker.stderr.log" > "${LOG_PATH}.linker.stdout.log"
+    timeout --foreground 5s riscv64-unknown-elf-gcc -march=rv32imfd -mabi=ilp32d -static -o "${OUT}" "${OUT}.o" "${DRIVER}" 2> "${LOG_PATH}.linker.stderr.log" > "${LOG_PATH}.linker.stdout.log"
     if [ $? -ne 0 ]; then
         fail_testcase "Fail: see ${LOG_PATH}.linker.stderr.log and ${LOG_PATH}.linker.stdout.log"
         continue
     fi
 
-    spike pk "${OUT}" > "${LOG_PATH}.simulation.log"
+    timeout --foreground 5s spike pk "${OUT}" > "${LOG_PATH}.simulation.log"
     if [ $? -eq 0 ]; then
         echo -e "\t> Pass"
         (( PASSING++ ))
