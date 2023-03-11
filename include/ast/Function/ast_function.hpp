@@ -62,11 +62,14 @@ class FunctionDef : public Node {
 
                 helper.newScope(dst);    //entering new scope
 
+                int regs_used = -1;
+                int float_regs_used = -1;
+
                 if (params!=NULL){
                     for (int i = 0; i<params->size(); i++) {
                         std::string param_type = (*params)[i]->getType();
                         if (param_type == "float" || param_type == "double" || param_type == "long double"){
-                            std::string param_reg = "fa" + std::to_string(i);
+                            std::string param_reg = "fa" + std::to_string(++float_regs_used);
                             std::string param_mem = helper.allocateMemory();
                             dst<<"fsw "<<param_reg<<", "<<param_mem<<"(sp)"<<std::endl;
                             std::vector<std::string> properties;
@@ -75,7 +78,7 @@ class FunctionDef : public Node {
                             bindings[(*params)[i]->getId()] = properties;
                         }
                         else{
-                            std::string param_reg = "a" + std::to_string(i);
+                            std::string param_reg = "a" + std::to_string(++regs_used);
                             std::string param_mem = helper.allocateMemory();
                             dst<<"sw "<<param_reg<<", "<<param_mem<<"(sp)"<<std::endl;
                             std::vector<std::string> properties;
