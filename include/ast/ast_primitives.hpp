@@ -34,6 +34,10 @@ class Variable : public Node {
             dst<<id;
         }
 
+        virtual std::string getType(){
+            return "Need to implement :(";
+        }
+
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,

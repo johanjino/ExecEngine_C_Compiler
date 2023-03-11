@@ -66,6 +66,14 @@ class SizeOf : public Node {
             // If the binding does not exist, this will throw an error
             return bindings.at(getType());
         }
+
+        virtual void riscv_asm(std::ostream &dst,
+            Helper &helper,
+            std::string destReg,
+            std::map<std::string, std::vector<std::string>> &bindings,
+            std::string datatype = "None")const override{
+                dst<<"li "<<destReg<<", "<<getSize()<<std::endl;
+        }
 };
 
 #endif
