@@ -5,7 +5,7 @@
 
 
 # USEAGE:
-# ./test_single {folder_name}/{file_name_without_".c"}
+# ./test_single.sh {folder_name}/{file_name_without_".c"}
 
 
 

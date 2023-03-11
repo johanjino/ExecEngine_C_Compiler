@@ -41,27 +41,21 @@ class NegOperator : public Unary{
         NegOperator(const NodePtr _expr)
             : Unary(_expr)
         {}
-
         virtual const char *getOpcode() const override
         { return "-"; }
-
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
             std::map<std::string, std::string> &bindings,
             std::string datatype = "None")const override{
-
                 //Calculate expr
                 expr->riscv_asm(dst, helper, destReg, bindings);
-
                 //Negate
                 dst<<"neg "<<destReg<<", "<<destReg<<std::endl;
-
         }
-
 };
 
-class IncOperator_Post : public Unary{
+class IncOperator_Post : public Unary{ //a++  // NEEDS TO BE DONE - issue with 2 values!!!
     public:
         IncOperator_Post(const NodePtr _expr)
             : Unary(_expr)
@@ -69,7 +63,6 @@ class IncOperator_Post : public Unary{
 
         virtual const char *getOpcode() const override
         { return "++"; }
-
         virtual void print(std::ostream &dst, int span) const override
         {
             dst << "( ";
@@ -80,18 +73,28 @@ class IncOperator_Post : public Unary{
         }
 };
 
-class IncOperator_Pre : public Unary{
+class IncOperator_Pre : public Unary{ //++a
     public:
         IncOperator_Pre(const NodePtr _expr)
             : Unary(_expr)
         {}
-
         virtual const char *getOpcode() const override
         { return "++"; }
+        virtual void riscv_asm(std::ostream &dst,
+            Helper &helper,
+            std::string destReg,
+            std::map<std::string, std::string> &bindings,
+            std::string datatype = "None")const override{
+                std::string reg = helper.allocateReg();
+                expr->riscv_asm(dst, helper, reg, bindings);
+                dst<<"addi "<<destReg<<", "<<reg<<", "<<"1"<<std::endl;
+                dst<<"addi "<<reg<<", zero, 0"<<std::endl;
+                helper.deallocateReg(std::stoi(reg.erase(0,1)));
+        }
 
 };
 
-class DecOperator_Post : public Unary{
+class DecOperator_Post : public Unary{ //a-- // NEEDS TO BE DONE - issue with 2 values!!!
     public:
         DecOperator_Post(const NodePtr _expr)
             : Unary(_expr)
@@ -108,9 +111,10 @@ class DecOperator_Post : public Unary{
             dst << getOpcode();
             dst << " )";
         }
+
 };
 
-class DecOperator_Pre : public Unary{
+class DecOperator_Pre : public Unary{ //--a
     public:
         DecOperator_Pre(const NodePtr _expr)
             : Unary(_expr)
@@ -118,6 +122,17 @@ class DecOperator_Pre : public Unary{
 
         virtual const char *getOpcode() const override
         { return "--"; }
+        virtual void riscv_asm(std::ostream &dst,
+            Helper &helper,
+            std::string destReg,
+            std::map<std::string, std::string> &bindings,
+            std::string datatype = "None")const override{
+                std::string reg = helper.allocateReg();
+                expr->riscv_asm(dst, helper, reg, bindings);
+                dst<<"addi "<<destReg<<", "<<reg<<", "<<"-1"<<std::endl;
+                dst<<"addi "<<reg<<", zero, 0"<<std::endl;
+                helper.deallocateReg(std::stoi(reg.erase(0,1)));
+        }
 };
 
 #endif

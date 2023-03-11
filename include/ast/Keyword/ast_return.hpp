@@ -8,16 +8,12 @@
 
 
 class Return : public Node {
-
     private:
         NodePtr next;
-
     public:
         Return(NodePtr _next)
             : next(_next)
         {}
-
-
         virtual void print(std::ostream &dst, int span) const override{
             dst<<std::setw(span*4)<<"return ";
             if (next!=NULL){
@@ -25,13 +21,6 @@ class Return : public Node {
             }
             dst<<std::endl;
         }
-
-        virtual double evaluate(const std::map<std::string,double> &bindings) const override{
-            // If the binding does not exist, this will throw an error
-            return next->evaluate(bindings);
-        }
-
-
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
@@ -41,7 +30,6 @@ class Return : public Node {
                 next->riscv_asm(dst, helper, destReg, bindings);
             }
             dst<<"beq zero, zero, "<<helper.getfunctionEnd()<<std::endl;
-
         }
 };
 
