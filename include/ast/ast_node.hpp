@@ -50,7 +50,7 @@ class Node {
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings,
+            std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None") const{
                 dst<<"NOT IMPLEMENTED YET or ERROR ? HOW DID IT COME HERE?"<<std::endl;
         }

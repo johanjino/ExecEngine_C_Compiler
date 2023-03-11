@@ -15,17 +15,17 @@ class RightAssignOperator: public Operator{
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings,
+            std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
-                std::string reg_left = helper.allocateReg();
+                std::string reg_left = helper.allocateReg(datatype);
                 left->riscv_asm(dst, helper, reg_left, bindings);
-                std::string reg_right = helper.allocateReg();
+                std::string reg_right = helper.allocateReg(datatype);
                 right->riscv_asm(dst, helper, reg_right, bindings);
                 dst<<"srl "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
                 dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
                 dst<<"addi "<<reg_right<<", zero, 0"<<std::endl;
-                helper.deallocateReg(std::stoi(reg_left.erase(0,1)));
-                helper.deallocateReg(std::stoi(reg_right.erase(0,1)));
+                helper.deallocateReg(reg_left);
+                helper.deallocateReg(reg_right);
         }
 
 
@@ -42,17 +42,17 @@ class LeftAssignOperator: public Operator{
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings,
+            std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
-                std::string reg_left = helper.allocateReg();
+                std::string reg_left = helper.allocateReg(datatype);
                 left->riscv_asm(dst, helper, reg_left, bindings);
-                std::string reg_right = helper.allocateReg();
+                std::string reg_right = helper.allocateReg(datatype);
                 right->riscv_asm(dst, helper, reg_right, bindings);
                 dst<<"sll "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
                 dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
                 dst<<"addi "<<reg_right<<", zero, 0"<<std::endl;
-                helper.deallocateReg(std::stoi(reg_left.erase(0,1)));
-                helper.deallocateReg(std::stoi(reg_right.erase(0,1)));
+                helper.deallocateReg(reg_left);
+                helper.deallocateReg(reg_right);
         }
 
 };
@@ -69,17 +69,17 @@ class AddAssignOperator: public Operator{
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings,
+            std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
-                std::string reg_left = helper.allocateReg();
+                std::string reg_left = helper.allocateReg(datatype);
                 left->riscv_asm(dst, helper, reg_left, bindings);
-                std::string reg_right = helper.allocateReg();
+                std::string reg_right = helper.allocateReg(datatype);
                 right->riscv_asm(dst, helper, reg_right, bindings);
                 dst<<"add "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
                 dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
                 dst<<"addi "<<reg_right<<", zero, 0"<<std::endl;
-                helper.deallocateReg(std::stoi(reg_left.erase(0,1)));
-                helper.deallocateReg(std::stoi(reg_right.erase(0,1)));
+                helper.deallocateReg(reg_left);
+                helper.deallocateReg(reg_right);
         }
 };
 
@@ -94,17 +94,17 @@ class SubAssignOperator: public Operator{
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings,
+            std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
-                std::string reg_left = helper.allocateReg();
+                std::string reg_left = helper.allocateReg(datatype);
                 left->riscv_asm(dst, helper, reg_left, bindings);
-                std::string reg_right = helper.allocateReg();
+                std::string reg_right = helper.allocateReg(datatype);
                 right->riscv_asm(dst, helper, reg_right, bindings);
                 dst<<"sub "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
                 dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
                 dst<<"addi "<<reg_right<<", zero, 0"<<std::endl;
-                helper.deallocateReg(std::stoi(reg_left.erase(0,1)));
-                helper.deallocateReg(std::stoi(reg_right.erase(0,1)));
+                helper.deallocateReg(reg_left);
+                helper.deallocateReg(reg_right);
         }
 
 };
@@ -120,17 +120,17 @@ class MulAssignOperator: public Operator{
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings,
+            std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
-                std::string reg_left = helper.allocateReg();
+                std::string reg_left = helper.allocateReg(datatype);
                 left->riscv_asm(dst, helper, reg_left, bindings);
-                std::string reg_right = helper.allocateReg();
+                std::string reg_right = helper.allocateReg(datatype);
                 right->riscv_asm(dst, helper, reg_right, bindings);
                 dst<<"mul "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
                 dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
                 dst<<"addi "<<reg_right<<", zero, 0"<<std::endl;
-                helper.deallocateReg(std::stoi(reg_left.erase(0,1)));
-                helper.deallocateReg(std::stoi(reg_right.erase(0,1)));
+                helper.deallocateReg(reg_left);
+                helper.deallocateReg(reg_right);
         }
 
 };
@@ -146,17 +146,17 @@ class DivAssignOperator: public Operator{
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings,
+            std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
-                std::string reg_left = helper.allocateReg();
+                std::string reg_left = helper.allocateReg(datatype);
                 left->riscv_asm(dst, helper, reg_left, bindings);
-                std::string reg_right = helper.allocateReg();
+                std::string reg_right = helper.allocateReg(datatype);
                 right->riscv_asm(dst, helper, reg_right, bindings);
                 dst<<"div "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
                 dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
                 dst<<"addi "<<reg_right<<", zero, 0"<<std::endl;
-                helper.deallocateReg(std::stoi(reg_left.erase(0,1)));
-                helper.deallocateReg(std::stoi(reg_right.erase(0,1)));
+                helper.deallocateReg(reg_left);
+                helper.deallocateReg(reg_right);
         }
 
 };
@@ -172,17 +172,17 @@ class ModAssignOperator: public Operator{
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings,
+            std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
-                std::string reg_left = helper.allocateReg();
+                std::string reg_left = helper.allocateReg(datatype);
                 left->riscv_asm(dst, helper, reg_left, bindings);
-                std::string reg_right = helper.allocateReg();
+                std::string reg_right = helper.allocateReg(datatype);
                 right->riscv_asm(dst, helper, reg_right, bindings);
                 dst<<"rem "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
                 dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
                 dst<<"addi "<<reg_right<<", zero, 0"<<std::endl;
-                helper.deallocateReg(std::stoi(reg_left.erase(0,1)));
-                helper.deallocateReg(std::stoi(reg_right.erase(0,1)));
+                helper.deallocateReg(reg_left);
+                helper.deallocateReg(reg_right);
         }
 
 
@@ -199,17 +199,17 @@ class AndAssignOperator: public Operator{
             virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings,
+            std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
-                std::string reg_left = helper.allocateReg();
+                std::string reg_left = helper.allocateReg(datatype);
                 left->riscv_asm(dst, helper, reg_left, bindings);
-                std::string reg_right = helper.allocateReg();
+                std::string reg_right = helper.allocateReg(datatype);
                 right->riscv_asm(dst, helper, reg_right, bindings);
                 dst<<"and "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
                 dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
                 dst<<"addi "<<reg_right<<", zero, 0"<<std::endl;
-                helper.deallocateReg(std::stoi(reg_left.erase(0,1)));
-                helper.deallocateReg(std::stoi(reg_right.erase(0,1)));
+                helper.deallocateReg(reg_left);
+                helper.deallocateReg(reg_right);
         }
 
 
@@ -226,17 +226,17 @@ class XorAssignOperator: public Operator{
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings,
+            std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
-                std::string reg_left = helper.allocateReg();
+                std::string reg_left = helper.allocateReg(datatype);
                 left->riscv_asm(dst, helper, reg_left, bindings);
-                std::string reg_right = helper.allocateReg();
+                std::string reg_right = helper.allocateReg(datatype);
                 right->riscv_asm(dst, helper, reg_right, bindings);
                 dst<<"xor "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
                 dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
                 dst<<"addi "<<reg_right<<", zero, 0"<<std::endl;
-                helper.deallocateReg(std::stoi(reg_left.erase(0,1)));
-                helper.deallocateReg(std::stoi(reg_right.erase(0,1)));
+                helper.deallocateReg(reg_left);
+                helper.deallocateReg(reg_right);
         }
 
 
@@ -253,17 +253,17 @@ class OrAssignOperator: public Operator{
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings,
+            std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
-                std::string reg_left = helper.allocateReg();
+                std::string reg_left = helper.allocateReg(datatype);
                 left->riscv_asm(dst, helper, reg_left, bindings);
-                std::string reg_right = helper.allocateReg();
+                std::string reg_right = helper.allocateReg(datatype);
                 right->riscv_asm(dst, helper, reg_right, bindings);
                 dst<<"or "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
                 dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
                 dst<<"addi "<<reg_right<<", zero, 0"<<std::endl;
-                helper.deallocateReg(std::stoi(reg_left.erase(0,1)));
-                helper.deallocateReg(std::stoi(reg_right.erase(0,1)));
+                helper.deallocateReg(reg_left);
+                helper.deallocateReg(reg_right);
         }
 
 };

@@ -24,6 +24,10 @@ class FunctionDef : public Node {
                 next(_next)
         {}
 
+        virtual std::string getType() const override{
+            return type->getType();
+        }
+
 
         virtual void print(std::ostream &dst, int span) const override{
             dst<<std::setw(span*4);
@@ -48,7 +52,7 @@ class FunctionDef : public Node {
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings,
+            std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
             if (next!=NULL){
 
@@ -60,21 +64,42 @@ class FunctionDef : public Node {
 
                 if (params!=NULL){
                     for (int i = 0; i<params->size(); i++) {
-                        std::string param_reg = "a" + std::to_string(i);
-                        std::string param_mem = helper.allocateMemory();
-                        dst<<"sw "<<param_reg<<", "<<param_mem<<"(sp)"<<std::endl;
-                        bindings[(*params)[i]->getId()] = param_mem;
-
+                        std::string param_type = (*params)[i]->getType();
+                        if (param_type == "float" || param_type == "double" || param_type == "long double"){
+                            std::string param_reg = "fa" + std::to_string(i);
+                            std::string param_mem = helper.allocateMemory();
+                            dst<<"fsw "<<param_reg<<", "<<param_mem<<"(sp)"<<std::endl;
+                            std::vector<std::string> properties;
+                            properties.push_back(param_mem);
+                            properties.push_back(param_type);
+                            bindings[(*params)[i]->getId()] = properties;
+                        }
+                        else{
+                            std::string param_reg = "a" + std::to_string(i);
+                            std::string param_mem = helper.allocateMemory();
+                            dst<<"sw "<<param_reg<<", "<<param_mem<<"(sp)"<<std::endl;
+                            std::vector<std::string> properties;
+                            properties.push_back(param_mem);
+                            properties.push_back(param_type);
+                            bindings[(*params)[i]->getId()] = properties;
+                        }
                     }
                 }
 
-                next->riscv_asm(dst, helper, destReg, bindings);
+                next->riscv_asm(dst, helper, destReg, bindings, datatype);
 
                 if (params!=NULL){
                     for (int i = 0; i<params->size(); i++) {
-                            std::string param_reg = "a" + std::to_string(i);
+                        std::string param_type = (*params)[i]->getType();
+                        if (param_type == "float" || param_type == "double" || param_type == "long double"){
+                            std::string param_reg = std::to_string(i);
                             bindings.erase((*params)[i]->getId());
                         }
+                        else{
+                            std::string param_reg = std::to_string(i);
+                            bindings.erase((*params)[i]->getId());
+                        }
+                    }
                 }
 
 
@@ -118,7 +143,7 @@ class FunctionCall : public Node {
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings,
+            std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
             if (args!=NULL){
                 for (int i = 0; i<args->size(); i++) {

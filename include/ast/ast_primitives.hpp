@@ -42,7 +42,7 @@ class Variable : public Node {
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings,
+            std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
 
             std::string floating_repr = "";
@@ -50,12 +50,15 @@ class Variable : public Node {
                 floating_repr = "f";
             }
             if (bindings.count(id)){
-                dst<<floating_repr<<"lw "<<floating_repr<<destReg<<", "<<bindings[id]<<"(sp)"<<std::endl;
+                dst<<floating_repr<<"lw "<<destReg<<", "<<bindings[id][0]<<"(sp)"<<std::endl;
             }
             else{
                 std::string mem = helper.allocateMemory();
-                dst<<floating_repr<<"sw "<<floating_repr<<destReg<<", "<<mem<<"(sp)"<<std::endl;
-                bindings[id] = mem;
+                dst<<floating_repr<<"sw "<<destReg<<", "<<mem<<"(sp)"<<std::endl;
+                std::vector<std::string> properties;
+                properties.push_back(mem);
+                properties.push_back(datatype);
+                bindings[id] = properties;
             }
 
         }
@@ -93,7 +96,7 @@ class Number : public Node {
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings,
+            std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
 
             if (datatype == "int" || datatype == "None"){

@@ -41,7 +41,7 @@ class forloop : public Node {
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings,
+            std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None") const override{
 
             //create labels
@@ -52,7 +52,7 @@ class forloop : public Node {
             init_cont->riscv_asm(dst,helper,destReg,bindings);
 
             //evalute conditon
-            std::string condition_reg = helper.allocateReg();
+            std::string condition_reg = helper.allocateReg(datatype);
             dst<<start_loop<<":"<<std::endl;
             con->riscv_asm(dst, helper, condition_reg, bindings);
             dst<<"beq "<<condition_reg<<", zero"<<", "<<end_loop<<std::endl; //could be made better. Make use of relational risc instructions
@@ -69,11 +69,11 @@ class forloop : public Node {
 
             //clear registers
             if (init_cont->getType() != "NULL"){               // if control was intialised within loop construct -> need to earse it
-                dst<<"addi "<<bindings[init_cont->getId()]<<", zero, 0"<<std::endl;
+                dst<<"addi "<<bindings[init_cont->getId()][0]<<", zero, 0"<<std::endl;
                 bindings.erase(init_cont->getId());
             }
             dst<<"addi "<<condition_reg<<", zero, 0"<<std::endl;
-            helper.deallocateReg(std::stoi(condition_reg.erase(0,1)));
+            helper.deallocateReg(condition_reg);
 
         }
 };

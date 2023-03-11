@@ -45,27 +45,39 @@ class Declaration : public Node{
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings,
+            std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
                 if (type!=NULL){
-                    std::string reg = helper.allocateReg();
+                    std::string reg = helper.allocateReg(datatype);
                     if (value!=NULL){
                         value->riscv_asm(dst, helper, reg, bindings, type->getType());
                     }
                     id->riscv_asm(dst, helper, reg, bindings, type->getType());
-                    helper.deallocateReg(std::stoi(reg.erase(0,1)));
+                    helper.deallocateReg(reg);
                 }
                 else{
                     if (bindings.count(id->getId())){
-
-                        std::string mem = bindings[id->getId()];
-                        std::string reg = helper.allocateReg();
-                        dst<<"lw "<<reg<<", "<<mem<<"(sp)"<<std::endl;
-                        value->riscv_asm(dst, helper, reg, bindings);
-                        dst<<"sw "<<reg<<", "<<mem<<"(sp)"<<std::endl;
-                        dst<<"mv "<<destReg<<", "<<reg<<std::endl;
-                        dst<<"addi "<<reg<<", zero, 0"<<std::endl;
-                        helper.deallocateReg(std::stoi(reg.erase(0,1)));
+                        datatype = bindings[id->getId()][1];
+                        if (datatype == "float" || datatype == "double" || datatype == "long double"){
+                            std::string mem = bindings[id->getId()][0];
+                            std::string reg = helper.allocateReg(datatype);
+                            dst<<"flw "<<reg<<", "<<mem<<"(sp)"<<std::endl;
+                            value->riscv_asm(dst, helper, reg, bindings, datatype);
+                            dst<<"fsw "<<reg<<", "<<mem<<"(sp)"<<std::endl;
+                            dst<<"fadd.s "<<destReg<<", "<<reg<<", f0"<<std::endl;     //assuming no one accesses f0 haha
+                            dst<<"fsub.s "<<reg<<", "<<reg<<", "<<reg<<std::endl;
+                            helper.deallocateReg(reg);
+                        }
+                        else{
+                            std::string mem = bindings[id->getId()][0];
+                            std::string reg = helper.allocateReg(datatype);
+                            dst<<"lw "<<reg<<", "<<mem<<"(sp)"<<std::endl;
+                            value->riscv_asm(dst, helper, reg, bindings);
+                            dst<<"sw "<<reg<<", "<<mem<<"(sp)"<<std::endl;
+                            dst<<"mv "<<destReg<<", "<<reg<<std::endl;
+                            dst<<"addi "<<reg<<", zero, 0"<<std::endl;
+                            helper.deallocateReg(reg);
+                        }
                     }
                     else{
                         std::cerr<< "Trying to access variable that does not exist"<<std::endl;

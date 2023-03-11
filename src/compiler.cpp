@@ -38,7 +38,7 @@ void compile(std::ostream &w, std::string file)
     w << ".text" << std::endl;
     w << std::endl;
     Helper helper = Helper();
-    std::map<std::string, std::string> bindings = helper.bindings;
+    std::map<std::string, std::vector<std::string>> bindings = helper.bindings;
     program->riscv_asm(w, helper, "", bindings);
 
 }

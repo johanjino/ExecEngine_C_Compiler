@@ -38,7 +38,7 @@ class whileloop : public Node {
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings,
+            std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None") const override{
 
             //create labels
@@ -46,7 +46,7 @@ class whileloop : public Node {
             std::string end_loop = helper.createLabel("end_while");
 
             //evalute conditon
-            std::string condition_reg = helper.allocateReg();
+            std::string condition_reg = helper.allocateReg(datatype);
             dst<<start_loop<<":"<<std::endl;
             con->riscv_asm(dst, helper, condition_reg, bindings);
             dst<<"beq "<<condition_reg<<", zero"<<", "<<end_loop<<std::endl; //could be made better. Make use of relational risc instructions
@@ -62,7 +62,7 @@ class whileloop : public Node {
 
             //clear registers
             dst<<"addi "<<condition_reg<<", zero, 0"<<std::endl;
-            helper.deallocateReg(std::stoi(condition_reg.erase(0,1)));
+            helper.deallocateReg(condition_reg);
         }
 };
 

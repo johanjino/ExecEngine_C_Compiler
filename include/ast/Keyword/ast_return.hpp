@@ -24,10 +24,10 @@ class Return : public Node {
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings,
+            std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
             if (next!=NULL){
-                next->riscv_asm(dst, helper, destReg, bindings);
+                next->riscv_asm(dst, helper, destReg, bindings, datatype);
             }
             dst<<"beq zero, zero, "<<helper.getfunctionEnd()<<std::endl;
         }

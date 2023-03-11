@@ -38,16 +38,16 @@ class Block : public Node {
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings,
+            std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
             for (int i = (branches)->size(); i > 0; i--) {
                 if ((*branches)[i-1]->getId() == "Block"){
                     helper.newScope(dst, false);    //entering new scope
-                    (*branches)[i-1]->riscv_asm(dst, helper, destReg, bindings);
+                    (*branches)[i-1]->riscv_asm(dst, helper, destReg, bindings, datatype);
                     helper.exitScope(dst, false);   //exiting current scope
                     continue;
                 }
-                (*branches)[i-1]->riscv_asm(dst, helper, destReg, bindings);
+                (*branches)[i-1]->riscv_asm(dst, helper, destReg, bindings, datatype);
             }
         }
 };

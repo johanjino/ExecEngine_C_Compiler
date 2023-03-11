@@ -30,6 +30,19 @@ class Helper {
             0,0,0,0                 //x28 - x31     t3 - t6     Temporary registers
         };
 
+        int Regs_floats[32] = {
+            1,                      //f0            zero        Zero
+            0,                      //f1            ra          Return address
+            0,                      //f2            sp          Stack pointer
+            0,                      //f3            gp          Global pointer
+            0,                      //f4            tp          Thread pointer
+            0,0,0,                  //f5 - f7       t0 - t2     Temporary registers
+            1,1,                    //f8 - f9       s0 - s1     Callee-saved registers
+            1,1,1,1,1,1,1,1,        //f10 - f17     a0 - a7     Argument registers
+            0,0,0,0,0,0,0,0,0,0,    //f18 - f27     s2 - s11    Callee-saved registers
+            0,0,0,0                 //f28 - f31     t3 - t6     Temporary registers
+        };
+
         int current_scope = 0;
 
         int default_mem_allocation  = 128;
@@ -47,12 +60,6 @@ class Helper {
 
 
 
-        //Scopes
-        std::vector<std::map<std::string, std::string>> Scopes;
-        std::vector<int> mem_scope;
-
-        //Properties
-        std::map<std::string, std::string> bindings;
 
 
 
@@ -76,16 +83,32 @@ class Helper {
         */
 
 
+        //Scopes
+        std::vector<std::map<std::string, std::vector<std::string>>> Scopes;
+        std::vector<int> mem_scope;
+
+        //Properties
+        std::map<std::string, std::vector<std::string>> bindings;
+
+
 
         //occupy using register
         void useReg(int i){
             Regs[i] = 1;
         }
+        void useReg_float(int i){
+            Regs_floats[i] = 1;
+        }
 
 
         //deallocate register
-        void deallocateReg(int i){
-            Regs[i] = 0;
+        void deallocateReg(std::string &reg){
+            if (reg[0] == 'f'){
+                Regs_floats[std::stoi(reg.erase(0,1))] = 0;
+            }
+            else{
+                Regs[std::stoi(reg.erase(0,1))] = 0;
+            }
         }
 
 
@@ -93,11 +116,21 @@ class Helper {
 
 
         //find register to use
-        std::string allocateReg(){
-            for(int i=0; i<32; i++){
-                if (Regs[i] == 0){
-                    useReg(i);
-                    return "x" + std::to_string(i);
+        std::string allocateReg(std::string datatype){
+            if (datatype == "float" || datatype == "double" || datatype == "long double"){
+                for(int i=0; i<32; i++){
+                    if (Regs_floats[i] == 0){
+                        useReg_float(i);
+                        return "f" + std::to_string(i);
+                    }
+                }
+            }
+            else{
+                for(int i=0; i<32; i++){
+                    if (Regs[i] == 0){
+                        useReg(i);
+                        return "x" + std::to_string(i);
+                    }
                 }
             }
             std::cerr << "Register Block!" << std::endl;    //need to implement better memory management
@@ -141,8 +174,8 @@ class Helper {
 
 
         //New Memory Scope and New Bindings
-        std::map<std::string, std::string> newScope(std::ostream &dst, bool override_return = true){
-            std::map<std::string, std::string> bindings_new;
+        void newScope(std::ostream &dst, bool override_return = true){
+            std::map<std::string, std::vector<std::string>> bindings_new;
             Scopes.push_back(bindings);
             mem_scope.push_back(last_mem_allocated);
             current_scope += 1;
@@ -156,12 +189,11 @@ class Helper {
             //sp allocate
             dst<<"addi sp, sp, "<<"-"<<default_mem_allocation<<std::endl;   //we assume that the tree has stored the value of ra
 
-            return bindings;
         }
 
 
         //Exit current scope and Delete Bindings
-        std::map<std::string, std::string> exitScope(std::ostream &dst, bool override_return = true){
+        void exitScope(std::ostream &dst, bool override_return = true){
             if (current_scope > 0){
                 current_scope = current_scope - 1;
                 bindings = Scopes[current_scope];
@@ -177,11 +209,10 @@ class Helper {
                 dst<<"addi sp, sp, "<<default_mem_allocation<<std::endl;
 
 
-                return bindings;
             }
             else if (current_scope == 0){
                 //this is probably called when main ends
-                return bindings;
+
             }
             else{
                 std::cerr << "Exiting beyond base scope!" << std::endl;    //need to implement better memory management

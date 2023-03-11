@@ -46,7 +46,7 @@ class NegOperator : public Unary{
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings,
+            std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
                 //Calculate expr
                 expr->riscv_asm(dst, helper, destReg, bindings);
@@ -83,13 +83,13 @@ class IncOperator_Pre : public Unary{ //++a
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings,
+            std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
-                std::string reg = helper.allocateReg();
+                std::string reg = helper.allocateReg(datatype);
                 expr->riscv_asm(dst, helper, reg, bindings);
                 dst<<"addi "<<destReg<<", "<<reg<<", "<<"1"<<std::endl;
                 dst<<"addi "<<reg<<", zero, 0"<<std::endl;
-                helper.deallocateReg(std::stoi(reg.erase(0,1)));
+                helper.deallocateReg(reg);
         }
 
 };
@@ -125,13 +125,13 @@ class DecOperator_Pre : public Unary{ //--a
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings,
+            std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
-                std::string reg = helper.allocateReg();
+                std::string reg = helper.allocateReg(datatype);
                 expr->riscv_asm(dst, helper, reg, bindings);
                 dst<<"addi "<<destReg<<", "<<reg<<", "<<"-1"<<std::endl;
                 dst<<"addi "<<reg<<", zero, 0"<<std::endl;
-                helper.deallocateReg(std::stoi(reg.erase(0,1)));
+                helper.deallocateReg(reg);
         }
 };
 

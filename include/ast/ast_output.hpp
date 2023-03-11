@@ -24,10 +24,16 @@ class Output : public Node {
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
-            std::map<std::string, std::string> &bindings,
+            std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None") const override{
             for (int i = 0; i<(functions)->size(); i++) {
-                (*functions)[i]->riscv_asm(dst,helper,"a0", bindings);
+                datatype = (*functions)[i]->getType();
+                if (datatype == "float" || datatype == "double" || datatype == "long double"){
+                    (*functions)[i]->riscv_asm(dst,helper,"fa0", bindings, datatype);
+                }
+                else{
+                    (*functions)[i]->riscv_asm(dst,helper,"a0", bindings, datatype);
+                }
             }
         }
 
