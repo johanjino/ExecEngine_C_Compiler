@@ -12,16 +12,6 @@ class AddOperator: public Operator{
             : Operator(_left, _right)
         {}
 
-        virtual double evaluate(
-            const std::map<std::string,double> &bindings
-        ) const override
-        {
-            // TODO-C : Run bin/eval_expr with something like 5+a, where a=10, to make sure you understand how this works
-            double vl=getLeft()->evaluate(bindings);
-            double vr=getRight()->evaluate(bindings);
-            return vl+vr;
-        }
-
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
@@ -55,17 +45,6 @@ class SubOperator : public Operator{
         SubOperator(NodePtr _left, NodePtr _right)
             : Operator(_left, _right)
         {}
-
-
-        virtual double evaluate(
-            const std::map<std::string,double> &bindings
-        ) const override
-        {
-            // TODO-D : Implement this, based on AddOperator::evaluate
-            double vl=getLeft()->evaluate(bindings);
-            double vr=getRight()->evaluate(bindings);
-            return vl-vr;
-        }
 
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
@@ -102,15 +81,6 @@ class MulOperator : public Operator{
             : Operator(_left, _right)
         {}
 
-        virtual double evaluate(
-            const std::map<std::string,double> &bindings
-        ) const override
-        {
-            double vl=getLeft()->evaluate(bindings);
-            double vr=getRight()->evaluate(bindings);
-            return vl*vr;
-        }
-
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
@@ -144,15 +114,6 @@ class DivOperator : public Operator {
         DivOperator(NodePtr _left, NodePtr _right)
             : Operator(_left, _right)
         {}
-
-        virtual double evaluate(
-            const std::map<std::string,double> &bindings
-        ) const override
-        {
-            double vl=getLeft()->evaluate(bindings);
-            double vr=getRight()->evaluate(bindings);
-            return vl/vr;
-        }
 
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
