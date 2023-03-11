@@ -47,6 +47,15 @@ class Block : public Node {
                     helper.exitScope(dst, false);   //exiting current scope
                     continue;
                 }
+                else if ((*branches)[i-1]->getId() == "Operator"){
+                    //this is done so that if assignment operator is called implicitly, and not through decleration, it does not overwrite destReg.
+                    //This is not an ideal solution
+                    std::string temp = helper.allocateReg("int");
+                    (*branches)[i-1]->riscv_asm(dst, helper, temp, bindings, datatype);
+                    dst<<"addi "<<temp<<", zero, 0"<<std::endl;
+                    helper.deallocateReg(temp);
+                    continue;
+                }
                 (*branches)[i-1]->riscv_asm(dst, helper, destReg, bindings, datatype);
             }
         }

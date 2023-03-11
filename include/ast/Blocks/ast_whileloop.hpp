@@ -46,7 +46,7 @@ class whileloop : public Node {
             std::string end_loop = helper.createLabel("end_while");
 
             //evalute conditon
-            std::string condition_reg = helper.allocateReg(datatype);
+            std::string condition_reg = helper.allocateReg("None");  //this is not ideal, prevents unwanted float regs being used
             dst<<start_loop<<":"<<std::endl;
             con->riscv_asm(dst, helper, condition_reg, bindings);
             dst<<"beq "<<condition_reg<<", zero"<<", "<<end_loop<<std::endl; //could be made better. Make use of relational risc instructions

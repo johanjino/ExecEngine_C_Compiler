@@ -9,11 +9,6 @@
 
 
 
-// For datatype conversion
-template<typename T>
-T convert(long double value) {
-    return static_cast<T>(value);       //allows explicit converison
-};
 
 // For IEEE754 conversion
 union {
@@ -100,45 +95,51 @@ class Number : public Node {
             std::string datatype = "None")const override{
 
             if (datatype == "int" || datatype == "None"){
-                int value = convert<int>(value);
+
             }
             else if(datatype == "unsigned int"){
-                unsigned value = convert<unsigned int>(value);
+
             }
             else if(datatype == "long"){
-                long value = convert<long>(value);
+
             }
             else if(datatype == "unsigned long"){
-                unsigned long value = convert<unsigned long>(value);
+
             }
             else if(datatype == "char"){
-                char value = convert<char>(value);
+
             }
             else if(datatype == "unsigned char"){
-                unsigned char value = convert<unsigned char>(value);
+
             }
             else if(datatype == "signed char"){
-                signed char value = convert<signed char>(value);
+
             }
             else if(datatype == "short"){
-                short value = convert<short>(value);
+
             }
             else if(datatype == "unsigned short"){
-                unsigned short value = convert<unsigned short>(value);
+
             }
             else if(datatype == "float"){
-                float value = convert<float>(value);
+                //float value = (value);
                 u.f = value;
-                value = u.i;
-                
+
+                std::string reg = helper.allocateReg("int");
+                dst<<"li "<<reg<<", "<<(u.i)<<std::endl;
+                dst<<"sw "<<reg<<", 0(sp)"<<std::endl;      //not ideal, can cause memory loss if 0(sp) occupied
+                dst<<"flw "<<destReg<<", 0(sp)"<<std::endl;
+                dst<<"addi "<<reg<<", zero, 0"<<std::endl;
+                helper.deallocateReg(reg);
+                return;
             }
             else if(datatype == "double"){
-                double value = convert<double>(value);
+                double value = (value);
                 u.f = value;
                 value = u.i;
             }
             else if(datatype == "long double"){
-                long double value = convert<long double>(value);
+                long double value = (value);
                 u.f = value;
                 value = u.i;
                 //Just seems too hard. Dont think i am capable of doing this

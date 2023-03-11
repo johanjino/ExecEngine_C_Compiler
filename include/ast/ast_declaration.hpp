@@ -48,16 +48,18 @@ class Declaration : public Node{
             std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
                 if (type!=NULL){
+                    datatype = type->getType();
                     std::string reg = helper.allocateReg(datatype);
                     if (value!=NULL){
                         value->riscv_asm(dst, helper, reg, bindings, type->getType());
                     }
                     id->riscv_asm(dst, helper, reg, bindings, type->getType());
+                    //deallocation code?
                     helper.deallocateReg(reg);
                 }
                 else{
+                    datatype = bindings[id->getId()][1];
                     if (bindings.count(id->getId())){
-                        datatype = bindings[id->getId()][1];
                         if (datatype == "float" || datatype == "double" || datatype == "long double"){
                             std::string mem = bindings[id->getId()][0];
                             std::string reg = helper.allocateReg(datatype);

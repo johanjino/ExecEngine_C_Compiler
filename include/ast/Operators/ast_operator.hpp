@@ -25,6 +25,10 @@ class Operator : public Node{
             delete right;
         }
 
+        virtual std::string getId() const{
+            return "Operator";
+        }
+
         virtual const char *getOpcode() const =0;
 
         NodePtr getLeft() const
