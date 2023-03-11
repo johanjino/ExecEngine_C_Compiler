@@ -76,7 +76,7 @@ class Operator : public Node{
             return preferredStr;
         }
 
-        virtual std::string getType() const override{
+        virtual std::string getType(const std::map<std::string, std::vector<std::string>> &bindings = {})const override{
             std::string left_type = left->getType();
             std::string right_type = right->getType();
             return getPreferredDatatype(left_type,right_type);

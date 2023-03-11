@@ -10,8 +10,8 @@ class SizeOf : public Node {
         SizeOf(NodePtr _expr)
             : expr(_expr)
         {}
-        virtual int getSize() const{
-            std::string returned_type = expr->getType();
+        virtual int getSize(std::map<std::string, std::vector<std::string>> &bindings) const{
+            std::string returned_type = expr->getType(bindings);
 
             if (returned_type == "int" || returned_type == "unsigned int"){
                 return 4;
@@ -47,7 +47,8 @@ class SizeOf : public Node {
                 return 1;
             }
             else {
-                std::cerr<<"Invalid Data Type Size Read Attempt!"<<std::endl;
+                std::cerr<<returned_type<<": Invalid Data Type Size Read Attempt!"<<std::endl;
+
                 exit(1);
                 return 0;
             }
@@ -72,7 +73,7 @@ class SizeOf : public Node {
             std::string destReg,
             std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
-                dst<<"li "<<destReg<<", "<<getSize()<<std::endl;
+                dst<<"li "<<destReg<<", "<<getSize(bindings)<<std::endl;
         }
 };
 

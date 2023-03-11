@@ -20,7 +20,7 @@ class Node {
         virtual ~Node(){
         }
 
-        virtual std::string getType() const{
+        virtual std::string getType(const std::map<std::string, std::vector<std::string>> &bindings = {}) const {
            return "NULL";
         }
 

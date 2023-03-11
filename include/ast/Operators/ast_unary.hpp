@@ -26,7 +26,7 @@ class Unary : public Node{
         NodePtr getExpr() const
         { return expr; }
 
-        virtual std::string getType() const override{
+        virtual std::string getType(const std::map<std::string, std::vector<std::string>> &bindings = {})const override{
             return expr->getType();
         }
 

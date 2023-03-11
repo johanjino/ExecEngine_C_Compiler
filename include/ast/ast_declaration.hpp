@@ -20,7 +20,7 @@ class Declaration : public Node{
 
         virtual const char *getOpcode(){return "=";}
 
-        std::string getType() const override
+        virtual std::string getType(const std::map<std::string, std::vector<std::string>> &bindings = {}) const override
         { return (type!=NULL) ? type->getType() : "NULL"; }
 
         std::string getId() const override

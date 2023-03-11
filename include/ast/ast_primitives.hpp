@@ -34,8 +34,12 @@ class Variable : public Node {
             dst<<id;
         }
 
-        virtual std::string getType(){
-            return "Need to implement :(";
+        virtual std::string getType(const std::map<std::string, std::vector<std::string>> &bindings = {}) const override{
+            if (!bindings.empty()) {
+                auto it = bindings.find(id);
+                return it->second.at(1);
+            }       //temporary fix only :( No time to fix everything
+            return "Hope it doesnt get here!";
         }
 
         virtual void riscv_asm(std::ostream &dst,

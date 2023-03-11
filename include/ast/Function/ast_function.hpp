@@ -24,7 +24,7 @@ class FunctionDef : public Node {
                 next(_next)
         {}
 
-        virtual std::string getType() const override{
+        virtual std::string getType(const std::map<std::string, std::vector<std::string>> &bindings = {})const override{
             return type->getType();
         }
 

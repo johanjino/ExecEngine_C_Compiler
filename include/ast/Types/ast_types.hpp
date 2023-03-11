@@ -34,7 +34,7 @@ class Type : public Node {
             : type(_type)
         {}
 
-        virtual std::string getType() const override{
+        virtual std::string getType(const std::map<std::string, std::vector<std::string>> &bindings = {})const override{
             switch (type){
                 case (_int):
                     return "int";
