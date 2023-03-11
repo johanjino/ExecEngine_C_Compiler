@@ -55,7 +55,7 @@ class NegOperator : public Unary{
         }
 };
 
-class IncOperator_Post : public Unary{ //a++  // NEEDS TO BE DONE - issue with 2 values!!!
+class IncOperator_Post : public Unary{ //a++  : this is for a++ opertaions
     public:
         IncOperator_Post(const NodePtr _expr)
             : Unary(_expr)
@@ -70,6 +70,20 @@ class IncOperator_Post : public Unary{ //a++  // NEEDS TO BE DONE - issue with 2
             dst << " ";
             dst << getOpcode();
             dst << " )";
+        }
+
+        virtual void riscv_asm(std::ostream &dst,
+            Helper &helper,
+            std::string destReg,
+            std::map<std::string, std::vector<std::string>> &bindings,
+            std::string datatype = "None")const override{
+                std::string reg = helper.allocateReg(datatype);
+                dst << "lw " << reg << ", " << bindings[expr->getId()][0] << "(sp)" << std::endl;
+                dst << "addi " << destReg << ", " << reg << ", 0" << std::endl;
+                dst << "addi " << reg << ", " << reg << ", 1" << std::endl;
+                dst << "sw " << reg << ", "<< bindings[expr->getId()][0] << "(sp)"<< std::endl;
+                dst << "addi " << reg << ", zero, 0" << std::endl;
+                helper.deallocateReg(reg);
         }
 };
 
@@ -111,6 +125,22 @@ class DecOperator_Post : public Unary{ //a-- // NEEDS TO BE DONE - issue with 2 
             dst << getOpcode();
             dst << " )";
         }
+
+        virtual void riscv_asm(std::ostream &dst,
+            Helper &helper,
+            std::string destReg,
+            std::map<std::string, std::vector<std::string>> &bindings,
+            std::string datatype = "None")const override{
+                std::string reg = helper.allocateReg(datatype);
+                dst << "lw " << reg << ", " << bindings[expr->getId()][0] << "(sp)" << std::endl;
+                dst << "addi " << destReg << ", " << reg << ", 0" << std::endl;
+                dst << "addi " << reg << ", " << reg << ", -1" << std::endl;
+                dst << "sw " << reg << ", "<< bindings[expr->getId()][0] << "(sp)"<< std::endl;
+                dst << "addi " << reg << ", zero, 0" << std::endl;
+                helper.deallocateReg(reg);
+        }
+
+
 
 };
 

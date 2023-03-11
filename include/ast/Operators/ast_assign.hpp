@@ -22,6 +22,7 @@ class RightAssignOperator: public Operator{
                 std::string reg_right = helper.allocateReg(datatype);
                 right->riscv_asm(dst, helper, reg_right, bindings);
                 dst<<"srl "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
+                dst << "sw " <<destReg<< ", "<< bindings[left->getId()][0] << "(sp)"<< std::endl;
                 dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
                 dst<<"addi "<<reg_right<<", zero, 0"<<std::endl;
                 helper.deallocateReg(reg_left);
@@ -49,6 +50,7 @@ class LeftAssignOperator: public Operator{
                 std::string reg_right = helper.allocateReg(datatype);
                 right->riscv_asm(dst, helper, reg_right, bindings);
                 dst<<"sll "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
+                dst << "sw " <<destReg<< ", "<< bindings[left->getId()][0] << "(sp)"<< std::endl;
                 dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
                 dst<<"addi "<<reg_right<<", zero, 0"<<std::endl;
                 helper.deallocateReg(reg_left);
@@ -76,6 +78,7 @@ class AddAssignOperator: public Operator{
                 std::string reg_right = helper.allocateReg(datatype);
                 right->riscv_asm(dst, helper, reg_right, bindings);
                 dst<<"add "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
+                dst << "sw " <<destReg<< ", "<< bindings[left->getId()][0] << "(sp)"<< std::endl;
                 dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
                 dst<<"addi "<<reg_right<<", zero, 0"<<std::endl;
                 helper.deallocateReg(reg_left);
@@ -101,6 +104,7 @@ class SubAssignOperator: public Operator{
                 std::string reg_right = helper.allocateReg(datatype);
                 right->riscv_asm(dst, helper, reg_right, bindings);
                 dst<<"sub "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
+                dst << "sw " <<destReg<< ", "<< bindings[left->getId()][0] << "(sp)"<< std::endl;
                 dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
                 dst<<"addi "<<reg_right<<", zero, 0"<<std::endl;
                 helper.deallocateReg(reg_left);
@@ -127,6 +131,7 @@ class MulAssignOperator: public Operator{
                 std::string reg_right = helper.allocateReg(datatype);
                 right->riscv_asm(dst, helper, reg_right, bindings);
                 dst<<"mul "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
+                dst << "sw " <<destReg<< ", "<< bindings[left->getId()][0] << "(sp)"<< std::endl;
                 dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
                 dst<<"addi "<<reg_right<<", zero, 0"<<std::endl;
                 helper.deallocateReg(reg_left);
@@ -153,6 +158,7 @@ class DivAssignOperator: public Operator{
                 std::string reg_right = helper.allocateReg(datatype);
                 right->riscv_asm(dst, helper, reg_right, bindings);
                 dst<<"div "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
+                dst << "sw " <<destReg<< ", "<< bindings[left->getId()][0] << "(sp)"<< std::endl;
                 dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
                 dst<<"addi "<<reg_right<<", zero, 0"<<std::endl;
                 helper.deallocateReg(reg_left);
@@ -179,6 +185,7 @@ class ModAssignOperator: public Operator{
                 std::string reg_right = helper.allocateReg(datatype);
                 right->riscv_asm(dst, helper, reg_right, bindings);
                 dst<<"rem "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
+                dst << "sw " <<destReg<< ", "<< bindings[left->getId()][0] << "(sp)"<< std::endl;
                 dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
                 dst<<"addi "<<reg_right<<", zero, 0"<<std::endl;
                 helper.deallocateReg(reg_left);
@@ -206,6 +213,7 @@ class AndAssignOperator: public Operator{
                 std::string reg_right = helper.allocateReg(datatype);
                 right->riscv_asm(dst, helper, reg_right, bindings);
                 dst<<"and "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
+                dst << "sw " <<destReg<< ", "<< bindings[left->getId()][0] << "(sp)"<< std::endl;
                 dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
                 dst<<"addi "<<reg_right<<", zero, 0"<<std::endl;
                 helper.deallocateReg(reg_left);
@@ -233,6 +241,7 @@ class XorAssignOperator: public Operator{
                 std::string reg_right = helper.allocateReg(datatype);
                 right->riscv_asm(dst, helper, reg_right, bindings);
                 dst<<"xor "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
+                dst << "sw " <<destReg<< ", "<< bindings[left->getId()][0] << "(sp)"<< std::endl;
                 dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
                 dst<<"addi "<<reg_right<<", zero, 0"<<std::endl;
                 helper.deallocateReg(reg_left);
@@ -260,6 +269,7 @@ class OrAssignOperator: public Operator{
                 std::string reg_right = helper.allocateReg(datatype);
                 right->riscv_asm(dst, helper, reg_right, bindings);
                 dst<<"or "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
+                dst << "sw " <<destReg<< ", "<< bindings[left->getId()][0] << "(sp)"<< std::endl;
                 dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
                 dst<<"addi "<<reg_right<<", zero, 0"<<std::endl;
                 helper.deallocateReg(reg_left);

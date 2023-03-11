@@ -130,7 +130,7 @@ class Number : public Node {
                 float value = convert<float>(value);
                 u.f = value;
                 value = u.i;
-
+                
             }
             else if(datatype == "double"){
                 double value = convert<double>(value);

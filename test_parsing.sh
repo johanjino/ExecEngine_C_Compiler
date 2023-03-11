@@ -17,5 +17,5 @@ for file in bin/output/*.s; do
 done
 
 # Echo results
-echo "Number of non-empty .s files: $non_empty_count"
-echo "Total number of .s files: $total_count"
+echo "Number of files parsed: $non_empty_count"
+echo "Total number of files: $total_count"
