@@ -44,6 +44,7 @@ class whileloop : public Node {
             //create labels
             std::string start_loop = helper.createLabel("start_while");
             std::string end_loop = helper.createLabel("end_while");
+            helper.new_loop(start_loop, end_loop);
 
             //evalute conditon
             std::string condition_reg = helper.allocateReg("None");  //this is not ideal, prevents unwanted float regs being used
@@ -59,6 +60,8 @@ class whileloop : public Node {
 
             //end loop
             dst<<end_loop<<":"<<std::endl;
+            helper.exit_loop();
+            
 
             //clear registers
             dst<<"addi "<<condition_reg<<", zero, 0"<<std::endl;

@@ -60,7 +60,50 @@ class Helper {
 
 
 
+        // loop end and start
+        std::string current_loop_end;
+        std::string current_loop_update;
+        std::string current_loop_start;
+        std::vector<std::string> loop_end;
+        std::vector<std::string> loop_update;
+        std::vector<std::string> loop_start;
 
+        void new_loop(std::string new_loop_start, std::string new_loop_end, std::string new_loop_update = "None"){
+            loop_start.push_back(new_loop_start);
+            loop_update.push_back(new_loop_update);
+            loop_end.push_back(new_loop_end);
+            current_loop_start = new_loop_start;
+            current_loop_update = new_loop_update;
+            current_loop_end = new_loop_end;
+        }
+        void exit_loop(){
+            if (!loop_start.empty()){
+                current_loop_start = loop_start.back();
+                current_loop_update = loop_update.back();
+                current_loop_end = loop_end.back();
+                loop_start.pop_back();
+                loop_update.pop_back();
+                loop_end.pop_back();
+            }
+            else{
+                std::cerr << "Tried to break or continue in a scope of no loops" << std::endl;
+                exit(1);
+            }
+        }
+        std::string get_loop_labels(std::string where){
+            if (where == "Start"){
+                return current_loop_start;
+            }
+            else if (where == "End"){
+                return current_loop_end;
+            }
+            else if (where == "Update"){
+                return current_loop_update;
+            }
+            else{
+                return "invalid location to jump";
+            }
+        }
 
 
         //Creates Labels for function jumps

@@ -11,6 +11,9 @@
 #include "ast/Function/ast_sizeof.hpp"
 
 #include "ast/Keyword/ast_return.hpp"
+#include "ast/Keyword/ast_break.hpp"
+#include "ast/Keyword/ast_continue.hpp"
+
 #include "ast/Types/ast_types.hpp"
 #include "ast/Arrays/ast_arrays.hpp"
 

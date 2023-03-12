@@ -46,7 +46,9 @@ class forloop : public Node {
 
             //create labels
             std::string start_loop = helper.createLabel("start_for");
+            std::string update_loop = helper.createLabel("update_con");
             std::string end_loop = helper.createLabel("end_for");
+            helper.new_loop(start_loop, end_loop, update_loop);
 
             //initialise condition
             init_cont->riscv_asm(dst,helper,destReg,bindings);
@@ -61,15 +63,17 @@ class forloop : public Node {
             if (for_block!=NULL){
                 for_block->riscv_asm(dst,helper,destReg,bindings);
             }
+            //update conditions
+            dst<<update_loop<<":"<<std::endl;
             update_cont->riscv_asm(dst,helper,destReg,bindings);
             dst<<"beq zero, zero, "<<start_loop<<std::endl;
 
             //end loop
             dst<<end_loop<<":"<<std::endl;
+            helper.exit_loop();
 
             //clear registers
             if (init_cont->getType() != "NULL"){               // if control was intialised within loop construct -> need to earse it
-                dst<<"addi "<<bindings[init_cont->getId()][0]<<", zero, 0"<<std::endl;
                 bindings.erase(init_cont->getId());
             }
             dst<<"addi "<<condition_reg<<", zero, 0"<<std::endl;
