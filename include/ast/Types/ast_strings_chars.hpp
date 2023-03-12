@@ -37,10 +37,16 @@ public:
 
     virtual void print(std::ostream &dst, int span) const override
     {
-        dst<<"'";
         dst<<letter;
-        dst<<"'";
     }
+    virtual void riscv_asm(std::ostream &dst,
+        Helper &helper,
+        std::string destReg,
+        std::map<std::string, std::vector<std::string>> &bindings,
+        std::string datatype = "None")const override{
+         dst<<"li "<<destReg<<", "<<letter<<std::endl;
+    }
+
 };
 
 

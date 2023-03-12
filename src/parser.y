@@ -140,14 +140,10 @@ EXPR
 	//| '~' EXPR 				// need to do
 	| EXPR RIGHT_OP EXPR 		{ $$ = new RightShiftOperator($1, $3); }
 	| EXPR LEFT_OP EXPR 		{ $$ = new LeftShiftOperator($1, $3); }
-	| INC_OP IDENTIFIER   		{ $$ = new Declaration(NULL,(new Variable(*$2)),(new IncOperator_Pre((new Variable(*$2)))));} //--- an intutive way of handling INC_OP, DEC_OP
-	| DEC_OP IDENTIFIER   		{ $$ = new Declaration(NULL,(new Variable(*$2)),(new DecOperator_Pre((new Variable(*$2)))));}
-	//| IDENTIFIER INC_OP  		{ $$ = new Declaration(NULL,(new Variable(*$1)),(new IncOperator_Post((new Variable(*$1)))));}
-	//| IDENTIFIER DEC_OP   		{ $$ = new Declaration(NULL,(new Variable(*$1)),(new DecOperator_Pre((new Variable(*$1)))));}
 	| IDENTIFIER INC_OP	 			{ $$ = new IncOperator_Post((new Variable(*$1))); }
-	//| INC_OP EXPR 	 			{ $$ = new IncOperator_Pre($2); }
+	| INC_OP IDENTIFIER 	 		{ $$ = new IncOperator_Pre((new Variable(*$2))); }
 	| IDENTIFIER DEC_OP				{ $$ = new DecOperator_Post((new Variable(*$1))); }
-	//| DEC_OP EXPR 				{ $$ = new DecOperator_Pre($2); }
+	| DEC_OP IDENTIFIER 			{ $$ = new DecOperator_Pre((new Variable(*$2))); }
 	| IDENTIFIER '[' EXPR ']'    		 { $$ = new Array_Index((new Variable(*$1)), $3, NULL); }
 	| IDENTIFIER '[' EXPR ']' '=' EXPR 	 { $$ = new Array_Index((new Variable(*$1)), $3, $6); }
 	| IDENTIFIER '.' IDENTIFIER 		 { $$ = new Struct_Union_Access((new Variable(*$1)), (new Variable(*$3)), NULL); }

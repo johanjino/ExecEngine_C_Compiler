@@ -104,15 +104,16 @@ class IncOperator_Pre : public Unary{ //++a
             std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
                 std::string reg = helper.allocateReg(datatype);
-                expr->riscv_asm(dst, helper, reg, bindings);
-                dst<<"addi "<<destReg<<", "<<reg<<", "<<"1"<<std::endl;
-                dst<<"addi "<<reg<<", zero, 0"<<std::endl;
+                dst << "lw " << reg << ", " << bindings[expr->getId()][0] << "(sp)" << std::endl;
+                dst << "addi " << destReg << ", " << reg << ", 1" << std::endl;
+                dst << "sw " << destReg << ", "<< bindings[expr->getId()][0] << "(sp)"<< std::endl;
+                dst << "addi " << reg << ", zero, 0" << std::endl;
                 helper.deallocateReg(reg);
         }
 
 };
 
-class DecOperator_Post : public Unary{ //a-- 
+class DecOperator_Post : public Unary{ //a--
     public:
         DecOperator_Post(const NodePtr _expr)
             : Unary(_expr)
@@ -162,9 +163,10 @@ class DecOperator_Pre : public Unary{ //--a
             std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
                 std::string reg = helper.allocateReg(datatype);
-                expr->riscv_asm(dst, helper, reg, bindings);
-                dst<<"addi "<<destReg<<", "<<reg<<", "<<"-1"<<std::endl;
-                dst<<"addi "<<reg<<", zero, 0"<<std::endl;
+                dst << "lw " << reg << ", " << bindings[expr->getId()][0] << "(sp)" << std::endl;
+                dst << "addi " << destReg << ", " << reg << ", -1" << std::endl;
+                dst << "sw " << destReg << ", "<< bindings[expr->getId()][0] << "(sp)"<< std::endl;
+                dst << "addi " << reg << ", zero, 0" << std::endl;
                 helper.deallocateReg(reg);
         }
 };
