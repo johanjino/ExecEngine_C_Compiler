@@ -17,7 +17,7 @@ class AddOperator: public Operator{
             std::string destReg,
             std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
-                if (datatype == "float" || datatype == "double" || datatype == "long double"){
+                if (datatype == "float"){
                     //Calculate Left
                     std::string reg_left = helper.allocateReg(datatype);
                     left->riscv_asm(dst, helper, reg_left, bindings, datatype);
@@ -31,6 +31,23 @@ class AddOperator: public Operator{
 
                     dst<<"fsub.s "<<reg_left<<", "<<reg_left<<", "<<reg_left<<std::endl;
                     dst<<"fsub.s "<<reg_right<<", "<<reg_right<<", "<<reg_right<<std::endl;
+                    helper.deallocateReg(reg_left);
+                    helper.deallocateReg(reg_right);
+                }
+                else if(datatype == "double" || datatype == "long double"){
+                    //Calculate Left
+                    std::string reg_left = helper.allocateReg(datatype);
+                    left->riscv_asm(dst, helper, reg_left, bindings, datatype);
+
+                    //Calculate Right
+                    std::string reg_right = helper.allocateReg(datatype);
+                    right->riscv_asm(dst, helper, reg_right, bindings, datatype);
+
+                    //Add
+                    dst<<"fadd.d "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
+
+                    dst<<"fsub.d "<<reg_left<<", "<<reg_left<<", "<<reg_left<<std::endl;
+                    dst<<"fsub.d "<<reg_right<<", "<<reg_right<<", "<<reg_right<<std::endl;
                     helper.deallocateReg(reg_left);
                     helper.deallocateReg(reg_right);
                 }
@@ -104,7 +121,24 @@ class MulOperator : public Operator{
             std::string destReg,
             std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
-                if (datatype == "float" || datatype == "double" || datatype == "long double"){
+                if (datatype == "float"){
+                    //Calculate Left
+                    std::string reg_left = helper.allocateReg(datatype);
+                    left->riscv_asm(dst, helper, reg_left, bindings, datatype);
+
+                    //Calculate Right
+                    std::string reg_right = helper.allocateReg(datatype);
+                    right->riscv_asm(dst, helper, reg_right, bindings, datatype);
+
+                    //Mul
+                    dst<<"fmul.s "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
+
+                    dst<<"fsub.s "<<reg_left<<", "<<reg_left<<", "<<reg_left<<std::endl;
+                    dst<<"fsub.s "<<reg_right<<", "<<reg_right<<", "<<reg_right<<std::endl;
+                    helper.deallocateReg(reg_left);
+                    helper.deallocateReg(reg_right);
+                }
+                else if(datatype == "double" || datatype == "long double"){
                     //Calculate Left
                     std::string reg_left = helper.allocateReg(datatype);
                     left->riscv_asm(dst, helper, reg_left, bindings, datatype);
@@ -114,12 +148,13 @@ class MulOperator : public Operator{
                     right->riscv_asm(dst, helper, reg_right, bindings, datatype);
 
                     //Add
-                    dst<<"fmul.s "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
+                    dst<<"fmul.d "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
 
-                    dst<<"fsub.s "<<reg_left<<", "<<reg_left<<", "<<reg_left<<std::endl;
-                    dst<<"fsub.s "<<reg_right<<", "<<reg_right<<", "<<reg_right<<std::endl;
+                    dst<<"fsub.d "<<reg_left<<", "<<reg_left<<", "<<reg_left<<std::endl;
+                    dst<<"fsub.d "<<reg_right<<", "<<reg_right<<", "<<reg_right<<std::endl;
                     helper.deallocateReg(reg_left);
                     helper.deallocateReg(reg_right);
+
                 }
                 else{
                     //Calculate Left
@@ -130,7 +165,7 @@ class MulOperator : public Operator{
                     std::string reg_right = helper.allocateReg(datatype);
                     right->riscv_asm(dst, helper, reg_right, bindings);
 
-                    //Add
+                    //Mul
                     dst<<"mul "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
 
                     dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;

@@ -59,7 +59,7 @@ class NegOperator : public Unary{
         }
 };
 
-class IncOperator_Post : public Unary{ //a++  : this is for a++ opertaions
+class IncOperator_Post : public Unary{ //a++
     public:
         IncOperator_Post(const NodePtr _expr)
             : Unary(_expr)
@@ -112,7 +112,7 @@ class IncOperator_Pre : public Unary{ //++a
 
 };
 
-class DecOperator_Post : public Unary{ //a-- // NEEDS TO BE DONE - issue with 2 values!!!
+class DecOperator_Post : public Unary{ //a-- 
     public:
         DecOperator_Post(const NodePtr _expr)
             : Unary(_expr)

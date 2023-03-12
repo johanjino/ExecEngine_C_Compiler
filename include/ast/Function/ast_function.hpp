@@ -68,10 +68,19 @@ class FunctionDef : public Node {
                 if (params!=NULL){
                     for (int i = 0; i<params->size(); i++) {
                         std::string param_type = (*params)[i]->getType();
-                        if (param_type == "float" || param_type == "double" || param_type == "long double"){
+                        if (param_type == "float"){
                             std::string param_reg = "fa" + std::to_string(++float_regs_used);
                             std::string param_mem = helper.allocateMemory();
                             dst<<"fsw "<<param_reg<<", "<<param_mem<<"(sp)"<<std::endl;
+                            std::vector<std::string> properties;
+                            properties.push_back(param_mem);
+                            properties.push_back(param_type);
+                            bindings[(*params)[i]->getId()] = properties;
+                        }
+                        else if ( param_type == "double" || param_type == "long double"){
+                            std::string param_reg = "fa" + std::to_string(++float_regs_used);
+                            std::string param_mem = helper.allocateMemory();
+                            dst<<"fsd "<<param_reg<<", "<<param_mem<<"(sp)"<<std::endl;
                             std::vector<std::string> properties;
                             properties.push_back(param_mem);
                             properties.push_back(param_type);
