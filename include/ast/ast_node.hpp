@@ -25,8 +25,7 @@ class Node {
         }
 
         virtual std::string getClass() const{
-            std::cerr<< "getClass not defined here or Wrong usage"<<std::endl;
-            exit(1);
+            return "getClass not defined here or Wrong usage";
         }
 
         virtual std::string getId() const{

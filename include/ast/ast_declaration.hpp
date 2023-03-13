@@ -60,7 +60,23 @@ class Declaration : public Node{
                 else{
                     datatype = bindings[id->getId()][1];
                     if (bindings.count(id->getId())){
-                        if (datatype == "float" || datatype == "double" || datatype == "long double"){
+                        if (id->getClass( )=="Pointer"){
+                            std::string mem_pointer = bindings[id->getId()][0];
+                            std::string mem_value = helper.allocateReg(datatype);
+                            std::string reg = helper.allocateReg(datatype);
+                            dst<<"lw "<<mem_value<<", "<<mem_pointer<<"(sp)"<<std::endl;
+                            dst<<"lw "<<reg<<", 0("<<mem_value<<")"<<std::endl;
+                            value->riscv_asm(dst, helper, reg, bindings);
+                            dst<<"sw "<<reg<<", 0("<<mem_value<<")"<<std::endl;
+
+                            dst<<"mv "<<destReg<<", "<<reg<<std::endl;
+
+                            dst<<"addi "<<reg<<", zero, 0"<<std::endl;
+                            dst<<"addi "<<mem_value<<", zero, 0"<<std::endl;
+                            helper.deallocateReg(reg);
+                            helper.deallocateReg(mem_value);
+                        }
+                        else if (datatype == "float" || datatype == "double" || datatype == "long double"){
                             std::string mem = bindings[id->getId()][0];
                             std::string reg = helper.allocateReg(datatype);
                             dst<<"flw "<<reg<<", "<<mem<<"(sp)"<<std::endl;
