@@ -17,5 +17,6 @@ for file in bin/output/*.s; do
 done
 
 # Echo results
-echo "Number of files parsed: $non_empty_count"
-echo "Total number of files: $total_count"
+echo ""
+echo "Files Parsed: $non_empty_count"
+echo "Total Files: $total_count"

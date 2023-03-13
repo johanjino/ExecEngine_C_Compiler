@@ -202,7 +202,7 @@ declaration_specifiers
 	| storage_class_specifier declaration_specifiers
 	| type_specifier
 	| type_specifier declaration_specifiers
-	| type_qualifier
+	| type_qualifier   
 	| type_qualifier declaration_specifiers
 	;
 

@@ -64,7 +64,7 @@ for DRIVER in compiler_tests/${arg}/*_driver.c; do
     if [ $? -eq 0 ]; then
         echo -e "\t> Pass"
         (( PASSING++ ))
-        
+
     else
         fail_testcase "Fail: simulation did not exit with exit-code 0"
     fi

@@ -82,6 +82,7 @@ class IncOperator_Post : public Unary{ //a++
             std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
                 std::string reg = helper.allocateReg(datatype);
+
                 dst << "lw " << reg << ", " << bindings[expr->getId()][0] << "(sp)" << std::endl;
                 dst << "addi " << destReg << ", " << reg << ", 0" << std::endl;
                 dst << "addi " << reg << ", " << reg << ", 1" << std::endl;

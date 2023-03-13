@@ -36,14 +36,16 @@
 
 %token CASE DEFAULT IF ELSE SWITCH WHILE DO FOR GOTO CONTINUE BREAK RETURN
 
-%type <string> IDENTIFIER STRING_LITERAL CHAR_LITERAL
+%type <string> IDENTIFIER STRING_LITERAL CHAR_LITERAL POINTER
 %type <number> CONSTANT
 
 %type <branch> BODY PARAMETER ARGUMENTS HEADS SWITCH_BODY ENUM_BODY STRUCT_UNION_BODY
 %type <node> DATA_TYPES STATEMENT BLOCK EXPR TERM UNARY FACTOR SWITCH_BLOCK STRUCT_UNION_INSIDE
 %type <node> LINE DECLARATION IF_ELSE_SWITCH LOOP OUTPUT CASES ENUMS
-%type <node> HEAD STRUCT_UNION
+%type <node> HEAD STRUCT_UNION POINTER_TYPE_LIST POINTER_TYPE
 
+
+//CHECK: uncommenting the 2 lines below fails custom/char.c due to + - issue
 /* %nonassoc '+' '-'
 %nonassoc '*' '/' */
 
@@ -140,10 +142,10 @@ EXPR
 	//| '~' EXPR 				// need to do
 	| EXPR RIGHT_OP EXPR 		{ $$ = new RightShiftOperator($1, $3); }
 	| EXPR LEFT_OP EXPR 		{ $$ = new LeftShiftOperator($1, $3); }
-	| IDENTIFIER INC_OP	 			{ $$ = new IncOperator_Post((new Variable(*$1))); }
-	| INC_OP IDENTIFIER 	 		{ $$ = new IncOperator_Pre((new Variable(*$2))); }
-	| IDENTIFIER DEC_OP				{ $$ = new DecOperator_Post((new Variable(*$1))); }
-	| DEC_OP IDENTIFIER 			{ $$ = new DecOperator_Pre((new Variable(*$2))); }
+	| EXPR INC_OP	 				{ $$ = new IncOperator_Post($1); }
+	| INC_OP EXPR 	 				{ $$ = new IncOperator_Pre($2); }
+	| EXPR DEC_OP					{ $$ = new DecOperator_Post($1); }
+	| DEC_OP EXPR 					{ $$ = new DecOperator_Pre($2); }
 	| IDENTIFIER '[' EXPR ']'    		 { $$ = new Array_Index((new Variable(*$1)), $3, NULL); }
 	| IDENTIFIER '[' EXPR ']' '=' EXPR 	 { $$ = new Array_Index((new Variable(*$1)), $3, $6); }
 	| IDENTIFIER '.' IDENTIFIER 		 { $$ = new Struct_Union_Access((new Variable(*$1)), (new Variable(*$3)), NULL); }
@@ -173,8 +175,17 @@ FACTOR
 ARGUMENTS
 	: ARGUMENTS ',' EXPR			{$$ = concat_list($3,$1);}
 	| EXPR							{$$ = init_list($1);}
+/*
+POINTER
+	: '*'
+	| '*' POINTER
+	| '*' POINTER_TYPE_LIST
+	| '*' POINTER_TYPE_LIST POINTER
 
-
+POINTER_TYPE_LIST
+	: POINTER_TYPE
+	| POINTER_TYPE_LIST POINTER_TYPE
+	 */
 
 //IF ELSE SWITCH BLOCKS
 IF_ELSE_SWITCH

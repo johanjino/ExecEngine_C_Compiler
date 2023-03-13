@@ -133,6 +133,9 @@ class Helper {
         //Properties
         std::map<std::string, std::vector<std::string>> bindings;
 
+        //Memory allocation for scalability
+        int min_mem = 4;
+
 
 
         //occupy using register
@@ -187,7 +190,7 @@ class Helper {
                 std::cerr << "StackOverFlow!" << std::endl;    //need to implement better memory management
                 exit(1);
             }
-            last_mem_allocated = last_mem_allocated - 4;
+            last_mem_allocated = last_mem_allocated - min_mem;
             return std::to_string(last_mem_allocated);
         }
 
@@ -211,7 +214,7 @@ class Helper {
         void load_regs(std::ostream &dst){
             for(int i=6; i>-1; i--){
                     dst<<"lw t"<<i<<", "<<last_mem_allocated<<"(sp)"<<std::endl;
-                    last_mem_allocated = last_mem_allocated + 4;
+                    last_mem_allocated = last_mem_allocated + min_mem;
                 }
         }
 

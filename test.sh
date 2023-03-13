@@ -76,4 +76,18 @@ done
 printf "\nPassing %d/%d tests\n" "${PASSING}" "${TOTAL}"
 printf '%s\n' '</testsuite>' >> "${J_UNIT_OUTPUT_FILE}"
 
+
+
+#####################################################
+
+# Added for test purposes by @alvi-codes
 source test_parsing.sh
+
+custom_total=0
+for file in compiler_tests/_custom/*_driver.c; do
+    ((custom_total++))
+done
+
+echo "Custom Test Files Included: $custom_total"
+
+#####################################################
