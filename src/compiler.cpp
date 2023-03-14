@@ -29,18 +29,17 @@ void compile(std::ostream &w, std::string file)
 	// Formatting stuff
 
 ////PARSE CHECK
-    int span = 0;
-    program->print(w,span);
+    // int span = 0;
+    // program->print(w,span);
+    // w << std::endl;
+    // w << "test" << std::endl;
+
+//CODE CHECK
+    w << ".text" << std::endl;
     w << std::endl;
-    w << "test" << std::endl;
-
-// //CODE CHECK
-//     w << ".text" << std::endl;
-//     w << std::endl;
-//     Helper helper = Helper();
-//     std::map<std::string, std::vector<std::string>> bindings = helper.bindings;
-//     program->riscv_asm(w, helper, "", bindings);
-
+    Helper helper = Helper();
+    std::map<std::string, std::vector<std::string>> bindings = helper.bindings;
+    program->riscv_asm(w, helper, "", bindings);
 }
 
 // TODO: uncomment the below if you're using Flex/Bison.
