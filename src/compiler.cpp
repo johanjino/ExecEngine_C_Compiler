@@ -28,18 +28,18 @@ void compile(std::ostream &w, std::string file)
 	// -V enables visualisation
 	// Formatting stuff
 
-// ////PARSE CHECK
-//     int span = 0;
-//     program->print(w,span);
-//     w << std::endl;
-//     w << "test" << std::endl;
-
-//CODE CHECK
-    w << ".text" << std::endl;
+////PARSE CHECK
+    int span = 0;
+    program->print(w,span);
     w << std::endl;
-    Helper helper = Helper();
-    std::map<std::string, std::vector<std::string>> bindings = helper.bindings;
-    program->riscv_asm(w, helper, "", bindings);
+    w << "test" << std::endl;
+
+// //CODE CHECK
+//     w << ".text" << std::endl;
+//     w << std::endl;
+//     Helper helper = Helper();
+//     std::map<std::string, std::vector<std::string>> bindings = helper.bindings;
+//     program->riscv_asm(w, helper, "", bindings);
 
 }
 

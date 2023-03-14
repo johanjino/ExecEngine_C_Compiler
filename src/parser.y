@@ -42,7 +42,7 @@
 %type <branch> BODY PARAMETER ARGUMENTS HEADS SWITCH_BODY ENUM_BODY STRUCT_UNION_BODY
 %type <node> DATA_TYPES STATEMENT BLOCK EXPR TERM UNARY FACTOR SWITCH_BLOCK STRUCT_UNION_INSIDE
 %type <node> LINE DECLARATION IF_ELSE_SWITCH LOOP OUTPUT CASES ENUMS POINTER_INIT POINTER_CALL ADDRESS_OF
-%type <node> HEAD STRUCT_UNION
+%type <node> HEAD STRUCT_UNION OPERATORS ARRAY
 
 
 //CHECK: uncommenting the 2 lines below fails custom/char.c due to + - issue
@@ -115,11 +115,8 @@ DECLARATION
 
 //EXPRESSIONS
 EXPR
-	: TERM              					{ $$ = $1; }
-	| CHAR_LITERAL							{ $$ = new Chars(*$1);}
+	: OPERATORS								{ $$ = $1; }
 	| STRING_LITERAL						{ $$ = new Strings(*$1);}
-    | EXPR '+' EXPR 						{ $$ = new AddOperator($1, $3); }
-    | EXPR '-' EXPR 						{ $$ = new SubOperator($1, $3); }
 	| EXPR '>' EXPR							{ $$ = new GthanOperator($1, $3); }
 	| EXPR '<' EXPR							{ $$ = new LthanOperator($1, $3); }
 	| EXPR NE_OP EXPR						{ $$ = new NEqOperator($1, $3); }
@@ -149,11 +146,13 @@ EXPR
 	| INC_OP EXPR 	 						{ $$ = new IncOperator_Pre($2); }
 	| EXPR DEC_OP							{ $$ = new DecOperator_Post($1); }
 	| DEC_OP EXPR 							{ $$ = new DecOperator_Pre($2); }
-	| IDENTIFIER '[' EXPR ']'    		 	{ $$ = new Array_Index((new Variable(*$1)), $3, NULL); }
-	| IDENTIFIER '[' EXPR ']' '=' EXPR 	 	{ $$ = new Array_Index((new Variable(*$1)), $3, $6); }
 	| IDENTIFIER '.' IDENTIFIER 		 	{ $$ = new Struct_Union_Access((new Variable(*$1)), (new Variable(*$3)), NULL); }
 	| IDENTIFIER '.' IDENTIFIER '=' EXPR 	{ $$ = new Struct_Union_Access((new Variable(*$1)), (new Variable(*$3)), $5); }
 
+OPERATORS
+	: TERM 									{ $$ = $1; }
+	| OPERATORS '+' OPERATORS 				{ $$ = new AddOperator($1, $3); }
+    | OPERATORS '-' OPERATORS 				{ $$ = new SubOperator($1, $3); }
 
 TERM
 	: UNARY             			{ $$ = $1; }
@@ -168,6 +167,7 @@ UNARY
 
 FACTOR
 	: CONSTANT     					{$$ = new Number( $1 );}
+	| CHAR_LITERAL					{$$ = new Chars(*$1);}
     | '(' EXPR ')' 					{$$ = $2;}
     | IDENTIFIER 					{$$ = new Variable( *$1 );}
 	| IDENTIFIER '(' ')'			{$$ = new FunctionCall($1,NULL);}
@@ -176,6 +176,12 @@ FACTOR
 	| SIZEOF '(' DATA_TYPES ')'		{$$ = new SizeOf($3);}
 	| POINTER_CALL					{$$ = $1;}
 	| ADDRESS_OF					{$$ = $1;}
+	| ARRAY 						{$$ = $1;}
+
+ARRAY
+	: IDENTIFIER '[' EXPR ']'    		 	{ $$ = new Array_Index((new Variable(*$1)), $3, NULL); }
+	| IDENTIFIER '[' EXPR ']' '=' EXPR 	 	{ $$ = new Array_Index((new Variable(*$1)), $3, $6); }
+
 
 ARGUMENTS
 	: ARGUMENTS ',' EXPR			{$$ = concat_list($3,$1);}

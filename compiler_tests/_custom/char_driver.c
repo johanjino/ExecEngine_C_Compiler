@@ -1,7 +1,7 @@
-int g();
+char g();
 
 int main()
 {
     int x;
-    return !(g()==122);
+    return !(g()=='z');
 }
