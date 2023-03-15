@@ -102,12 +102,13 @@ STATEMENT
 
 DECLARATION
 	: IDENTIFIER '=' EXPR								{$$ = new Declaration(NULL,(new Variable(*$1)),$3);} //temporary need to change
-	| POINTER_INIT '=' EXPR									{$$ = new Declaration(NULL,$1,$3);}
+	| POINTER_INIT '=' EXPR								{$$ = new Declaration(NULL,$1,$3);}
 	| DATA_TYPES IDENTIFIER								{$$ = new Declaration($1,(new Variable(*$2)),NULL);} //need to handle empty initialisations
-	| DATA_TYPES POINTER_INIT								{$$ = new Declaration($1,$2,NULL);} //need to handle empty initialisations
+	| DATA_TYPES POINTER_INIT							{$$ = new Declaration($1,$2,NULL);} //need to handle empty initialisations
 	| DATA_TYPES IDENTIFIER '=' EXPR					{$$ = new Declaration($1,(new Variable(*$2)),$4);} //temporary need to change
-	| DATA_TYPES POINTER_INIT '=' EXPR						{$$ = new Declaration($1,$2,$4);}
+	| DATA_TYPES POINTER_INIT '=' EXPR					{$$ = new Declaration($1,$2,$4);}
 	| DATA_TYPES IDENTIFIER '[' EXPR ']'				{$$ = new Array_Declaration($1, (new Variable(*$2)), $4);}
+	| CHAR '*' IDENTIFIER '=' STRING_LITERAL 			{$$ = new Strings((new Type(_Types::_char)),  (new Variable(*$3)), *$5);}
 	| ENUM IDENTIFIER '{' ENUM_BODY '}' 				{$$ = new Enum_Declaration((new Variable(*$2)), $4);}
 	| STRUCT_UNION IDENTIFIER '{' STRUCT_UNION_BODY '}'	{$$ = new Struct_Union_Declaration((new Variable(*$2)), $4);}
 	| STRUCT_UNION IDENTIFIER IDENTIFIER				{$$ = new Declaration((new Variable(*$2)),(new Variable(*$3)),NULL);}
@@ -116,7 +117,6 @@ DECLARATION
 //EXPRESSIONS
 EXPR
 	: OPERATORS								{ $$ = $1; }
-	| STRING_LITERAL						{ $$ = new Strings(*$1);}
 	| EXPR '>' EXPR							{ $$ = new GthanOperator($1, $3); }
 	| EXPR '<' EXPR							{ $$ = new LthanOperator($1, $3); }
 	| EXPR NE_OP EXPR						{ $$ = new NEqOperator($1, $3); }
@@ -181,7 +181,6 @@ FACTOR
 ARRAY
 	: IDENTIFIER '[' EXPR ']'    		 	{ $$ = new Array_Index((new Variable(*$1)), $3, NULL); }
 	| IDENTIFIER '[' EXPR ']' '=' EXPR 	 	{ $$ = new Array_Index((new Variable(*$1)), $3, $6); }
-
 
 ARGUMENTS
 	: ARGUMENTS ',' EXPR			{$$ = concat_list($3,$1);}
@@ -316,4 +315,3 @@ const Node *parseAST(std::string filename){
   yyparse();
   return g_root;
 }
-
