@@ -40,7 +40,7 @@
 %type <number> CONSTANT
 
 %type <branch> BODY PARAMETER ARGUMENTS HEADS SWITCH_BODY ENUM_BODY STRUCT_UNION_BODY
-%type <node> DATA_TYPES STATEMENT BLOCK EXPR TERM UNARY FACTOR SWITCH_BLOCK STRUCT_UNION_INSIDE
+%type <node> DATA_TYPES STATEMENT BLOCK EXPR TERM UNARY FACTOR STRUCT_UNION_INSIDE
 %type <node> LINE DECLARATION IF_ELSE_SWITCH LOOP OUTPUT CASES ENUMS POINTER_INIT POINTER_CALL ADDRESS_OF
 %type <node> HEAD STRUCT_UNION OPERATORS ARRAY
 
@@ -197,14 +197,11 @@ IF_ELSE_SWITCH
 	: IF '(' EXPR ')' BLOCK							{$$ = new ifelse($3,$5,NULL);}
 	| IF '(' EXPR ')' BLOCK ELSE BLOCK				{$$ = new ifelse($3,$5,$7);}
 	| EXPR '?' BLOCK ':' BLOCK						{$$ = new ifelse($1, $3, $5);}
-	| SWITCH '(' EXPR ')' SWITCH_BLOCK 				{$$ = new switch_statement($3, $5); }
+	| SWITCH '(' EXPR ')' '{' SWITCH_BODY '}' 		{$$ = new switch_statement($3, $6);}
 
 CASES
-	: CASE EXPR ':' BODY 							{ $$ = new case_statement($2, $4); }
-	| DEFAULT ':' BODY 								{ $$ = new default_statement($3); }
-
-SWITCH_BLOCK
-    : '{' SWITCH_BODY '}'           				{$$ = new Block($2);}
+	: CASE EXPR ':' BODY 							{ $$ = new case_statement($2, new Block($4)); }
+	| DEFAULT ':' BODY 								{ $$ = new default_statement( new Block($3)); }
 
 SWITCH_BODY
 	: CASES	SWITCH_BODY			    				{$$ = concat_list($1,$2);}

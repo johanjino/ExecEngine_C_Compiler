@@ -61,9 +61,6 @@ class Helper {
 
 
         // loop end and start
-        std::string current_loop_end;
-        std::string current_loop_update;
-        std::string current_loop_start;
         std::vector<std::string> loop_end;
         std::vector<std::string> loop_update;
         std::vector<std::string> loop_start;
@@ -72,15 +69,9 @@ class Helper {
             loop_start.push_back(new_loop_start);
             loop_update.push_back(new_loop_update);
             loop_end.push_back(new_loop_end);
-            current_loop_start = new_loop_start;
-            current_loop_update = new_loop_update;
-            current_loop_end = new_loop_end;
         }
         void exit_loop(){
             if (!loop_start.empty()){
-                current_loop_start = loop_start.back();
-                current_loop_update = loop_update.back();
-                current_loop_end = loop_end.back();
                 loop_start.pop_back();
                 loop_update.pop_back();
                 loop_end.pop_back();
@@ -92,13 +83,13 @@ class Helper {
         }
         std::string get_loop_labels(std::string where){
             if (where == "Start"){
-                return current_loop_start;
+                return loop_start.back();
             }
             else if (where == "End"){
-                return current_loop_end;
+                return loop_end.back();
             }
             else if (where == "Update"){
-                return current_loop_update;
+                return loop_update.back();
             }
             else{
                 return "invalid location to jump";
@@ -119,6 +110,11 @@ class Helper {
         }
 
 
+
+        //Switch Handling
+        std::vector<std::string> switch_reg;
+        std::vector<std::string> switch_label;
+        std::vector<std::string> switch_status;
 
 
         /*
