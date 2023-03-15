@@ -28,7 +28,7 @@ void compile(std::ostream &w, std::string file)
 	// -V enables visualisation
 	// Formatting stuff
 
-////PARSE CHECK
+// //PARSE CHECK
     // int span = 0;
     // program->print(w,span);
     // w << std::endl;
