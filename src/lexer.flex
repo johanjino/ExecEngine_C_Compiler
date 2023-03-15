@@ -4,7 +4,7 @@
 	//extern "C" int fileno(FILE *stream);
 	#include "parser.tab.hpp"
 	#include <string>
-	
+
 	//lexing hack
 	std::map<std::string, std::string> type_map;
 
@@ -136,6 +136,7 @@ L?\"(\\.|[^\\"])*\"	 		{ yylval.string=new std::string(yytext); return STRING_LI
 
 [ \t\r\n]+		 			{;}
 .				 			{;}
+
 %%
 
 void yyerror (char const *s){
