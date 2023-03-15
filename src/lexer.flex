@@ -3,6 +3,29 @@
 	// Avoid error "error: `fileno' was not declared in this scope"
 	//extern "C" int fileno(FILE *stream);
 	#include "parser.tab.hpp"
+	#include <string>
+	
+	//lexing hack
+	std::map<std::string, std::string> type_map;
+
+	void update_type_map(std::string identifier, std::string type){
+		type_map[identifier] = type;
+	}
+
+
+	auto check_type_map (std::string identifier){
+		if (type_map.count(identifier)){
+			if 		(type_map[identifier] == "void")		{ return(VOID);}
+			else if (type_map[identifier] == "int")			{ return(INT); }
+			else if (type_map[identifier] == "long")		{ return(LONG); }
+			else if (type_map[identifier] == "short")		{ return(SHORT); }
+			else if (type_map[identifier] == "double")		{ return(DOUBLE); }
+			else if (type_map[identifier] == "float")		{ return(FLOAT); }
+			else if (type_map[identifier] == "char")		{ return(CHAR); }
+			else 	{std::cerr<< "Aliasing unknown datatype"<<std::endl; exit(1);}	//This shouldn't happend lol
+		}
+		return IDENTIFIER;
+	}
 %}
 
 D			[0-9]
@@ -16,23 +39,17 @@ IS			(u|U|l|L)*
 "auto"			{ return(AUTO); }
 "break"			{ return(BREAK); }
 "case"			{ return(CASE); }
-"char"			{ return(CHAR); }
 "continue"		{ return(CONTINUE); }
 "default"		{ return(DEFAULT); }
 "do"			{ return(DO); }
-"double"		{ return(DOUBLE); }
 "else"			{ return(ELSE); }
 "enum"			{ return(ENUM); }
 "extern"		{ return(EXTERN); }
-"float"			{ return(FLOAT); }
 "for"			{ return(FOR); }
 "goto"			{ return(GOTO); }
 "if"			{ return(IF); }
-"int"			{ return(INT); }
-"long"			{ return(LONG); }
 "register"		{ return(REGISTER); }
 "return"		{ return(RETURN); }
-"short"			{ return(SHORT); }
 "signed"		{ return(SIGNED); }
 "sizeof"		{ return(SIZEOF); }
 "static"		{ return(STATIC); }
@@ -41,7 +58,6 @@ IS			(u|U|l|L)*
 "typedef"		{ return(TYPEDEF); }
 "union"			{ return(UNION); }
 "unsigned"		{ return(UNSIGNED); }
-"void"			{ return(VOID); }
 "volatile"		{ return(VOLATILE); }
 "while"			{ return(WHILE); }
 
@@ -96,7 +112,17 @@ IS			(u|U|l|L)*
 "?"				{ return('?'); }
 
 
-{L}({L}|{D})*				{ yylval.string=new std::string(yytext); return IDENTIFIER; }
+"void"			{ return(VOID); }
+"int"			{ return(INT); }
+"long"			{ return(LONG); }
+"short"			{ return(SHORT); }
+"double"		{ return(DOUBLE); }
+"float"			{ return(FLOAT); }
+"char"			{ return(CHAR); }
+
+
+
+{L}({L}|{D})*				{ yylval.string=new std::string(yytext); return check_type_map(std::string(yytext));}
 
 0[xX]{H}+{IS}?				{ yylval.number=std::stold(yytext); return(CONSTANT); } //
 0{D}+{IS}?					{ yylval.number=std::stold(yytext); return(CONSTANT); } //
@@ -112,8 +138,7 @@ L?\"(\\.|[^\\"])*\"	 		{ yylval.string=new std::string(yytext); return STRING_LI
 .				 			{;}
 %%
 
-void yyerror (char const *s)
-{
+void yyerror (char const *s){
   fprintf (stderr, "Parse error : %s\n", s);
   exit(1);
 }

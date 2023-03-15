@@ -4,6 +4,7 @@
   #include "ast.hpp"
   #include <string>
 
+  extern void update_type_map(std::string identifier, std::string type);
   extern const Node *g_root; //A way of getting the AST out
   extern FILE *yyin;
 
@@ -72,6 +73,7 @@ HEAD
 	| DATA_TYPES IDENTIFIER '(' ')' BLOCK				{$$ = new FunctionDef($1,$2,NULL,$5);}
 	| DATA_TYPES IDENTIFIER '(' PARAMETER ')' BLOCK		{$$ = new FunctionDef($1,$2,$4,$6);}
 	| DECLARATION ';'									{$$ = $1;}
+	| THROWAWAY	';'										{ $$ = new Throwaway();}
 
 PARAMETER
 	: PARAMETER ',' DECLARATION		{$$ = concat_list($3,$1);}
@@ -99,6 +101,7 @@ STATEMENT
 	| RETURN				{ $$ = new Return(NULL);}
 	| CONTINUE 	 			{ $$ = new Continue();}
 	| BREAK 	 			{ $$ = new Break();}
+	| THROWAWAY				{ $$ = new Throwaway();}
 
 DECLARATION
 	: IDENTIFIER '=' EXPR								{$$ = new Declaration(NULL,(new Variable(*$1)),$3);} //temporary need to change
@@ -297,6 +300,9 @@ DATA_TYPES
 
 	| VOID 				{$$ = new Type(_Types::_void);}
 
+THROWAWAY
+	: TYPEDEF DATA_TYPES IDENTIFIER					{update_type_map(*$3, $2->getType());}
+	| TYPEDEF DATA_TYPES '*' IDENTIFIER					{update_type_map(*$4, $2->getType());}
 
 %%
 

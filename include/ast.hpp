@@ -6,6 +6,7 @@
 #include "ast/ast_listnode.hpp"
 #include "ast/ast_declaration.hpp"
 #include "ast/ast_output.hpp"
+#include "ast/ast_throwaway.hpp"
 
 #include "ast/Function/ast_function.hpp"
 #include "ast/Function/ast_sizeof.hpp"
