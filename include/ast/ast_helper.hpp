@@ -43,9 +43,6 @@ class Helper {
             0,0,0,0                 //f28 - f31     t3 - t6     Temporary registers
         };
 
-        int default_mem_allocation  = 128;
-        int last_mem_allocated = 128;
-
         std::string function_end;
 
 
@@ -55,7 +52,6 @@ class Helper {
 
         //Constructs
         Helper(){}
-
 
 
         // loop end and start
@@ -134,6 +130,8 @@ class Helper {
         std::map<std::string, std::vector<std::string>> bindings;
 
         //Memory allocation for scalability
+        int default_mem_allocation  = 128;
+        int last_mem_allocated = 128;
         int min_mem = 4;
 
 

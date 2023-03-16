@@ -56,9 +56,19 @@ class AddOperator: public Operator{
                     std::string reg_left = helper.allocateReg(datatype);
                     left->riscv_asm(dst, helper, reg_left, bindings);
 
+                    std::string mem = helper.allocateMemory();
+                    dst<<"sw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                    dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
+                    helper.deallocateReg(reg_left);
+
                     //Calculate Right
                     std::string reg_right = helper.allocateReg(datatype);
                     right->riscv_asm(dst, helper, reg_right, bindings);
+
+                    //Load the left value
+                    reg_left = helper.allocateReg(datatype);
+                    dst<<"lw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                    helper.last_mem_allocated + helper.min_mem;
 
                     //Add
                     dst<<"add "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
