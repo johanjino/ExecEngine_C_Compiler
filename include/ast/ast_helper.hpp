@@ -43,8 +43,6 @@ class Helper {
             0,0,0,0                 //f28 - f31     t3 - t6     Temporary registers
         };
 
-        int current_scope = 0;
-
         int default_mem_allocation  = 128;
         int last_mem_allocated = 128;
 
@@ -117,12 +115,18 @@ class Helper {
         std::vector<std::string> switch_status;
 
 
+        //Enum Handling
+        int last_enum = -1;
+        std::map<std::string, int> global_enums;
+
+
         /*
         -----------------------------MEMORY MANAGEMENT-------------------------------
         */
 
 
         //Scopes
+        int current_scope = 0;
         std::vector<std::map<std::string, std::vector<std::string>>> Scopes;
         std::vector<int> mem_scope;
 

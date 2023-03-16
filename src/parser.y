@@ -42,7 +42,7 @@
 
 %type <branch> BODY PARAMETER ARGUMENTS HEADS SWITCH_BODY ENUM_BODY STRUCT_UNION_BODY
 %type <node> DATA_TYPES STATEMENT BLOCK EXPR TERM UNARY FACTOR STRUCT_UNION_INSIDE
-%type <node> LINE DECLARATION IF_ELSE_SWITCH LOOP OUTPUT CASES ENUMS POINTER_INIT POINTER_CALL ADDRESS_OF
+%type <node> LINE DECLARATION IF_ELSE_SWITCH LOOP OUTPUT CASES ENUMS ENUM_DEC POINTER_INIT POINTER_CALL ADDRESS_OF
 %type <node> HEAD STRUCT_UNION OPERATORS ARRAY
 
 
@@ -73,6 +73,7 @@ HEAD
 	| DATA_TYPES IDENTIFIER '(' ')' BLOCK				{$$ = new FunctionDef($1,$2,NULL,$5);}
 	| DATA_TYPES IDENTIFIER '(' PARAMETER ')' BLOCK		{$$ = new FunctionDef($1,$2,$4,$6);}
 	| DECLARATION ';'									{$$ = $1;}
+	| ENUMS ';'											{$$ = $1;}
 	| THROWAWAY	';'										{ $$ = new Throwaway();}
 
 PARAMETER
@@ -112,7 +113,6 @@ DECLARATION
 	| DATA_TYPES POINTER_INIT '=' EXPR					{$$ = new Declaration($1,$2,$4);}
 	| DATA_TYPES IDENTIFIER '[' EXPR ']'				{$$ = new Array_Declaration($1, (new Variable(*$2)), $4);}
 	| CHAR '*' IDENTIFIER '=' STRING_LITERAL 			{$$ = new Strings((new Type(_Types::_char)),  (new Variable(*$3)), *$5);}
-	| ENUM IDENTIFIER '{' ENUM_BODY '}' 				{$$ = new Enum_Declaration((new Variable(*$2)), $4);}
 	| STRUCT_UNION IDENTIFIER '{' STRUCT_UNION_BODY '}'	{$$ = new Struct_Union_Declaration((new Variable(*$2)), $4);}
 	| STRUCT_UNION IDENTIFIER IDENTIFIER				{$$ = new Declaration((new Variable(*$2)),(new Variable(*$3)),NULL);}
 	| EXPR 		//for assignment operators
@@ -210,14 +210,28 @@ SWITCH_BODY
 	: CASES	SWITCH_BODY			    				{$$ = concat_list($1,$2);}
 	| CASES											{$$ = init_list($1);}
 
-ENUMS
-	: IDENTIFIER									{$$ = new Declaration(NULL,(new Variable(*$1)),NULL);}
-	| IDENTIFIER '=' EXPR							{$$ = new Declaration(NULL,(new Variable(*$1)),$3);}
+
+
+
+
+//ENUM
+
+ENUM_DEC
+	: IDENTIFIER									{$$ = new Enum_Dec((new Variable(*$1)),NULL);}
+	| IDENTIFIER '=' FACTOR							{$$ = new Enum_Dec((new Variable(*$1)),$3);}	//Our AST does not yet accept expressions in enums
 
 ENUM_BODY
-	: ENUMS											{$$ = init_list($1);}
-	| ENUMS ',' ENUM_BODY							{$$ = concat_list($1,$3);}
+	: ENUM_DEC										{$$ = init_list($1);}
+	| ENUM_DEC ',' ENUM_BODY						{$$ = concat_list($1,$3);}
 
+ENUMS:
+	| ENUM IDENTIFIER '{' ENUM_BODY	'}'										{$$ = new Enum($4);}
+
+
+
+
+
+//STRUCT
 
 STRUCT_UNION
 	: UNION
@@ -300,7 +314,7 @@ DATA_TYPES
 	| VOID 				{$$ = new Type(_Types::_void);}
 
 THROWAWAY
-	: TYPEDEF DATA_TYPES IDENTIFIER					{update_type_map(*$3, $2->getType());}
+	: TYPEDEF DATA_TYPES IDENTIFIER						{update_type_map(*$3, $2->getType());}
 	| TYPEDEF DATA_TYPES '*' IDENTIFIER					{update_type_map(*$4, $2->getType());}
 
 %%

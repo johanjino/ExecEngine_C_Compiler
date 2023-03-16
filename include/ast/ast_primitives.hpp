@@ -55,6 +55,9 @@ class Variable : public Node {
             if (bindings.count(id)){
                 dst<<floating_repr<<"lw "<<destReg<<", "<<bindings[id][0]<<"(sp)"<<std::endl;
             }
+            else if (helper.global_enums.count(id)){
+                dst<<"li "<<destReg<<", "<<helper.global_enums[id]<<std::endl;
+            }
             else{
                 std::string mem = helper.allocateMemory();
                 dst<<floating_repr<<"sw "<<destReg<<", "<<mem<<"(sp)"<<std::endl;

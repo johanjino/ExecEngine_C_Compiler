@@ -14,6 +14,7 @@
 #include "ast/Keyword/ast_return.hpp"
 #include "ast/Keyword/ast_break.hpp"
 #include "ast/Keyword/ast_continue.hpp"
+#include "ast/Keyword/ast_enum.hpp"
 
 #include "ast/Arrays/ast_arrays.hpp"
 

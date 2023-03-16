@@ -22,7 +22,7 @@
 			else if (type_map[identifier] == "double")		{ return(DOUBLE); }
 			else if (type_map[identifier] == "float")		{ return(FLOAT); }
 			else if (type_map[identifier] == "char")		{ return(CHAR); }
-			else 	{std::cerr<< "Aliasing unknown datatype"<<std::endl; exit(1);}	//This shouldn't happend lol
+			else 	{std::cerr<< "Aliasing unknown datatype"<<std::endl; exit(1);}	//This shouldn't happen lol
 		}
 		return IDENTIFIER;
 	}
