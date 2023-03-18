@@ -43,7 +43,7 @@
 %type <branch> BODY PARAMETER ARGUMENTS HEADS SWITCH_BODY ENUM_BODY STRUCT_UNION_BODY
 %type <node> DATA_TYPES STATEMENT BLOCK EXPR TERM UNARY FACTOR STRUCT_UNION_INSIDE STRUCT_UNION_SET
 %type <node> LINE DECLARATION IF_ELSE_SWITCH LOOP OUTPUT CASES ENUMS ENUM_DEC POINTER_INIT POINTER_CALL ADDRESS_OF
-%type <node> HEAD STRUCT_UNION OPERATORS ARRAY
+%type <node> HEAD STRUCT_UNION OPERATORS ARRAY FUNCTION_DEF
 
 
 //CHECK: uncommenting the 2 lines below fails custom/char.c due to + - issue
@@ -68,14 +68,26 @@ HEADS
 
 //HEAD OF FUNCTIONS
 HEAD
-	: DATA_TYPES IDENTIFIER '(' ')' ';'					{$$ = new FunctionDef($1,$2,NULL,NULL);}
-	| DATA_TYPES IDENTIFIER '(' PARAMETER ')' ';'		{$$ = new FunctionDef($1,$2,$4,NULL);}
-	| DATA_TYPES IDENTIFIER '(' ')' BLOCK				{$$ = new FunctionDef($1,$2,NULL,$5);}
-	| DATA_TYPES IDENTIFIER '(' PARAMETER ')' BLOCK		{$$ = new FunctionDef($1,$2,$4,$6);}
+	: FUNCTION_DEF										{$$ = $1;}
 	| DECLARATION ';'									{$$ = $1;}
 	| ENUMS ';'											{$$ = $1;}
 	| STRUCT_UNION ';'									{$$ = $1;}
 	| THROWAWAY	';'										{$$ = new Throwaway();}
+
+FUNCTION_DEF
+	: DATA_TYPES IDENTIFIER '(' ')' ';'						{$$ = new FunctionDef($1,$2,NULL,NULL);}
+	| DATA_TYPES IDENTIFIER '(' PARAMETER ')' ';'			{$$ = new FunctionDef($1,$2,$4,NULL);}
+	| DATA_TYPES IDENTIFIER '(' ')' BLOCK					{$$ = new FunctionDef($1,$2,NULL,$5);}
+	| DATA_TYPES IDENTIFIER '(' PARAMETER ')' BLOCK			{$$ = new FunctionDef($1,$2,$4,$6);}
+	| DATA_TYPES '*' IDENTIFIER '(' ')' ';'					{$$ = new FunctionDef($1,$3,NULL,NULL);}
+	| DATA_TYPES '*' IDENTIFIER '(' PARAMETER ')' ';'		{$$ = new FunctionDef($1,$3,$5,NULL);}
+	| DATA_TYPES '*' IDENTIFIER '(' ')' BLOCK				{$$ = new FunctionDef($1,$3,NULL,$6);}
+	| DATA_TYPES '*' IDENTIFIER '(' PARAMETER ')' BLOCK		{$$ = new FunctionDef($1,$3,$5,$7);}
+	| CHAR '*' IDENTIFIER '(' ')' ';'						{$$ = new FunctionDef((new Type(_Types::_char)),$3,NULL,NULL);}
+	| CHAR '*' IDENTIFIER '(' PARAMETER ')' ';'				{$$ = new FunctionDef((new Type(_Types::_char)),$3,$5,NULL);}
+	| CHAR '*' IDENTIFIER '(' ')' BLOCK						{$$ = new FunctionDef((new Type(_Types::_char)),$3,NULL,$6);}
+	| CHAR '*' IDENTIFIER '(' PARAMETER ')' BLOCK			{$$ = new FunctionDef((new Type(_Types::_char)),$3,$5,$7);}
+
 
 PARAMETER
 	: PARAMETER ',' DECLARATION		{$$ = concat_list($3,$1);}
