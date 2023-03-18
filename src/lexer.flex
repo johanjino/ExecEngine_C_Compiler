@@ -134,6 +134,9 @@ IS			(u|U|l|L)*
 L?'(\\.|[^\\'])+'			{ yylval.string=new std::string(yytext); return CHAR_LITERAL; }
 L?\"(\\.|[^\\"])*\"	 		{ yylval.string=new std::string(yytext); return STRING_LITERAL; }
 
+"//"(.)*     								{;}					// Single-line comment
+"/*"([^*]|\n|\r|("*"+[^*/]))*("*"+"/")?  	{;}					/* Multi-line comment */
+
 [ \t\r\n]+		 			{;}
 .				 			{;}
 
