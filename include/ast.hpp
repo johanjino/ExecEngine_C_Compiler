@@ -15,15 +15,14 @@
 #include "ast/Keyword/ast_break.hpp"
 #include "ast/Keyword/ast_continue.hpp"
 #include "ast/Keyword/ast_enum.hpp"
+#include "ast/Keyword/ast_struct.hpp"
 
 #include "ast/Arrays/ast_arrays.hpp"
 
 #include "ast/Pointers/ast_pointers.hpp"
 
 #include "ast/Types/ast_types.hpp"
-#include "ast/Types/ast_enum.hpp"
 #include "ast/Types/ast_strings_chars.hpp"
-#include "ast/Types/ast_struct_union.hpp"
 
 #include "ast/Blocks/ast_block.hpp"
 #include "ast/Blocks/ast_ifelse.hpp"

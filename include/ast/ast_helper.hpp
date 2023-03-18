@@ -5,6 +5,7 @@
 #include <string>
 #include <iostream>
 #include <map>
+//#include <unordered_map>  Good idea to probably convert all map to unordered maps
 #include <vector>
 
 #include <memory>
@@ -266,6 +267,16 @@ class Helper {
 
 
 
+
+
+        /*
+        -----------------------------STRING MANAGEMENT-------------------------------
+        */
+
+
+
+
+
         std::vector<std::vector<std::string>> all_headers;
 
         void add_header(std::vector<std::string> new_header) {
@@ -283,6 +294,30 @@ class Helper {
                 }
             }
         }
+
+
+
+
+        /*
+        -----------------------------STRUCT MANAGEMENT-------------------------------
+        */
+
+
+        // struct_name -> properties { ( id -> type ) , ( id -> type) , }
+        std::map<std::string, std::map<std::string, std::string>> structs_created;
+
+        void init_struct(std::ostream &dst, std::string name_of_struct, std::string variable){
+
+            //iterate through each property
+            for (auto const &x : structs_created[name_of_struct]) {
+                std::string mem = allocateMemory();
+                std::vector<std::string> properties;
+                properties.push_back(mem);
+                properties.push_back(x.second);
+                bindings[variable + "." + x.first] = properties;
+            }
+        }
+
 
 };
 

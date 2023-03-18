@@ -74,7 +74,8 @@ HEAD
 	| DATA_TYPES IDENTIFIER '(' PARAMETER ')' BLOCK		{$$ = new FunctionDef($1,$2,$4,$6);}
 	| DECLARATION ';'									{$$ = $1;}
 	| ENUMS ';'											{$$ = $1;}
-	| THROWAWAY	';'										{ $$ = new Throwaway();}
+	| STRUCT_UNION ';'									{$$ = $1;}
+	| THROWAWAY	';'										{$$ = new Throwaway();}
 
 PARAMETER
 	: PARAMETER ',' DECLARATION		{$$ = concat_list($3,$1);}
@@ -114,8 +115,8 @@ DECLARATION
 	| DATA_TYPES IDENTIFIER '[' EXPR ']'				{$$ = new Array_Declaration($1, (new Variable(*$2)), $4);}
 	| CHAR '*' IDENTIFIER								{$$ = new Declaration((new Type(_Types::_char)), (new Pointer_Init(new Variable(*$3))), NULL) ;}
 	| CHAR '*' IDENTIFIER '=' STRING_LITERAL 			{$$ = new Strings((new Type(_Types::_char)),  (new Variable(*$3)), *$5);}
-	| STRUCT_UNION IDENTIFIER '{' STRUCT_UNION_BODY '}'	{$$ = new Struct_Union_Declaration((new Variable(*$2)), $4);}
-	| STRUCT_UNION IDENTIFIER IDENTIFIER				{$$ = new Declaration((new Variable(*$2)),(new Variable(*$3)),NULL);}
+	| STRUCT IDENTIFIER IDENTIFIER						{$$ = new Struct_Init((new Variable(*$2)),(new Variable(*$3)));}
+	| IDENTIFIER '.' IDENTIFIER '=' EXPR				{$$ = new Declaration(NULL,new Variable( (*$1 + std::string(".",1) + *$3) ),$5);}
 	| EXPR 		//for assignment operators
 
 //EXPRESSIONS
@@ -181,12 +182,8 @@ FACTOR
 	| POINTER_CALL					{$$ = $1;}
 	| ADDRESS_OF					{$$ = $1;}
 	| ARRAY 						{$$ = $1;}
-	| STRUCT_UNION_SET				{$$ = $1;}
+	| IDENTIFIER '.' IDENTIFIER		{$$ = new Variable( (*$1 + std::string(".",1) + *$3) );}
 
-
-STRUCT_UNION_SET
-	: IDENTIFIER '.' IDENTIFIER 		 	{ $$ = new Struct_Union_Access((new Variable(*$1)), (new Variable(*$3)), NULL); }
-	| IDENTIFIER '.' IDENTIFIER '=' EXPR 	{ $$ = new Struct_Union_Access((new Variable(*$1)), (new Variable(*$3)), $5); }
 
 ARRAY
 	: IDENTIFIER '[' EXPR ']'    		 	{ $$ = new Array_Index((new Variable(*$1)), $3, NULL); }
@@ -242,15 +239,14 @@ ENUMS:
 //STRUCT
 
 STRUCT_UNION
-	: UNION
-	| STRUCT
+	: STRUCT IDENTIFIER '{' STRUCT_UNION_BODY '}' 		{$$ = new Struct_Dec((new Variable(*$2)),$4);}
 
 STRUCT_UNION_BODY
-	: STRUCT_UNION_INSIDE ';'						{$$ = init_list($1);}
-	| STRUCT_UNION_INSIDE ';' STRUCT_UNION_BODY		{$$ = concat_list($1,$3);}
+	: STRUCT_UNION_INSIDE ';'							{$$ = init_list($1);}
+	| STRUCT_UNION_INSIDE ';' STRUCT_UNION_BODY			{$$ = concat_list($1,$3);}
 
 STRUCT_UNION_INSIDE
-	: DATA_TYPES IDENTIFIER							{$$ = new Declaration($1,(new Variable(*$2)),NULL);}
+	: DATA_TYPES IDENTIFIER								{$$ = new Declaration($1,(new Variable(*$2)),NULL);}
 
 
 
