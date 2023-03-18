@@ -52,6 +52,12 @@ class AddOperator: public Operator{
                     helper.deallocateReg(reg_right);
                 }
                 else{
+                    bool pointer;
+                    if (bindings.count(left->getId())){
+                        if (bindings[left->getId()].size()>2){
+                            pointer = true;
+                        }
+                    }
                     //Calculate Left
                     std::string reg_left = helper.allocateReg(datatype);
                     left->riscv_asm(dst, helper, reg_left, bindings);
@@ -65,6 +71,13 @@ class AddOperator: public Operator{
                     //Calculate Right
                     std::string reg_right = helper.allocateReg(datatype);
                     right->riscv_asm(dst, helper, reg_right, bindings);
+                    if (pointer){
+                        std::string temp = helper.allocateReg(datatype);
+                        dst<<"li "<<temp<<", 4"<<std::endl;
+                        dst<<"mul "<<reg_right<<", "<<reg_right<<", "<<temp<<std::endl;
+                        dst<<"addi "<<temp<<", zero, 0"<<std::endl;
+                        helper.deallocateReg(temp);
+                    }
 
                     //Load the left value
                     reg_left = helper.allocateReg(datatype);

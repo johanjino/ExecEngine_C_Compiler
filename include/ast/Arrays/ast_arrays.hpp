@@ -108,21 +108,41 @@ class Array_Index : public Node {
             std::string datatype = "None")const override{
 
                 if(value==NULL){
-                    std::string reg_index = helper.allocateReg(datatype);
-                    index->riscv_asm(dst, helper, reg_index, bindings, datatype);
+                    if (bindings[id->getId()].size()>2){
+                        std::string reg_index = helper.allocateReg(datatype);
+                        index->riscv_asm(dst, helper, reg_index, bindings, datatype);
 
-                    std::string reg_min_mem = helper.allocateReg("int");
+                        std::string reg_min_mem = helper.allocateReg("int");
 
-                    dst<<"li "<<reg_min_mem<<", "<<helper.min_mem<<std::endl;
-                    dst<<"mul "<<reg_index<<", "<<reg_index<<", "<<reg_min_mem<<std::endl;
-                    dst<<"li "<<reg_min_mem<<", "<<bindings[id->getId()][0]<<std::endl;
-                    dst<<"sub "<<reg_index<<", "<<reg_min_mem<<", "<<reg_index<<std::endl;
-                    dst<<"add "<<reg_index<<", "<<reg_index<<", sp"<<std::endl;
-                    dst<<"lw "<<destReg<<", "<<"0("<<reg_index<<")"<<std::endl;
-                    dst<<"addi "<<reg_min_mem<<", zero, 0"<<std::endl;
-                    dst<<"addi "<<reg_index<<", zero, 0"<<std::endl;
-                    helper.deallocateReg(reg_min_mem);
-                    helper.deallocateReg(reg_index);
+                        dst<<"li "<<reg_min_mem<<", "<<helper.min_mem<<std::endl;
+                        dst<<"mul "<<reg_index<<", "<<reg_index<<", "<<reg_min_mem<<std::endl;
+                        dst<<"li "<<reg_min_mem<<", "<<bindings[id->getId()][0]<<std::endl;
+                        dst<<"add "<<reg_min_mem<<", "<<reg_min_mem<<", sp"<<std::endl;
+                        dst<<"lw "<<reg_min_mem<<", "<<"0("<<reg_min_mem<<")"<<std::endl;
+                        dst<<"add "<<reg_index<<", "<<reg_min_mem<<", "<<reg_index<<std::endl;
+                        dst<<"lw "<<destReg<<", "<<"0("<<reg_index<<")"<<std::endl;
+                        dst<<"addi "<<reg_min_mem<<", zero, 0"<<std::endl;
+                        dst<<"addi "<<reg_index<<", zero, 0"<<std::endl;
+                        helper.deallocateReg(reg_min_mem);
+                        helper.deallocateReg(reg_index);
+                    }
+                    else{
+                        std::string reg_index = helper.allocateReg(datatype);
+                        index->riscv_asm(dst, helper, reg_index, bindings, datatype);
+
+                        std::string reg_min_mem = helper.allocateReg("int");
+
+                        dst<<"li "<<reg_min_mem<<", "<<helper.min_mem<<std::endl;
+                        dst<<"mul "<<reg_index<<", "<<reg_index<<", "<<reg_min_mem<<std::endl;
+                        dst<<"li "<<reg_min_mem<<", "<<bindings[id->getId()][0]<<std::endl;
+                        dst<<"sub "<<reg_index<<", "<<reg_min_mem<<", "<<reg_index<<std::endl;
+                        dst<<"add "<<reg_index<<", "<<reg_index<<", sp"<<std::endl;
+                        dst<<"lw "<<destReg<<", "<<"0("<<reg_index<<")"<<std::endl;
+                        dst<<"addi "<<reg_min_mem<<", zero, 0"<<std::endl;
+                        dst<<"addi "<<reg_index<<", zero, 0"<<std::endl;
+                        helper.deallocateReg(reg_min_mem);
+                        helper.deallocateReg(reg_index);
+                    }
                 }
                 else{
                     std::string reg_val = helper.allocateReg(datatype);

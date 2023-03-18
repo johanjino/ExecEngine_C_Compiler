@@ -26,6 +26,10 @@ class Declaration : public Node{
         std::string getId() const override
         { return id->getId(); }
 
+        virtual std::string getClass() const override{
+            return id->getClass();
+        }
+
         NodePtr getvalue() const
         { return value; }
 

@@ -47,6 +47,7 @@ class Pointer_Init : public Node{
                     std::vector<std::string> properties;
                     properties.push_back(mem);
                     properties.push_back(datatype);
+                    properties.push_back("p"); //to later identify the pointer
                     bindings[var->getId()] = properties;
 
         }

@@ -87,13 +87,25 @@ class FunctionDef : public Node {
                             bindings[(*params)[i]->getId()] = properties;
                         }
                         else{
-                            std::string param_reg = "a" + std::to_string(++regs_used);
-                            std::string param_mem = helper.allocateMemory();
-                            dst<<"sw "<<param_reg<<", "<<param_mem<<"(sp)"<<std::endl;
-                            std::vector<std::string> properties;
-                            properties.push_back(param_mem);
-                            properties.push_back(param_type);
-                            bindings[(*params)[i]->getId()] = properties;
+                            if ((*params)[i]->getClass() == "Pointer"){
+                                std::string param_reg = "a" + std::to_string(++regs_used);
+                                std::string param_mem = helper.allocateMemory();
+                                dst<<"sw "<<param_reg<<", "<<param_mem<<"(sp)"<<std::endl;
+                                std::vector<std::string> properties;
+                                properties.push_back(param_mem);
+                                properties.push_back(param_type);
+                                properties.push_back("p"); //to later identify the pointer
+                                bindings[(*params)[i]->getId()] = properties;
+                            }
+                            else{
+                                std::string param_reg = "a" + std::to_string(++regs_used);
+                                std::string param_mem = helper.allocateMemory();
+                                dst<<"sw "<<param_reg<<", "<<param_mem<<"(sp)"<<std::endl;
+                                std::vector<std::string> properties;
+                                properties.push_back(param_mem);
+                                properties.push_back(param_type);
+                                bindings[(*params)[i]->getId()] = properties;
+                            }
                         }
                     }
                 }
