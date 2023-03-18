@@ -17,10 +17,19 @@ class RightAssignOperator: public Operator{
             std::string destReg,
             std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
+
                 std::string reg_left = helper.allocateReg(datatype);
                 left->riscv_asm(dst, helper, reg_left, bindings);
+                std::string mem = helper.allocateMemory();
+                dst<<"sw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
+                helper.deallocateReg(reg_left);
                 std::string reg_right = helper.allocateReg(datatype);
                 right->riscv_asm(dst, helper, reg_right, bindings);
+                reg_left = helper.allocateReg(datatype);
+                dst<<"lw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                helper.last_mem_allocated += helper.min_mem;
+
                 dst<<"srl "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
                 dst <<"sw "<<destReg<< ", "<<bindings[left->getId()][0]<<"(sp)"<< std::endl;
                 dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
@@ -45,10 +54,19 @@ class LeftAssignOperator: public Operator{
             std::string destReg,
             std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
+
                 std::string reg_left = helper.allocateReg(datatype);
                 left->riscv_asm(dst, helper, reg_left, bindings);
+                std::string mem = helper.allocateMemory();
+                dst<<"sw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
+                helper.deallocateReg(reg_left);
                 std::string reg_right = helper.allocateReg(datatype);
                 right->riscv_asm(dst, helper, reg_right, bindings);
+                reg_left = helper.allocateReg(datatype);
+                dst<<"lw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                helper.last_mem_allocated += helper.min_mem;
+
                 dst<<"sll "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
                 dst <<"sw "<<destReg<<", "<<bindings[left->getId()][0]<<"(sp)"<<std::endl;
                 dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
@@ -73,10 +91,19 @@ class AddAssignOperator: public Operator{
             std::string destReg,
             std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
+
                 std::string reg_left = helper.allocateReg(datatype);
                 left->riscv_asm(dst, helper, reg_left, bindings);
+                std::string mem = helper.allocateMemory();
+                dst<<"sw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
+                helper.deallocateReg(reg_left);
                 std::string reg_right = helper.allocateReg(datatype);
                 right->riscv_asm(dst, helper, reg_right, bindings);
+                reg_left = helper.allocateReg(datatype);
+                dst<<"lw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                helper.last_mem_allocated += helper.min_mem;
+
                 dst<<"add "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
                 dst <<"sw "<<destReg<<", "<<bindings[left->getId()][0]<<"(sp)"<< std::endl;
                 dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
@@ -99,10 +126,19 @@ class SubAssignOperator: public Operator{
             std::string destReg,
             std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
+
                 std::string reg_left = helper.allocateReg(datatype);
                 left->riscv_asm(dst, helper, reg_left, bindings);
+                std::string mem = helper.allocateMemory();
+                dst<<"sw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
+                helper.deallocateReg(reg_left);
                 std::string reg_right = helper.allocateReg(datatype);
                 right->riscv_asm(dst, helper, reg_right, bindings);
+                reg_left = helper.allocateReg(datatype);
+                dst<<"lw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                helper.last_mem_allocated += helper.min_mem;
+
                 dst<<"sub "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
                 dst <<"sw "<<destReg<<", "<<bindings[left->getId()][0]<<"(sp)"<< std::endl;
                 dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
@@ -126,10 +162,19 @@ class MulAssignOperator: public Operator{
             std::string destReg,
             std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
+
                 std::string reg_left = helper.allocateReg(datatype);
                 left->riscv_asm(dst, helper, reg_left, bindings);
+                std::string mem = helper.allocateMemory();
+                dst<<"sw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
+                helper.deallocateReg(reg_left);
                 std::string reg_right = helper.allocateReg(datatype);
                 right->riscv_asm(dst, helper, reg_right, bindings);
+                reg_left = helper.allocateReg(datatype);
+                dst<<"lw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                helper.last_mem_allocated += helper.min_mem;
+
                 dst<<"mul "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
                 dst <<"sw "<<destReg<<", "<< bindings[left->getId()][0]<<"(sp)"<< std::endl;
                 dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
@@ -153,10 +198,19 @@ class DivAssignOperator: public Operator{
             std::string destReg,
             std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
+
                 std::string reg_left = helper.allocateReg(datatype);
                 left->riscv_asm(dst, helper, reg_left, bindings);
+                std::string mem = helper.allocateMemory();
+                dst<<"sw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
+                helper.deallocateReg(reg_left);
                 std::string reg_right = helper.allocateReg(datatype);
                 right->riscv_asm(dst, helper, reg_right, bindings);
+                reg_left = helper.allocateReg(datatype);
+                dst<<"lw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                helper.last_mem_allocated += helper.min_mem;
+
                 dst<<"div "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
                 dst<<"sw " <<destReg<<", "<< bindings[left->getId()][0]<<"(sp)"<< std::endl;
                 dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
@@ -180,10 +234,19 @@ class ModAssignOperator: public Operator{
             std::string destReg,
             std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
+
                 std::string reg_left = helper.allocateReg(datatype);
                 left->riscv_asm(dst, helper, reg_left, bindings);
+                std::string mem = helper.allocateMemory();
+                dst<<"sw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
+                helper.deallocateReg(reg_left);
                 std::string reg_right = helper.allocateReg(datatype);
                 right->riscv_asm(dst, helper, reg_right, bindings);
+                reg_left = helper.allocateReg(datatype);
+                dst<<"lw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                helper.last_mem_allocated += helper.min_mem;
+
                 dst<<"rem "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
                 dst<<"sw "<<destReg<<", "<<bindings[left->getId()][0]<<"(sp)"<< std::endl;
                 dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
@@ -208,10 +271,19 @@ class AndAssignOperator: public Operator{
             std::string destReg,
             std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
+
                 std::string reg_left = helper.allocateReg(datatype);
                 left->riscv_asm(dst, helper, reg_left, bindings);
+                std::string mem = helper.allocateMemory();
+                dst<<"sw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
+                helper.deallocateReg(reg_left);
                 std::string reg_right = helper.allocateReg(datatype);
                 right->riscv_asm(dst, helper, reg_right, bindings);
+                reg_left = helper.allocateReg(datatype);
+                dst<<"lw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                helper.last_mem_allocated += helper.min_mem;
+
                 dst<<"and "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
                 dst<<"sw "<<destReg<<", "<<bindings[left->getId()][0]<<"(sp)"<< std::endl;
                 dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
@@ -236,10 +308,19 @@ class XorAssignOperator: public Operator{
             std::string destReg,
             std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
+
                 std::string reg_left = helper.allocateReg(datatype);
                 left->riscv_asm(dst, helper, reg_left, bindings);
+                std::string mem = helper.allocateMemory();
+                dst<<"sw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
+                helper.deallocateReg(reg_left);
                 std::string reg_right = helper.allocateReg(datatype);
                 right->riscv_asm(dst, helper, reg_right, bindings);
+                reg_left = helper.allocateReg(datatype);
+                dst<<"lw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                helper.last_mem_allocated += helper.min_mem;
+
                 dst<<"xor "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
                 dst<<"sw "<<destReg<<", "<< bindings[left->getId()][0]<<"(sp)"<< std::endl;
                 dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
@@ -264,10 +345,19 @@ class OrAssignOperator: public Operator{
             std::string destReg,
             std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
+
                 std::string reg_left = helper.allocateReg(datatype);
                 left->riscv_asm(dst, helper, reg_left, bindings);
+                std::string mem = helper.allocateMemory();
+                dst<<"sw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
+                helper.deallocateReg(reg_left);
                 std::string reg_right = helper.allocateReg(datatype);
                 right->riscv_asm(dst, helper, reg_right, bindings);
+                reg_left = helper.allocateReg(datatype);
+                dst<<"lw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                helper.last_mem_allocated += helper.min_mem;
+                
                 dst<<"or "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
                 dst<<"sw "<<destReg<<", "<< bindings[left->getId()][0]<<"(sp)"<< std::endl;
                 dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;

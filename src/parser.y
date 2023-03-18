@@ -137,7 +137,6 @@ EXPR
 	| EXPR '>' EXPR							{ $$ = new GthanOperator($1, $3); }
 	| EXPR '<' EXPR							{ $$ = new LthanOperator($1, $3); }
 	| EXPR NE_OP EXPR						{ $$ = new NEqOperator($1, $3); }
-	| EXPR EQ_OP EXPR						{ $$ = new EqOperator($1, $3); }
 	| EXPR GE_OP EXPR						{ $$ = new GthanEqOperator($1, $3); }
 	| EXPR LE_OP EXPR						{ $$ = new LthanEqOperator($1, $3); }
 	| EXPR OR_OP EXPR						{ $$ = new OrOperator($1, $3); }
@@ -165,15 +164,17 @@ EXPR
 	| DEC_OP EXPR 							{ $$ = new DecOperator_Pre($2); }
 
 
-OPERATORS
-	: TERM 									{ $$ = $1; }
-	| OPERATORS '+' OPERATORS 				{ $$ = new AddOperator($1, $3); }
-    | OPERATORS '-' OPERATORS 				{ $$ = new SubOperator($1, $3); }
-
 TERM
 	: UNARY             			{ $$ = $1; }
-    | TERM '*' TERM     			{ $$ = new MulOperator($1, $3); }
-    | TERM '/' TERM   				{ $$ = new DivOperator($1, $3); }
+    | TERM '*' TERM     			{ $$ = new MulOperator($1, $3);}
+    | TERM '/' TERM   				{ $$ = new DivOperator($1, $3);}
+	| TERM '%' TERM 				{ $$ = new ModOperator($1, $3);}
+
+OPERATORS
+	: TERM 									{$$ = $1; }
+	| OPERATORS '+' OPERATORS 				{$$ = new AddOperator($1, $3); }
+    | OPERATORS '-' OPERATORS 				{$$ = new SubOperator($1, $3); }
+	| OPERATORS EQ_OP OPERATORS				{ $$ = new EqOperator($1, $3); }
 
 
 UNARY

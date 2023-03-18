@@ -59,7 +59,17 @@ public:
 
                 for (int i = 0; i < str.size(); i++){
                     dst<<"li "<<reg_min_mem<<", "<<helper.min_mem<<std::endl;
-                    dst<<"li "<<reg_val<<", '"<<str[i]<<"'"<<std::endl;
+
+                    // Temporary fix to pass the strings/escaped.c test case
+                    // and at the same time pass other string tests and
+                    // allign with our array storing and accessing methodology
+                    if (str[i]=='\\'){
+                        dst<<"li "<<reg_val<<", '\\"<<str[i]<<"'"<<std::endl;
+                    }
+                    else{
+                        dst<<"li "<<reg_val<<", '"<<str[i]<<"'"<<std::endl;
+                    }
+                    
                     dst<<"li "<<reg_index<<", "<<i<<std::endl;
                     dst<<"mul "<<reg_index<<", "<<reg_index<<", "<<reg_min_mem<<std::endl;
                     dst<<"li "<<reg_min_mem<<", "<<bindings[id->getId()][0]<<std::endl;
@@ -75,6 +85,7 @@ public:
                 helper.deallocateReg(reg_val);
                 helper.deallocateReg(reg_min_mem);
                 helper.deallocateReg(reg_index);
+
         }
 };
 

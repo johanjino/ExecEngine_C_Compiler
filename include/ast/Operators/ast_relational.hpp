@@ -30,13 +30,17 @@ class GthanOperator: public Operator{
             std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
 
-                //Calculate Left
                 std::string reg_left = helper.allocateReg(datatype);
                 left->riscv_asm(dst, helper, reg_left, bindings);
-
-                //Calculate Right
+                std::string mem = helper.allocateMemory();
+                dst<<"sw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
+                helper.deallocateReg(reg_left);
                 std::string reg_right = helper.allocateReg(datatype);
                 right->riscv_asm(dst, helper, reg_right, bindings);
+                reg_left = helper.allocateReg(datatype);
+                dst<<"lw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                helper.last_mem_allocated += helper.min_mem;
 
                 //>
                 dst<<"sgt "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
@@ -74,13 +78,18 @@ class LthanOperator: public Operator{
             std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
 
-                //Calculate Left
+
                 std::string reg_left = helper.allocateReg(datatype);
                 left->riscv_asm(dst, helper, reg_left, bindings);
-
-                //Calculate Right
+                std::string mem = helper.allocateMemory();
+                dst<<"sw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
+                helper.deallocateReg(reg_left);
                 std::string reg_right = helper.allocateReg(datatype);
                 right->riscv_asm(dst, helper, reg_right, bindings);
+                reg_left = helper.allocateReg(datatype);
+                dst<<"lw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                helper.last_mem_allocated += helper.min_mem;
 
                 //<
                 dst<<"slt "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
@@ -118,18 +127,21 @@ class GthanEqOperator: public Operator{
             std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
 
-                //Calculate Left
                 std::string reg_left = helper.allocateReg(datatype);
                 left->riscv_asm(dst, helper, reg_left, bindings);
-
-                //Calculate Right
+                std::string mem = helper.allocateMemory();
+                dst<<"sw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
+                helper.deallocateReg(reg_left);
                 std::string reg_right = helper.allocateReg(datatype);
                 right->riscv_asm(dst, helper, reg_right, bindings);
+                reg_left = helper.allocateReg(datatype);
+                dst<<"lw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                helper.last_mem_allocated += helper.min_mem;
 
                 //>=
-                dst<<"slt "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
-                dst<<"xori "<<destReg<<", "<<destReg<<", 1"<<std::endl;     //bitwise xor i.e. invert
-
+                dst<<"slt "<<reg_left<<", "<<reg_left<<", "<<reg_right<<std::endl;
+                dst<<"xori "<<destReg<<", "<<reg_left<<", 1"<<std::endl;     //bitwise xor i.e. invert
 
                 dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
                 dst<<"addi "<<reg_right<<", zero, 0"<<std::endl;
@@ -138,7 +150,6 @@ class GthanEqOperator: public Operator{
 
         }
 };
-
 
 class LthanEqOperator: public Operator{
     protected:
@@ -165,18 +176,21 @@ class LthanEqOperator: public Operator{
             std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
 
-                //Calculate Left
                 std::string reg_left = helper.allocateReg(datatype);
                 left->riscv_asm(dst, helper, reg_left, bindings);
-
-                //Calculate Right
+                std::string mem = helper.allocateMemory();
+                dst<<"sw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
+                helper.deallocateReg(reg_left);
                 std::string reg_right = helper.allocateReg(datatype);
                 right->riscv_asm(dst, helper, reg_right, bindings);
+                reg_left = helper.allocateReg(datatype);
+                dst<<"lw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                helper.last_mem_allocated += helper.min_mem;
 
                 //<=
-                dst<<"sgt "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
-                dst<<"xori "<<destReg<<", "<<destReg<<", 1"<<std::endl;    //bitwise xor i.e. invert
-
+                dst<<"sgt "<<reg_left<<", "<<reg_left<<", "<<reg_right<<std::endl;
+                dst<<"xori "<<destReg<<", "<<reg_left<<", 1"<<std::endl;    //bitwise xor i.e. invert
 
                 dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
                 dst<<"addi "<<reg_right<<", zero, 0"<<std::endl;
@@ -185,7 +199,6 @@ class LthanEqOperator: public Operator{
 
         }
 };
-
 
 class EqOperator: public Operator{
     protected:
@@ -213,18 +226,21 @@ class EqOperator: public Operator{
             std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
 
-                //Calculate Left
                 std::string reg_left = helper.allocateReg(datatype);
                 left->riscv_asm(dst, helper, reg_left, bindings);
-
-                //Calculate Right
+                std::string mem = helper.allocateMemory();
+                dst<<"sw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
+                helper.deallocateReg(reg_left);
                 std::string reg_right = helper.allocateReg(datatype);
                 right->riscv_asm(dst, helper, reg_right, bindings);
+                reg_left = helper.allocateReg(datatype);
+                dst<<"lw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                helper.last_mem_allocated += helper.min_mem;
 
                 //>=
-                dst<<"sub "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
-                dst<<"seqz "<<destReg<<", "<<destReg<<std::endl;     //set equal 0
-
+                dst<<"sub "<<reg_left<<", "<<reg_left<<", "<<reg_right<<std::endl;
+                dst<<"seqz "<<destReg<<", "<<reg_left<<std::endl;     //set equal 0
 
                 dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
                 dst<<"addi "<<reg_right<<", zero, 0"<<std::endl;
@@ -259,18 +275,21 @@ class NEqOperator: public Operator{
             std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
 
-                //Calculate Left
                 std::string reg_left = helper.allocateReg(datatype);
                 left->riscv_asm(dst, helper, reg_left, bindings);
-
-                //Calculate Right
+                std::string mem = helper.allocateMemory();
+                dst<<"sw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
+                helper.deallocateReg(reg_left);
                 std::string reg_right = helper.allocateReg(datatype);
                 right->riscv_asm(dst, helper, reg_right, bindings);
+                reg_left = helper.allocateReg(datatype);
+                dst<<"lw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                helper.last_mem_allocated += helper.min_mem;
 
                 //>=
-                dst<<"sub "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
-                dst<<"snez "<<destReg<<", "<<destReg<<std::endl;     //set not equal 0
-
+                dst<<"sub "<<reg_left<<", "<<reg_left<<", "<<reg_right<<std::endl;
+                dst<<"snez "<<destReg<<", "<<reg_left<<std::endl;     //set not equal 0
 
                 dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
                 dst<<"addi "<<reg_right<<", zero, 0"<<std::endl;

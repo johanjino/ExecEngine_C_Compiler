@@ -56,6 +56,7 @@ class AddOperator: public Operator{
                     std::string reg_left = helper.allocateReg(datatype);
                     left->riscv_asm(dst, helper, reg_left, bindings);
 
+                    //Store the left value
                     std::string mem = helper.allocateMemory();
                     dst<<"sw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
                     dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
@@ -68,7 +69,7 @@ class AddOperator: public Operator{
                     //Load the left value
                     reg_left = helper.allocateReg(datatype);
                     dst<<"lw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
-                    helper.last_mem_allocated + helper.min_mem;
+                    helper.last_mem_allocated += helper.min_mem;
 
                     //Add
                     dst<<"add "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
@@ -78,7 +79,6 @@ class AddOperator: public Operator{
                     helper.deallocateReg(reg_left);
                     helper.deallocateReg(reg_right);
                 }
-
         }
 };
 
@@ -96,26 +96,48 @@ class SubOperator : public Operator{
             std::string destReg,
             std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
-
-                //Calculate Left
-                std::string reg_left = helper.allocateReg(datatype);
-                left->riscv_asm(dst, helper, reg_left, bindings);
-
-                //Calculate Right
-                std::string reg_right = helper.allocateReg(datatype);
-                right->riscv_asm(dst, helper, reg_right, bindings);
-
-                //Add
-                dst<<"sub "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
-
-                dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
-                dst<<"addi "<<reg_right<<", zero, 0"<<std::endl;
-                helper.deallocateReg(reg_left);
-                helper.deallocateReg(reg_right);
-
+                if (datatype == "float"){
+                    std::string reg_left = helper.allocateReg(datatype);
+                    left->riscv_asm(dst, helper, reg_left, bindings, datatype);
+                    std::string reg_right = helper.allocateReg(datatype);
+                    right->riscv_asm(dst, helper, reg_right, bindings, datatype);
+                    dst<<"fsub.s "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
+                    dst<<"fsub.s "<<reg_left<<", "<<reg_left<<", "<<reg_left<<std::endl;
+                    dst<<"fsub.s "<<reg_right<<", "<<reg_right<<", "<<reg_right<<std::endl;
+                    helper.deallocateReg(reg_left);
+                    helper.deallocateReg(reg_right);
+                }
+                else if(datatype == "double" || datatype == "long double"){
+                    std::string reg_left = helper.allocateReg(datatype);
+                    left->riscv_asm(dst, helper, reg_left, bindings, datatype);
+                    std::string reg_right = helper.allocateReg(datatype);
+                    right->riscv_asm(dst, helper, reg_right, bindings, datatype);
+                    dst<<"fsub.d "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
+                    dst<<"fsub.d "<<reg_left<<", "<<reg_left<<", "<<reg_left<<std::endl;
+                    dst<<"fsub.d "<<reg_right<<", "<<reg_right<<", "<<reg_right<<std::endl;
+                    helper.deallocateReg(reg_left);
+                    helper.deallocateReg(reg_right);
+                }
+                else{
+                    std::string reg_left = helper.allocateReg(datatype);
+                    left->riscv_asm(dst, helper, reg_left, bindings);
+                    std::string mem = helper.allocateMemory();
+                    dst<<"sw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                    dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
+                    helper.deallocateReg(reg_left);
+                    std::string reg_right = helper.allocateReg(datatype);
+                    right->riscv_asm(dst, helper, reg_right, bindings);
+                    reg_left = helper.allocateReg(datatype);
+                    dst<<"lw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                    helper.last_mem_allocated += helper.min_mem;
+                    dst<<"sub "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
+                    dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
+                    dst<<"addi "<<reg_right<<", zero, 0"<<std::endl;
+                    helper.deallocateReg(reg_left);
+                    helper.deallocateReg(reg_right);
+                }
         }
 };
-
 
 class MulOperator : public Operator{
     protected:
@@ -132,58 +154,45 @@ class MulOperator : public Operator{
             std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
                 if (datatype == "float"){
-                    //Calculate Left
                     std::string reg_left = helper.allocateReg(datatype);
                     left->riscv_asm(dst, helper, reg_left, bindings, datatype);
-
-                    //Calculate Right
                     std::string reg_right = helper.allocateReg(datatype);
                     right->riscv_asm(dst, helper, reg_right, bindings, datatype);
-
-                    //Mul
                     dst<<"fmul.s "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
-
                     dst<<"fsub.s "<<reg_left<<", "<<reg_left<<", "<<reg_left<<std::endl;
                     dst<<"fsub.s "<<reg_right<<", "<<reg_right<<", "<<reg_right<<std::endl;
                     helper.deallocateReg(reg_left);
                     helper.deallocateReg(reg_right);
                 }
                 else if(datatype == "double" || datatype == "long double"){
-                    //Calculate Left
                     std::string reg_left = helper.allocateReg(datatype);
                     left->riscv_asm(dst, helper, reg_left, bindings, datatype);
-
-                    //Calculate Right
                     std::string reg_right = helper.allocateReg(datatype);
                     right->riscv_asm(dst, helper, reg_right, bindings, datatype);
-
-                    //Add
                     dst<<"fmul.d "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
-
                     dst<<"fsub.d "<<reg_left<<", "<<reg_left<<", "<<reg_left<<std::endl;
                     dst<<"fsub.d "<<reg_right<<", "<<reg_right<<", "<<reg_right<<std::endl;
                     helper.deallocateReg(reg_left);
                     helper.deallocateReg(reg_right);
-
                 }
                 else{
-                    //Calculate Left
                     std::string reg_left = helper.allocateReg(datatype);
                     left->riscv_asm(dst, helper, reg_left, bindings);
-
-                    //Calculate Right
+                    std::string mem = helper.allocateMemory();
+                    dst<<"sw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                    dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
+                    helper.deallocateReg(reg_left);
                     std::string reg_right = helper.allocateReg(datatype);
                     right->riscv_asm(dst, helper, reg_right, bindings);
-
-                    //Mul
+                    reg_left = helper.allocateReg(datatype);
+                    dst<<"lw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                    helper.last_mem_allocated += helper.min_mem;
                     dst<<"mul "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
-
                     dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
                     dst<<"addi "<<reg_right<<", zero, 0"<<std::endl;
                     helper.deallocateReg(reg_left);
                     helper.deallocateReg(reg_right);
                 }
-
         }
 };
 
@@ -196,31 +205,109 @@ class DivOperator : public Operator {
             : Operator(_left, _right)
         {}
 
+               virtual void riscv_asm(std::ostream &dst,
+            Helper &helper,
+            std::string destReg,
+            std::map<std::string, std::vector<std::string>> &bindings,
+            std::string datatype = "None")const override{
+                if (datatype == "float"){
+                    std::string reg_left = helper.allocateReg(datatype);
+                    left->riscv_asm(dst, helper, reg_left, bindings, datatype);
+                    std::string reg_right = helper.allocateReg(datatype);
+                    right->riscv_asm(dst, helper, reg_right, bindings, datatype);
+                    dst<<"fdiv.s "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
+                    dst<<"fsub.s "<<reg_left<<", "<<reg_left<<", "<<reg_left<<std::endl;
+                    dst<<"fsub.s "<<reg_right<<", "<<reg_right<<", "<<reg_right<<std::endl;
+                    helper.deallocateReg(reg_left);
+                    helper.deallocateReg(reg_right);
+                }
+                else if(datatype == "double" || datatype == "long double"){
+                    std::string reg_left = helper.allocateReg(datatype);
+                    left->riscv_asm(dst, helper, reg_left, bindings, datatype);
+                    std::string reg_right = helper.allocateReg(datatype);
+                    right->riscv_asm(dst, helper, reg_right, bindings, datatype);
+                    dst<<"fdiv.d "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
+                    dst<<"fsub.d "<<reg_left<<", "<<reg_left<<", "<<reg_left<<std::endl;
+                    dst<<"fsub.d "<<reg_right<<", "<<reg_right<<", "<<reg_right<<std::endl;
+                    helper.deallocateReg(reg_left);
+                    helper.deallocateReg(reg_right);
+                }
+                else{
+                    std::string reg_left = helper.allocateReg(datatype);
+                    left->riscv_asm(dst, helper, reg_left, bindings);
+                    std::string mem = helper.allocateMemory();
+                    dst<<"sw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                    dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
+                    helper.deallocateReg(reg_left);
+                    std::string reg_right = helper.allocateReg(datatype);
+                    right->riscv_asm(dst, helper, reg_right, bindings);
+                    reg_left = helper.allocateReg(datatype);
+                    dst<<"lw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                    helper.last_mem_allocated += helper.min_mem;
+                    dst<<"div "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
+                    dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
+                    dst<<"addi "<<reg_right<<", zero, 0"<<std::endl;
+                    helper.deallocateReg(reg_left);
+                    helper.deallocateReg(reg_right);
+                }
+        }
+};
+
+class ModOperator : public Operator {
+    protected:
+        virtual const char *getOpcode() const override
+        { return "%"; }
+    public:
+        ModOperator(NodePtr _left, NodePtr _right)
+            : Operator(_left, _right)
+        {}
+
         virtual void riscv_asm(std::ostream &dst,
             Helper &helper,
             std::string destReg,
             std::map<std::string, std::vector<std::string>> &bindings,
             std::string datatype = "None")const override{
-
-                //Calculate Left
-                std::string reg_left = helper.allocateReg(datatype);
-                left->riscv_asm(dst, helper, reg_left, bindings);
-
-                //Calculate Right
-                std::string reg_right = helper.allocateReg(datatype);
-                right->riscv_asm(dst, helper, reg_right, bindings);
-
-                //Add
-                dst<<"div "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
-
-                dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
-                dst<<"addi "<<reg_right<<", zero, 0"<<std::endl;
-                helper.deallocateReg(reg_left);
-                helper.deallocateReg(reg_right);
-
+                if (datatype == "float"){
+                    std::string reg_left = helper.allocateReg(datatype);
+                    left->riscv_asm(dst, helper, reg_left, bindings, datatype);
+                    std::string reg_right = helper.allocateReg(datatype);
+                    right->riscv_asm(dst, helper, reg_right, bindings, datatype);
+                    dst<<"frem.s "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
+                    dst<<"fsub.s "<<reg_left<<", "<<reg_left<<", "<<reg_left<<std::endl;
+                    dst<<"fsub.s "<<reg_right<<", "<<reg_right<<", "<<reg_right<<std::endl;
+                    helper.deallocateReg(reg_left);
+                    helper.deallocateReg(reg_right);
+                }
+                else if(datatype == "double" || datatype == "long double"){
+                    std::string reg_left = helper.allocateReg(datatype);
+                    left->riscv_asm(dst, helper, reg_left, bindings, datatype);
+                    std::string reg_right = helper.allocateReg(datatype);
+                    right->riscv_asm(dst, helper, reg_right, bindings, datatype);
+                    dst<<"frem.d "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
+                    dst<<"fsub.d "<<reg_left<<", "<<reg_left<<", "<<reg_left<<std::endl;
+                    dst<<"fsub.d "<<reg_right<<", "<<reg_right<<", "<<reg_right<<std::endl;
+                    helper.deallocateReg(reg_left);
+                    helper.deallocateReg(reg_right);
+                }
+                else{
+                    std::string reg_left = helper.allocateReg(datatype);
+                    left->riscv_asm(dst, helper, reg_left, bindings);
+                    std::string mem = helper.allocateMemory();
+                    dst<<"sw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                    dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
+                    helper.deallocateReg(reg_left);
+                    std::string reg_right = helper.allocateReg(datatype);
+                    right->riscv_asm(dst, helper, reg_right, bindings);
+                    reg_left = helper.allocateReg(datatype);
+                    dst<<"lw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
+                    helper.last_mem_allocated += helper.min_mem;
+                    dst<<"rem "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
+                    dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
+                    dst<<"addi "<<reg_right<<", zero, 0"<<std::endl;
+                    helper.deallocateReg(reg_left);
+                    helper.deallocateReg(reg_right);
+                }
         }
 };
-
-
 
 #endif
