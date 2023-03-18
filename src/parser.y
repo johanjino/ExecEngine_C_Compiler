@@ -41,7 +41,7 @@
 %type <number> CONSTANT
 
 %type <branch> BODY PARAMETER ARGUMENTS HEADS SWITCH_BODY ENUM_BODY STRUCT_UNION_BODY
-%type <node> DATA_TYPES STATEMENT BLOCK EXPR TERM UNARY FACTOR STRUCT_UNION_INSIDE
+%type <node> DATA_TYPES STATEMENT BLOCK EXPR TERM UNARY FACTOR STRUCT_UNION_INSIDE STRUCT_UNION_SET
 %type <node> LINE DECLARATION IF_ELSE_SWITCH LOOP OUTPUT CASES ENUMS ENUM_DEC POINTER_INIT POINTER_CALL ADDRESS_OF
 %type <node> HEAD STRUCT_UNION OPERATORS ARRAY
 
@@ -112,6 +112,7 @@ DECLARATION
 	| DATA_TYPES IDENTIFIER '=' EXPR					{$$ = new Declaration($1,(new Variable(*$2)),$4);} //temporary need to change
 	| DATA_TYPES POINTER_INIT '=' EXPR					{$$ = new Declaration($1,$2,$4);}
 	| DATA_TYPES IDENTIFIER '[' EXPR ']'				{$$ = new Array_Declaration($1, (new Variable(*$2)), $4);}
+	| CHAR '*' IDENTIFIER								{$$ = new Declaration((new Type(_Types::_char)), (new Pointer_Init(new Variable(*$3))), NULL) ;}
 	| CHAR '*' IDENTIFIER '=' STRING_LITERAL 			{$$ = new Strings((new Type(_Types::_char)),  (new Variable(*$3)), *$5);}
 	| STRUCT_UNION IDENTIFIER '{' STRUCT_UNION_BODY '}'	{$$ = new Struct_Union_Declaration((new Variable(*$2)), $4);}
 	| STRUCT_UNION IDENTIFIER IDENTIFIER				{$$ = new Declaration((new Variable(*$2)),(new Variable(*$3)),NULL);}
@@ -149,8 +150,7 @@ EXPR
 	| INC_OP EXPR 	 						{ $$ = new IncOperator_Pre($2); }
 	| EXPR DEC_OP							{ $$ = new DecOperator_Post($1); }
 	| DEC_OP EXPR 							{ $$ = new DecOperator_Pre($2); }
-	| IDENTIFIER '.' IDENTIFIER 		 	{ $$ = new Struct_Union_Access((new Variable(*$1)), (new Variable(*$3)), NULL); }
-	| IDENTIFIER '.' IDENTIFIER '=' EXPR 	{ $$ = new Struct_Union_Access((new Variable(*$1)), (new Variable(*$3)), $5); }
+
 
 OPERATORS
 	: TERM 									{ $$ = $1; }
@@ -171,6 +171,7 @@ UNARY
 FACTOR
 	: CONSTANT     					{$$ = new Number( $1 );}
 	| CHAR_LITERAL					{$$ = new Chars(*$1);}
+	| STRING_LITERAL 				{$$ = new Strings_Output(*$1);}
     | '(' EXPR ')' 					{$$ = $2;}
     | IDENTIFIER 					{$$ = new Variable( *$1 );}
 	| IDENTIFIER '(' ')'			{$$ = new FunctionCall($1,NULL);}
@@ -180,6 +181,12 @@ FACTOR
 	| POINTER_CALL					{$$ = $1;}
 	| ADDRESS_OF					{$$ = $1;}
 	| ARRAY 						{$$ = $1;}
+	| STRUCT_UNION_SET				{$$ = $1;}
+
+
+STRUCT_UNION_SET
+	: IDENTIFIER '.' IDENTIFIER 		 	{ $$ = new Struct_Union_Access((new Variable(*$1)), (new Variable(*$3)), NULL); }
+	| IDENTIFIER '.' IDENTIFIER '=' EXPR 	{ $$ = new Struct_Union_Access((new Variable(*$1)), (new Variable(*$3)), $5); }
 
 ARRAY
 	: IDENTIFIER '[' EXPR ']'    		 	{ $$ = new Array_Index((new Variable(*$1)), $3, NULL); }
@@ -188,6 +195,7 @@ ARRAY
 ARGUMENTS
 	: ARGUMENTS ',' EXPR			{$$ = concat_list($3,$1);}
 	| EXPR							{$$ = init_list($1);}
+
 
 
 
@@ -225,7 +233,7 @@ ENUM_BODY
 	| ENUM_DEC ',' ENUM_BODY						{$$ = concat_list($1,$3);}
 
 ENUMS:
-	| ENUM IDENTIFIER '{' ENUM_BODY	'}'										{$$ = new Enum($4);}
+	| ENUM IDENTIFIER '{' ENUM_BODY	'}'				{$$ = new Enum($4);}
 
 
 

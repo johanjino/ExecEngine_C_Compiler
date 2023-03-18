@@ -40,6 +40,8 @@ void compile(std::ostream &w, std::string file)
     Helper helper = Helper();
     std::map<std::string, std::vector<std::string>> bindings = helper.bindings;
     program->riscv_asm(w, helper, "", bindings);
+
+    helper.print_header(w);
 }
 
 // TODO: uncomment the below if you're using Flex/Bison.

@@ -266,8 +266,25 @@ class Helper {
 
 
 
-};
+        std::vector<std::vector<std::string>> all_headers;
 
+        void add_header(std::vector<std::string> new_header) {
+            all_headers.push_back(new_header);
+            // n Rows X 2 Coloumns
+        }
+
+        void print_header(std::ostream &dst){
+            if(all_headers.size() != 0){
+                dst<<std::endl;
+                dst<<".data"<<std::endl;
+                for(int rows = 0; rows < all_headers.size(); rows++){
+                    dst<<all_headers[rows][0]<<":"<<std::endl;
+                    dst<<all_headers[rows][1]<<std::endl;
+                }
+            }
+        }
+
+};
 
 
 
