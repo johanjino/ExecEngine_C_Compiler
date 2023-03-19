@@ -98,7 +98,7 @@ class XorBitwiseOperator: public Operator{
                 reg_left = helper.allocateReg(datatype);
                 dst<<"lw "<<reg_left<<", "<<mem<<"(sp)"<<std::endl;
                 helper.last_mem_allocated += helper.min_mem;
-                
+
                 dst<<"xor "<<destReg<<", "<<reg_left<<", "<<reg_right<<std::endl;
                 dst<<"addi "<<reg_left<<", zero, 0"<<std::endl;
                 dst<<"addi "<<reg_right<<", zero, 0"<<std::endl;

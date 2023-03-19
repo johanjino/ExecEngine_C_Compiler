@@ -3,9 +3,12 @@
 
 #include "../ast_node.hpp"
 
+#include "../ast_helper.hpp"
+
 class SizeOf : public Node {
     private:
         NodePtr expr;
+
     public:
         SizeOf(NodePtr _expr)
             : expr(_expr)
@@ -13,51 +16,20 @@ class SizeOf : public Node {
         virtual int getSize(std::map<std::string, std::vector<std::string>> &bindings) const{
             std::string returned_type = expr->getType(bindings);
 
-            if (returned_type == "int" || returned_type == "unsigned int"){
-                return 4;
-            }
-            else if(returned_type == "long" || returned_type == "unsigned long"){
-                return 8;
-            }
-            else if(returned_type == "char" || returned_type == "unsigned char" || returned_type == "signed char"){
-                return 1;
-            }
+            if (returned_type == "struct"){
+                auto it = bindings.find(expr->getId());
+                return std::stoi(it->second.at(2));
 
-            else if(returned_type == "short" || returned_type == "unsigned short"){
-                return 2;
-            }
-
-            else if(returned_type == "signed" || returned_type == "unsigned"){
-                return 4;
-            }
-
-            else if(returned_type == "float"){
-                return 4;
-            }
-
-            else if(returned_type == "double"){
-                return 8;
-            }
-
-            else if(returned_type == "long double"){
-                return 10;
-            }
-
-            else if(returned_type == "void"){
-                return 1;
             }
             else {
-                std::cerr<<returned_type<<": Invalid Data Type Size Read Attempt!"<<std::endl;
-
-                exit(1);
-                return 0;
+                Helper helper_temp = Helper();
+                return helper_temp.type_to_size(returned_type);
             }
-
 
         }
 
         virtual void print(std::ostream &dst, int span) const override{
-            dst<<std::setw(span*4)<<"sizeof ( ";
+            dst<<std::setw(span*4)<<" ( ";
             expr->print(dst, span);
             dst<<" )";
 
