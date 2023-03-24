@@ -283,9 +283,19 @@ ADDRESS_OF
 
 LOOP
 	: FOR '(' DECLARATION ';' EXPR ';' DECLARATION ')' BLOCK	{$$ = new forloop($3,$5,$7,$9);}
-	| WHILE '(' EXPR ')' BLOCK									{$$ = new whileloop($3,$5);}
-	| DO BLOCK WHILE '(' EXPR ')' ';'
+	| FOR '('  ';' EXPR ';' DECLARATION ')' BLOCK				{$$ = new forloop(NULL,$4,$6,$8);}
+	| FOR '(' DECLARATION ';'  ';' DECLARATION ')' BLOCK		{$$ = new forloop($3,NULL,$6,$8);}
+	| FOR '(' DECLARATION ';' EXPR ';'  ')' BLOCK				{$$ = new forloop($3,$5,NULL,$8);}
+	| FOR '('  ';'  ';' DECLARATION ')' BLOCK					{$$ = new forloop(NULL,NULL,$5,$7);}
+	| FOR '(' DECLARATION ';'  ';'  ')' BLOCK					{$$ = new forloop($3,NULL,NULL,$7);}
+	| FOR '('  ';' EXPR ';'  ')' BLOCK							{$$ = new forloop(NULL,$4,NULL,$7);}
+	| FOR '('  ';'  ';'  ')' BLOCK								{$$ = new forloop(NULL,NULL,NULL,$6);}
 
+	| WHILE '(' EXPR ')' BLOCK									{$$ = new whileloop($3,$5);}
+
+	| DO BLOCK WHILE '(' EXPR ')' ';'							{$$ = new doloop($2,$5);}
+	| DO LINE WHILE '(' EXPR ')' ';'							{$$ = new doloop(new Block(init_list($2)),$5);}
+	| DO ';' WHILE '(' EXPR ')' ';'								{$$ = new doloop(NULL,$5);}
 
 
 

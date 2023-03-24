@@ -28,6 +28,7 @@
 #include "ast/Blocks/ast_ifelse.hpp"
 #include "ast/Blocks/ast_forloop.hpp"
 #include "ast/Blocks/ast_whileloop.hpp"
+#include "ast/Blocks/ast_doloop.hpp"
 #include "ast/Blocks/ast_switch_case.hpp"
 
 #include "ast/Operators/ast_arithmetic.hpp"

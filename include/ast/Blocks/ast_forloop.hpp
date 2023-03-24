@@ -51,13 +51,17 @@ class forloop : public Node {
             helper.new_loop(start_loop, end_loop, update_loop);
 
             //initialise condition
-            init_cont->riscv_asm(dst,helper,destReg,bindings);
+            if (init_cont!=NULL){
+                init_cont->riscv_asm(dst,helper,destReg,bindings);
+            }
 
             //evalute conditon
             std::string condition_reg = helper.allocateReg("None");   //this is not ideal, prevents unwanted float regs being used
-            dst<<start_loop<<":"<<std::endl;
-            con->riscv_asm(dst, helper, condition_reg, bindings);
-            dst<<"beq "<<condition_reg<<", zero"<<", "<<end_loop<<std::endl; //could be made better. Make use of relational risc instructions
+            if (con!=NULL){
+                dst<<start_loop<<":"<<std::endl;
+                con->riscv_asm(dst, helper, condition_reg, bindings);
+                dst<<"beq "<<condition_reg<<", zero"<<", "<<end_loop<<std::endl; //could be made better. Make use of relational risc instructions
+            }
 
             //loop block
             if (for_block!=NULL){
@@ -65,7 +69,9 @@ class forloop : public Node {
             }
             //update conditions
             dst<<update_loop<<":"<<std::endl;
-            update_cont->riscv_asm(dst,helper,destReg,bindings);
+            if (update_cont!=NULL){
+                update_cont->riscv_asm(dst,helper,destReg,bindings);
+            }
             dst<<"beq zero, zero, "<<start_loop<<std::endl;
 
             //end loop
