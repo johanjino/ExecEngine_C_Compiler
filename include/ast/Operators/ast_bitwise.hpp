@@ -108,4 +108,35 @@ class XorBitwiseOperator: public Operator{
 
 };
 
+class NotBitwiseOperator: public Node{
+    private:
+        NodePtr value;
+    protected:
+        virtual const char *getOpcode() const
+        { return "~"; }
+    public:
+        NotBitwiseOperator(NodePtr _value)
+            : value(_value)
+        {}
+
+        virtual void print(std::ostream &dst, int span) const override{
+            dst<<"( ";
+            dst<<getOpcode();
+            value->print(dst, span);
+            dst<<" )";
+        }
+
+        virtual void riscv_asm(std::ostream &dst,
+            Helper &helper,
+            std::string destReg,
+            std::map<std::string, std::vector<std::string>> &bindings,
+            std::string datatype = "None")const override{
+                std::string reg = helper.allocateReg(datatype);
+                value->riscv_asm(dst, helper, reg, bindings);
+                dst<<"not "<<destReg<<", "<<reg<<std::endl;
+                dst<<"addi "<<reg<<", zero, 0"<<std::endl;
+                helper.deallocateReg(reg);
+        }
+};
+
 #endif

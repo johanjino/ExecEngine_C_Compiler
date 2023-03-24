@@ -43,12 +43,14 @@
 %type <branch> BODY PARAMETER ARGUMENTS HEADS SWITCH_BODY ENUM_BODY STRUCT_UNION_BODY
 %type <node> DATA_TYPES STATEMENT BLOCK EXPR TERM UNARY FACTOR STRUCT_UNION_INSIDE
 %type <node> LINE DECLARATION IF_ELSE_SWITCH LOOP OUTPUT CASES ENUMS ENUM_DEC POINTER_INIT POINTER_CALL ADDRESS_OF
-%type <node> HEAD STRUCT_UNION OPERATORS ARRAY FUNCTION_DEF
+%type <node> HEAD STRUCT_UNION OPERATORS ARRAY FUNCTION_DEF INTERIOR_EXPR
 
-/*
 //CHECK: uncommenting the 2 lines below fails custom/char.c due to + - issue */
-/* %nonassoc '+' '-'
-%nonassoc '*' '/' */
+// %nonassoc '+' '-'
+// %nonassoc '*' '/'
+
+%left '*' '/' '%'
+%left '+' '-'
 
 %start ROOT
 
@@ -131,17 +133,8 @@ DECLARATION
 	| IDENTIFIER '.' IDENTIFIER '=' EXPR				{$$ = new Declaration(NULL,new Variable( (*$1 + std::string(".",1) + *$3) ),$5);}
 	| EXPR 		//for assignment operators
 
-//EXPRESSIONS
 EXPR
-	: OPERATORS								{ $$ = $1; }
-	| EXPR '>' EXPR							{ $$ = new GthanOperator($1, $3); }
-	| EXPR '<' EXPR							{ $$ = new LthanOperator($1, $3); }
-	| EXPR NE_OP EXPR						{ $$ = new NEqOperator($1, $3); }
-	| EXPR GE_OP EXPR						{ $$ = new GthanEqOperator($1, $3); }
-	| EXPR LE_OP EXPR						{ $$ = new LthanEqOperator($1, $3); }
-	| EXPR OR_OP EXPR						{ $$ = new OrOperator($1, $3); }
-	| EXPR AND_OP EXPR  					{ $$ = new AndOperator($1, $3); }
-	| '!' EXPR								{ $$ = new NotOperator($2); }
+	: INTERIOR_EXPR 									{$$ = $1;}
 	| EXPR RIGHT_ASSIGN EXPR 				{ $$ = new RightAssignOperator($1, $3); }
 	| EXPR LEFT_ASSIGN EXPR 				{ $$ = new LeftAssignOperator($1, $3); }
 	| EXPR ADD_ASSIGN EXPR 					{ $$ = new AddAssignOperator($1, $3); }
@@ -152,16 +145,36 @@ EXPR
 	| EXPR AND_ASSIGN EXPR 					{ $$ = new AndAssignOperator($1, $3); }
 	| EXPR XOR_ASSIGN EXPR 					{ $$ = new XorAssignOperator($1, $3); }
 	| EXPR OR_ASSIGN EXPR 					{ $$ = new OrAssignOperator($1, $3); }
-	| EXPR '&' EXPR 						{ $$ = new AndBitwiseOperator($1, $3); }
-	| EXPR '|' EXPR 						{ $$ = new OrBitwiseOperator($1, $3); }
-	| EXPR '^' EXPR 						{ $$ = new XorBitwiseOperator($1, $3); }
-	//| '~' EXPR 							// need to do
-	| EXPR RIGHT_OP EXPR 					{ $$ = new RightShiftOperator($1, $3); }
-	| EXPR LEFT_OP EXPR 					{ $$ = new LeftShiftOperator($1, $3); }
-	| EXPR INC_OP	 						{ $$ = new IncOperator_Post($1); }
-	| INC_OP EXPR 	 						{ $$ = new IncOperator_Pre($2); }
-	| EXPR DEC_OP							{ $$ = new DecOperator_Post($1); }
-	| DEC_OP EXPR 							{ $$ = new DecOperator_Pre($2); }
+
+//EXPRESSIONS
+INTERIOR_EXPR
+	: OPERATORS								{ $$ = $1; }
+	| INTERIOR_EXPR '>' INTERIOR_EXPR							{ $$ = new GthanOperator($1, $3); }
+	| INTERIOR_EXPR '<' INTERIOR_EXPR							{ $$ = new LthanOperator($1, $3); }
+	| INTERIOR_EXPR NE_OP INTERIOR_EXPR						{ $$ = new NEqOperator($1, $3); }
+	| INTERIOR_EXPR GE_OP INTERIOR_EXPR						{ $$ = new GthanEqOperator($1, $3); }
+	| INTERIOR_EXPR LE_OP INTERIOR_EXPR						{ $$ = new LthanEqOperator($1, $3); }
+	| INTERIOR_EXPR OR_OP INTERIOR_EXPR						{ $$ = new OrOperator($1, $3); }
+	| INTERIOR_EXPR AND_OP INTERIOR_EXPR  					{ $$ = new AndOperator($1, $3); }
+	| INTERIOR_EXPR '&' INTERIOR_EXPR 						{ $$ = new AndBitwiseOperator($1, $3); }
+	| INTERIOR_EXPR '|' INTERIOR_EXPR 						{ $$ = new OrBitwiseOperator($1, $3); }
+	| INTERIOR_EXPR '^' INTERIOR_EXPR 						{ $$ = new XorBitwiseOperator($1, $3); }
+	| INTERIOR_EXPR RIGHT_OP INTERIOR_EXPR 					{ $$ = new RightShiftOperator($1, $3); }
+	| INTERIOR_EXPR LEFT_OP INTERIOR_EXPR 					{ $$ = new LeftShiftOperator($1, $3); }
+
+
+
+OPERATORS
+	: TERM 									{$$ = $1; }
+	| OPERATORS '+' OPERATORS 				{$$ = new AddOperator($1, $3); }
+    | OPERATORS '-' OPERATORS 				{$$ = new SubOperator($1, $3); }
+	| OPERATORS EQ_OP OPERATORS				{ $$ = new EqOperator($1, $3); }
+	| OPERATORS INC_OP	 						{ $$ = new IncOperator_Post($1); }
+	| INC_OP OPERATORS 	 						{ $$ = new IncOperator_Pre($2); }
+	| OPERATORS DEC_OP							{ $$ = new DecOperator_Post($1); }
+	| DEC_OP OPERATORS 							{ $$ = new DecOperator_Pre($2); }
+	| '~' EXPR 								{ $$ = new NotBitwiseOperator($2); }
+	| '!' EXPR								{ $$ = new NotOperator($2); }
 
 
 TERM
@@ -170,16 +183,11 @@ TERM
     | TERM '/' TERM   				{ $$ = new DivOperator($1, $3);}
 	| TERM '%' TERM 				{ $$ = new ModOperator($1, $3);}
 
-OPERATORS
-	: TERM 									{$$ = $1; }
-	| OPERATORS '+' OPERATORS 				{$$ = new AddOperator($1, $3); }
-    | OPERATORS '-' OPERATORS 				{$$ = new SubOperator($1, $3); }
-	| OPERATORS EQ_OP OPERATORS				{ $$ = new EqOperator($1, $3); }
-
 
 UNARY
 	: FACTOR	  					{ $$ = $1; }
 	| '-' FACTOR  					{ $$ = new NegOperator($2); }
+	| '+' FACTOR					{ $$ = $2; }
 
 
 FACTOR
@@ -201,6 +209,11 @@ FACTOR
 ARRAY
 	: IDENTIFIER '[' EXPR ']'    		 	{ $$ = new Array_Index((new Variable(*$1)), $3, NULL); }
 	| IDENTIFIER '[' EXPR ']' '=' EXPR 	 	{ $$ = new Array_Index((new Variable(*$1)), $3, $6); }
+	/* | IDENTIFIER '[' ']' '=' '{' VALUES '}'
+
+VALUES
+	: VALUE
+	| VALUE ',' VALUES */
 
 ARGUMENTS
 	: ARGUMENTS ',' EXPR			{$$ = concat_list($3,$1);}
