@@ -3,5 +3,7 @@ int f();
 
 int main()
 {
-  return !(f(12)==58);
+  int val = f(12);
+  printf("%d", val);
+  return !(val==58);
 }

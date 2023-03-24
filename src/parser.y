@@ -43,7 +43,7 @@
 %type <branch> BODY PARAMETER ARGUMENTS HEADS SWITCH_BODY ENUM_BODY STRUCT_UNION_BODY
 %type <node> DATA_TYPES STATEMENT BLOCK EXPR TERM UNARY FACTOR STRUCT_UNION_INSIDE
 %type <node> LINE DECLARATION IF_ELSE_SWITCH LOOP OUTPUT CASES ENUMS ENUM_DEC POINTER_INIT POINTER_CALL ADDRESS_OF
-%type <node> HEAD STRUCT_UNION OPERATORS ARRAY FUNCTION_DEF INTERIOR_EXPR
+%type <node> HEAD STRUCT_UNION OPERATORS ARRAY FUNCTION_DEF INTERIOR_EXPR EQUALS
 
 //CHECK: uncommenting the 2 lines below fails custom/char.c due to + - issue */
 // %nonassoc '+' '-'
@@ -51,6 +51,9 @@
 
 %left '*' '/' '%'
 %left '+' '-'
+%right '='
+
+
 
 %start ROOT
 
@@ -134,7 +137,7 @@ DECLARATION
 	| EXPR 		//for assignment operators
 
 EXPR
-	: INTERIOR_EXPR 									{$$ = $1;}
+	: INTERIOR_EXPR 						{ $$ = $1;}
 	| EXPR RIGHT_ASSIGN EXPR 				{ $$ = new RightAssignOperator($1, $3); }
 	| EXPR LEFT_ASSIGN EXPR 				{ $$ = new LeftAssignOperator($1, $3); }
 	| EXPR ADD_ASSIGN EXPR 					{ $$ = new AddAssignOperator($1, $3); }
@@ -148,10 +151,9 @@ EXPR
 
 //EXPRESSIONS
 INTERIOR_EXPR
-	: OPERATORS								{ $$ = $1; }
-	| INTERIOR_EXPR '>' INTERIOR_EXPR							{ $$ = new GthanOperator($1, $3); }
-	| INTERIOR_EXPR '<' INTERIOR_EXPR							{ $$ = new LthanOperator($1, $3); }
-	| INTERIOR_EXPR NE_OP INTERIOR_EXPR						{ $$ = new NEqOperator($1, $3); }
+	: EQUALS												{ $$ = $1; }
+	| INTERIOR_EXPR '>' INTERIOR_EXPR						{ $$ = new GthanOperator($1, $3); }
+	| INTERIOR_EXPR '<' INTERIOR_EXPR						{ $$ = new LthanOperator($1, $3); }
 	| INTERIOR_EXPR GE_OP INTERIOR_EXPR						{ $$ = new GthanEqOperator($1, $3); }
 	| INTERIOR_EXPR LE_OP INTERIOR_EXPR						{ $$ = new LthanEqOperator($1, $3); }
 	| INTERIOR_EXPR OR_OP INTERIOR_EXPR						{ $$ = new OrOperator($1, $3); }
@@ -159,22 +161,19 @@ INTERIOR_EXPR
 	| INTERIOR_EXPR '&' INTERIOR_EXPR 						{ $$ = new AndBitwiseOperator($1, $3); }
 	| INTERIOR_EXPR '|' INTERIOR_EXPR 						{ $$ = new OrBitwiseOperator($1, $3); }
 	| INTERIOR_EXPR '^' INTERIOR_EXPR 						{ $$ = new XorBitwiseOperator($1, $3); }
-	| INTERIOR_EXPR RIGHT_OP INTERIOR_EXPR 					{ $$ = new RightShiftOperator($1, $3); }
-	| INTERIOR_EXPR LEFT_OP INTERIOR_EXPR 					{ $$ = new LeftShiftOperator($1, $3); }
 
-
+EQUALS
+	: OPERATORS									{ $$ = $1; }
+	| EQUALS EQ_OP EQUALS						{ $$ = new EqOperator($1, $3); }
+	| EQUALS NE_OP EQUALS						{ $$ = new NEqOperator($1, $3); }
 
 OPERATORS
 	: TERM 									{$$ = $1; }
 	| OPERATORS '+' OPERATORS 				{$$ = new AddOperator($1, $3); }
     | OPERATORS '-' OPERATORS 				{$$ = new SubOperator($1, $3); }
-	| OPERATORS EQ_OP OPERATORS				{ $$ = new EqOperator($1, $3); }
-	| OPERATORS INC_OP	 						{ $$ = new IncOperator_Post($1); }
-	| INC_OP OPERATORS 	 						{ $$ = new IncOperator_Pre($2); }
-	| OPERATORS DEC_OP							{ $$ = new DecOperator_Post($1); }
-	| DEC_OP OPERATORS 							{ $$ = new DecOperator_Pre($2); }
-	| '~' EXPR 								{ $$ = new NotBitwiseOperator($2); }
-	| '!' EXPR								{ $$ = new NotOperator($2); }
+	| OPERATORS RIGHT_OP OPERATORS 			{ $$ = new RightShiftOperator($1, $3); }
+	| OPERATORS LEFT_OP OPERATORS 			{ $$ = new LeftShiftOperator($1, $3); }
+
 
 
 TERM
@@ -185,9 +184,15 @@ TERM
 
 
 UNARY
-	: FACTOR	  					{ $$ = $1; }
-	| '-' FACTOR  					{ $$ = new NegOperator($2); }
-	| '+' FACTOR					{ $$ = $2; }
+	: FACTOR	  								{ $$ = $1; }
+	| '-' FACTOR  								{ $$ = new NegOperator($2); }
+	| '+' FACTOR								{ $$ = $2; }
+	| FACTOR INC_OP	 							{ $$ = new IncOperator_Post($1); }
+	| INC_OP FACTOR 	 						{ $$ = new IncOperator_Pre($2); }
+	| FACTOR DEC_OP								{ $$ = new DecOperator_Post($1); }
+	| DEC_OP FACTOR 							{ $$ = new DecOperator_Pre($2); }
+	| '~' FACTOR 								{ $$ = new NotBitwiseOperator($2); }
+	| '!' FACTOR								{ $$ = new NotOperator($2); }
 
 
 FACTOR

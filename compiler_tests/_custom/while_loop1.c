@@ -1,4 +1,4 @@
 int f(){
-    i = 0;
+    int i = 0;
     while (i < 3) (i++);
 }

@@ -66,10 +66,25 @@ public:
                     if (str[i]=='\\'){
                         dst<<"li "<<reg_val<<", '\\"<<str[i]<<"'"<<std::endl;
                     }
+                    else if(str[i]=='\n'){
+                        dst<<"li "<<reg_val<<", '\n"<<str[i]<<"'"<<std::endl;
+                    }
+                    else if(str[i]=='\t'){
+                        dst<<"li "<<reg_val<<", '\t"<<str[i]<<"'"<<std::endl;
+                    }
+                    else if(str[i]=='\''){
+                        dst<<"li "<<reg_val<<", '\'"<<str[i]<<"'"<<std::endl;
+                    }
+                    else if(str[i]=='\"'){
+                        dst<<"li "<<reg_val<<", '\""<<str[i]<<"'"<<std::endl;
+                    }
+                    else if(str[i]=='\?'){
+                        dst<<"li "<<reg_val<<", '\?"<<str[i]<<"'"<<std::endl;
+                    }
                     else{
                         dst<<"li "<<reg_val<<", '"<<str[i]<<"'"<<std::endl;
                     }
-                    
+
                     dst<<"li "<<reg_index<<", "<<i<<std::endl;
                     dst<<"mul "<<reg_index<<", "<<reg_index<<", "<<reg_min_mem<<std::endl;
                     dst<<"li "<<reg_min_mem<<", "<<bindings[id->getId()][0]<<std::endl;
