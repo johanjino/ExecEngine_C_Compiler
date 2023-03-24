@@ -73,11 +73,18 @@ class AddOperator: public Operator{
                     right->riscv_asm(dst, helper, reg_right, bindings);
                     if (pointer){
                         std::string temp = helper.allocateReg(datatype);
+                        // if (left->getType(bindings)=="char"){
+                        //     dst<<"li "<<temp<<", 1"<<std::endl;
+                        // }
+                        // else{
+                        //     dst<<"li "<<temp<<", 4"<<std::endl;
+                        // }
                         dst<<"li "<<temp<<", 4"<<std::endl;
                         dst<<"mul "<<reg_right<<", "<<reg_right<<", "<<temp<<std::endl;
                         dst<<"addi "<<temp<<", zero, 0"<<std::endl;
                         helper.deallocateReg(temp);
                     }
+
 
                     //Load the left value
                     reg_left = helper.allocateReg(datatype);

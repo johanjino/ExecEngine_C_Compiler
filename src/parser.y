@@ -45,8 +45,8 @@
 %type <node> LINE DECLARATION IF_ELSE_SWITCH LOOP OUTPUT CASES ENUMS ENUM_DEC POINTER_INIT POINTER_CALL ADDRESS_OF
 %type <node> HEAD STRUCT_UNION OPERATORS ARRAY FUNCTION_DEF
 
-
-//CHECK: uncommenting the 2 lines below fails custom/char.c due to + - issue
+/*
+//CHECK: uncommenting the 2 lines below fails custom/char.c due to + - issue */
 /* %nonassoc '+' '-'
 %nonassoc '*' '/' */
 
