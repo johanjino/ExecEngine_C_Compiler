@@ -87,8 +87,14 @@ class Pointer_Call : public Node{
             std::string datatype = "None")const override{
 
                     std::string reg = helper.allocateReg(datatype);
-                    dst<<"lw "<<reg<<", "<<bindings[var->getId()][0]<<"(sp)"<<std::endl;
-                    dst<<"lw "<<destReg<<", 0("<<reg<<")"<<std::endl;
+                    if (bindings[var->getId()][1] == "char"){
+                        dst<<"lw "<<reg<<", "<<bindings[var->getId()][0]<<"(sp)"<<std::endl;
+                        dst<<"lbu "<<destReg<<", 0("<<reg<<")"<<std::endl;
+                    }
+                    else{
+                        dst<<"lw "<<reg<<", "<<bindings[var->getId()][0]<<"(sp)"<<std::endl;
+                        dst<<"lw "<<destReg<<", 0("<<reg<<")"<<std::endl;
+                    }
                     dst<<"addi "<<reg<<", zero, 0"<<std::endl;
                     helper.deallocateReg(reg);
 

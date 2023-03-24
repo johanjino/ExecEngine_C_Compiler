@@ -1,5 +1,5 @@
 int f() {
-    int i;
+    int i=0;
     // Loop with empty initialization statement
     for (; i < 10; i++) {
         i++;

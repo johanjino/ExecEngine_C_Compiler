@@ -303,8 +303,20 @@ LOOP
 	| FOR '(' DECLARATION ';'  ';'  ')' BLOCK					{$$ = new forloop($3,NULL,NULL,$7);}
 	| FOR '('  ';' EXPR ';'  ')' BLOCK							{$$ = new forloop(NULL,$4,NULL,$7);}
 	| FOR '('  ';'  ';'  ')' BLOCK								{$$ = new forloop(NULL,NULL,NULL,$6);}
+	/*
+	| FOR '(' DECLARATION ';' EXPR ';' DECLARATION ')' LINE		{$$ = new forloop($3,$5,$7,new Block(init_list($9)));}
+	| FOR '('  ';' EXPR ';' DECLARATION ')' LINE 				{$$ = new forloop(NULL,$4,$6,new Block(init_list($8)));}
+	| FOR '(' DECLARATION ';'  ';' DECLARATION ')' LINE 		{$$ = new forloop($3,NULL,$6,new Block(init_list($8)));}
+	| FOR '(' DECLARATION ';' EXPR ';'  ')' LINE 				{$$ = new forloop($3,$5,NULL,new Block(init_list($8)));}
+	| FOR '('  ';'  ';' DECLARATION ')' LINE 					{$$ = new forloop(NULL,NULL,$5,new Block(init_list($7)));}
+	| FOR '(' DECLARATION ';'  ';'  ')' LINE 					{$$ = new forloop($3,NULL,NULL,new Block(init_list($7)));}
+	| FOR '('  ';' EXPR ';'  ')' LINE 							{$$ = new forloop(NULL,$4,NULL,new Block(init_list($7)));}
+	| FOR '('  ';'  ';'  ')' LINE								{$$ = new forloop(NULL,NULL,NULL,new Block(init_list($6)));}
+	*/
+	//Could have done all the above as a sub token if had more time
 
 	| WHILE '(' EXPR ')' BLOCK									{$$ = new whileloop($3,$5);}
+	//| WHILE '(' EXPR ')' LINE									{$$ = new whileloop($3,new Block(init_list($5)));}
 
 	| DO BLOCK WHILE '(' EXPR ')' ';'							{$$ = new doloop($2,$5);}
 	| DO LINE WHILE '(' EXPR ')' ';'							{$$ = new doloop(new Block(init_list($2)),$5);}

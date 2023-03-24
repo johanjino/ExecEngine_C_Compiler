@@ -57,8 +57,8 @@ class forloop : public Node {
 
             //evalute conditon
             std::string condition_reg = helper.allocateReg("None");   //this is not ideal, prevents unwanted float regs being used
+            dst<<start_loop<<":"<<std::endl;
             if (con!=NULL){
-                dst<<start_loop<<":"<<std::endl;
                 con->riscv_asm(dst, helper, condition_reg, bindings);
                 dst<<"beq "<<condition_reg<<", zero"<<", "<<end_loop<<std::endl; //could be made better. Make use of relational risc instructions
             }
@@ -79,7 +79,7 @@ class forloop : public Node {
             helper.exit_loop();
 
             //clear registers
-            if (init_cont->getType() != "NULL"){               // if control was intialised within loop construct -> need to earse it
+            if (init_cont!= NULL && init_cont->getType() != "NULL"){               // if control was intialised within loop construct -> need to earse it
                 bindings.erase(init_cont->getId());
             }
             dst<<"addi "<<condition_reg<<", zero, 0"<<std::endl;
