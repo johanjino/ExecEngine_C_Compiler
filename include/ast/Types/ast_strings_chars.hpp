@@ -66,20 +66,20 @@ public:
                     if (str[i]=='\\'){
                         dst<<"li "<<reg_val<<", '\\"<<str[i]<<"'"<<std::endl;
                     }
-                    else if(str[i]=='\n'){
-                        dst<<"li "<<reg_val<<", '\n"<<str[i]<<"'"<<std::endl;
+                    else if(str[i]=='n'){
+                        dst<<"li "<<reg_val<<", '"<<str[i]<<"'"<<std::endl;
                     }
-                    else if(str[i]=='\t'){
-                        dst<<"li "<<reg_val<<", '\t"<<str[i]<<"'"<<std::endl;
+                    else if(str[i]=='t'){
+                        dst<<"li "<<reg_val<<", '"<<str[i]<<"'"<<std::endl;
                     }
                     else if(str[i]=='\''){
-                        dst<<"li "<<reg_val<<", '\'"<<str[i]<<"'"<<std::endl;
+                        dst<<"li "<<reg_val<<", '\\"<<str[i]<<"'"<<std::endl;
                     }
-                    else if(str[i]=='\"'){
-                        dst<<"li "<<reg_val<<", '\""<<str[i]<<"'"<<std::endl;
+                    else if(str[i]=='"'){
+                        dst<<"li "<<reg_val<<", '"<<str[i]<<"'"<<std::endl;
                     }
-                    else if(str[i]=='\?'){
-                        dst<<"li "<<reg_val<<", '\?"<<str[i]<<"'"<<std::endl;
+                    else if(str[i]=='?'){
+                        dst<<"li "<<reg_val<<", '"<<str[i]<<"'"<<std::endl;
                     }
                     else{
                         dst<<"li "<<reg_val<<", '"<<str[i]<<"'"<<std::endl;
