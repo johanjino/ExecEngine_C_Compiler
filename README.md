@@ -1,57 +1,46 @@
-2022/2023 Compilers Coursework
+ExecEngine C Compiler
 ==============================
 
-There are two components to the coursework:
+![logo](admin/logo.png)
 
-- [*A C compiler*](c_compiler.md), worth 90%. The source language is pre-processed C90, and the target language is RISC-V assembly. The target environment is Ubuntu 22.04, as described in the attached [Dockerfile](Dockerfile). See [here](./c_compiler.md) for the full set of requirements and more information about the testing environment.
+This repo contains the source code for the ANSI C (C90) to RISC-V compiler developed as part of the EIE 2nd Year Instruction Set Architecture and Compilers coursework completed in Spring 2021. This project was done by myself (Johan) and @alvi-codes (Alvi). Our primary road-map and direction was driven by the [**spec**](admin/c_compiler.md). This repo can be used a reference or guideline to learn basics of compiler design such as lexing, parsing, abstract-syntax-tree (AST) and assembly generation. Further, contexts like register allocation, stack pointer, memory management, etc can also be seen. Future works out of the scope of the project, which have not be implemented include intermediate representation and code optimisation. Please note, **copying this code will be consider as plagiarism**.
 
-- [*Evidence of time-tracking/project management*](management.md), worth 10%. This will be assessed orally at the start of Summer term. See [here](management.md) for more information about this component.
+This project scored a 80% out of all the seen and unseen test cases, putting out compiler second-best ranked among all. The test cases varied from functions and datatypes to pointers and structs. If you have any questions and suggestions, please feel free to reach out to me or open an issue. I would be more than happy to help and learn more 😀.
 
-Repositories
-============
 
-Each group gets a bare private repository. It is up to you if you want to clone the main specification, or to start from scratch.
+Overview
+--------
+Our compiler can be built by calling `make bin/c_compiler` (or just `make`), and must be invoked as follows:
 
-Submission
-==========
+    bin/c_compiler -S <source-file.c> -o <dest-file.s>
 
-The deadline for submitting your C compiler is **Friday 24 March 2023 at 23:59**. There is no deadline for the project management component; instead, this will be assessed by a short oral viva that will be organised in Summer term.
+The command-line parameters must be provided in the order outlined above mostly which has been derived from the given spec. 
 
-Submission will be via GitHub (code) and Teams (commit hash), as in the labs.
+admin
+-----
+This directory contains admin related images and markdown files, including the specifications of the project. This directory also contains a review of our compiler given by our TA @simon-staal (Simon Staal), which clearly outlines the strengths and weaknesses of our compiler.
 
-All submissions will be tested functionally -- there is no expectation for your compiler to *optimise* its input. Moreover, your compiler will only be tested on *valid* inputs, so you do not need to handle faulty inputs in a graceful way.
 
-Changelog
-=========
+compiler_tests
+--------------
+This folder contains a set of test cases we used to evaluate the functional correctness of our compiler. Most of these were pre-included as part of the spec, but many have been added ourselves which can be found in [**Custom_Tests**](compiler_tests/_custom) to further test specific edge cases and undefined behaviour during development. Each test case has accompanying driver code with which it is tested, where the driver code should always return 0.
 
-* New for 2022/2023:
 
-    * Target architecture is now RISC-V rather than MIPS, in order to align with the modernised Instruction Architectures half of the module.
-    * Instead of Vagrant, Docker is now used for the testing environment (with optional VS Code support).
-    * Test scripts are now provided to check your compiler against the set of public tests, without having to write this yourself.
-    * The basic compiler framework has been improved to support command line arguments.
-    * GitHub Actions can now perform automated testing of your compiler.
+include
+-------
+This directory contains all the header files for our compiler, including the nodes used to develop our [**AST**](include/ast) which we use to generate our assembly, as well as other [*helper functions*](include/ast/ast_helper.hpp) which were used for various purposes such as register allocation, memory management, stack pointer, etc. The base class for our AST is [*node*](include/ast/ast_node.hpp), and all of our other AST constructs was build off it. Each of the different set of constructs has been segregated to different folders to allow better readability and modularity.
 
-* New for 2021/2022:
 
-    * Various improvements to scripts for running test cases.
+src
+---
+This directory contains the source code for our [*parser*](src/parser.y) written in Yacc and accompanying [*lexer*](src/lexer.flex) written in flex, which are used to initially process the input source code and generate the AST. [*compiler.cpp*](src/compiler.cpp) contains the source code for our actual compiler, and mostly contains any directives needed at the start of the assembly code, as well as some formatting for visualisation.
 
-* New for 2020/2021:
 
-    * In previous years, students were additionally required to submit a C-to-Python translator, as a "ramping up" task. This extra deliverable has been removed, as the labs provide plenty of "ramping up" practice.
 
-    * We have provided a really basic compiler that simply ignores its input and produces a fixed, valid MIPS assembly program. This should help you to get started a bit more rapidly.
-
-* New for 2019/2020:
-
-    * In previous years, students were additionally required to submit a set of testcases. This deliverable has been removed; instead, a large collection of testcases has been provided for you, as this was judged to be more useful.
-
-    * In previous years, the compiler component counted for 42.8% of the module; it now counts for 55%. It was felt that this weighting more accurately reflects the effort that students put in to building a working compiler.
 
 Acknowledgements
-================
+----------------
 
-* The coursework was originally designed by [David Thomas](https://www.southampton.ac.uk/people/5z9bmb/professor-david-thomas), who lectured this module until 2017-18. It is nowadays maintained by [John Wickerson](https://johnwickerson.github.io/), to whom any feedback should be sent.
-* Thanks to [Yann Herklotz](https://yannherklotz.com/) for making various improvements to the compiler-testing scripts.
-* Thanks to [Archie Crichton](https://www.doc.ic.ac.uk/~ac11018/) for providing a basic "getting started" compiler.
-* Extra-special thanks to [James Nock](https://www.linkedin.com/in/jpnock) for overhauling the scripts for configuring the development environment, for writing detailed instructions for setting this up on various operating systems, and for creating GitHub actions capable of automatically testing compilers.
+* Special thanks to [John Wickerson](https://johnwickerson.github.io/) for creating such a wonderful coursework and teaching us Compilers for 2nd Year EIE. 
+
+* Extra-special thanks to @Jpnock (James Nock) and @simon-staal (Simon Staal) for guiding us through this project and reviewing our work with great effort to help us improve!
