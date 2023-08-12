@@ -18,7 +18,7 @@ The command-line parameters must be provided in the order outlined above mostly 
 
 admin
 -----
-This directory contains admin related images and markdown files, including the specifications of the project. This directory also contains a review of our compiler given by our TA [Simon Staal](https://simon-staal.github.io/), which clearly outlines the strengths and weaknesses of our compiler.
+This directory contains admin related images and markdown files, including the specifications of the project. This directory also contains a [Review](admin/ExecEngine_review.md) of our compiler given by our TA [Simon Staal](https://simon-staal.github.io/), which clearly outlines the strengths and weaknesses of our compiler.
 
 
 compiler_tests
