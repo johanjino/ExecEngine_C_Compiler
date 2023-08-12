@@ -1,7 +1,7 @@
 ExecEngine C Compiler
 ==============================
 
-![logo](admin/logo.png)
+![logo](admin/ExecEngine.png)
 
 This repo contains the source code for the ANSI C (C90) to RISC-V compiler developed as part of the EIE 2nd Year Instruction Set Architecture and Compilers coursework completed in Spring 2021. This project was done by myself (Johan) and @alvi-codes (Alvi). Our primary road-map and direction was driven by the [**spec**](admin/c_compiler.md). This repo can be used a reference or guideline to learn basics of compiler design such as lexing, parsing, abstract-syntax-tree (AST) and assembly generation. Further, contexts like register allocation, stack pointer, memory management, etc can also be seen. Future works out of the scope of the project, which have not be implemented include intermediate representation and code optimisation. Please note, **copying this code will be consider as plagiarism**.
 
